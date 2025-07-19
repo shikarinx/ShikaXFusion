@@ -1,12 +1,10 @@
 /* --- Global Styles, Fonts & Background --- */
 @font-face {
     font-family: 'Million Smiles';
-    /* CORRECTED PATH: The font is now in the same folder */
     src: url('Million-Smiles.otf') format('opentype'); 
 }
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 
-/* --- ALL OTHER CSS IS UNCHANGED AND CORRECT --- */
 :root {
     --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     --accent-gradient: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
@@ -39,10 +37,29 @@ body {
 .orb-2 { width: 300px; height: 300px; background: var(--neon-purple); top: 60%; right: 15%; animation-delay: -4s; }
 @keyframes float { 50% { transform: translateY(-40px) scale(1.1); } }
 
-.app-container { width: 100%; max-width: 430px; height: 100vh; margin: auto; background: rgba(0,0,0,0.2); border-left: 1px solid var(--card-border); border-right: 1px solid var(--card-border); display: flex; flex-direction: column; position: relative; z-index: 10; }
-.main-content { flex-grow: 1; overflow-y: auto; }
+/* --- Main App Structure --- */
+.app-container {
+    width: 100%;
+    max-width: 430px;
+    height: 100vh;
+    margin: auto;
+    background: rgba(0,0,0,0.2);
+    border-left: 1px solid var(--card-border);
+    border-right: 1px solid var(--card-border);
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    z-index: 10;
+}
+.main-content {
+    flex-grow: 1;
+    overflow-y: auto;
+    /* FIX: Added padding to the top to create space from the header */
+    padding-top: 20px; 
+}
 .main-content::-webkit-scrollbar { display: none; }
 
+/* --- Reusable Bottom Navigation --- */
 .bottom-nav { flex-shrink: 0; margin: 20px; padding: 10px; background: rgba(255, 255, 255, 0.9); border-radius: 50px; backdrop-filter: blur(15px); display: flex; justify-content: space-around; align-items: center; box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
 .nav-item { display: flex; flex-direction: column; align-items: center; gap: 4px; color: #555; text-decoration: none; cursor: pointer; transition: color 0.2s ease; background: none; border: none; padding: 5px 10px; font-family: 'Inter', sans-serif; }
 .nav-item.active { color: var(--neon-pink); }
@@ -53,18 +70,33 @@ body {
 .nav-item.active .icon-fill { fill: var(--neon-pink); }
 .nav-item:hover .icon-fill { fill: #000; }
 
+/* --- Dashboard Specific Styles --- */
 .dashboard-header { padding: 20px; display: flex; justify-content: space-between; align-items: center; flex-shrink: 0; }
 .header-left { font-weight: 600; font-size: 1.2rem; }
 .header-right { display: flex; align-items: center; gap: 15px; }
 .brand-name { font-family: 'Million Smiles', cursive; font-size: 1.8rem; background: var(--primary-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
 .user-avatar { width: 44px; height: 44px; background: linear-gradient(135deg, #f97794, #623aa2); border-radius: 14px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 1.2rem; }
+
+/* --- Horizontal Scrolling Cards & Section Headers --- */
 .horizontal-scroll-container { display: flex; gap: 20px; overflow-x: auto; padding: 0 0 20px 20px; scroll-snap-type: x mandatory; scrollbar-width: none; }
 .horizontal-scroll-container::-webkit-scrollbar { display: none; }
 .game-card { flex: 0 0 280px; height: 350px; border-radius: 24px; overflow: hidden; position: relative; background: var(--card-bg); border: 1px solid var(--card-border); box-shadow: 0 10px 30px rgba(0,0,0,0.2); cursor: pointer; transition: transform 0.3s ease; scroll-snap-align: start; }
 .game-card:hover { transform: translateY(-5px); }
-.section-header { padding: 0 20px; margin-bottom: 15px; }
-.section-header h2 { font-size: 1.5rem; }
 
+.section-header {
+    padding: 0 20px;
+    /* FIX: Reduced the bottom margin to tighten the gap */
+    margin-bottom: 15px;
+}
+.section-header h2 {
+    /* FIX: Applying your custom font to section titles */
+    font-family: 'Million Smiles', cursive;
+    font-size: 2.2rem; /* Adjusted size for the new font */
+    font-weight: normal; /* Cursive fonts look best at their native weight */
+    color: var(--text-primary);
+}
+
+/* --- Other page styles (Tasks, Placeholders) are unchanged --- */
 .tasks-header { display: flex; justify-content: space-between; align-items: center; padding: 20px 25px; flex-shrink: 0; }
 .tasks-header h1 { font-size: 1.8rem; font-weight: 600; }
 .tasks-header .icon { cursor: pointer; width: 28px; height: 28px; }
