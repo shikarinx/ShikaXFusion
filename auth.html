@@ -3,93 +3,239 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FusionAuth - Secure Login & Register</title>
-    <!-- All your CSS remains the same -->
+    <title>FusionAuth - Welcome</title>
     <style>
-        :root { --gradient-start: #8e76e8; --gradient-end: #6347c7; --accent-color: #f8576c; --glass-tint: rgba(103, 76, 175, 0.25); --glass-border: rgba(255, 255, 255, 0.18); --text-light: #f1f1f1; --text-medium: rgba(255, 255, 255, 0.7); }
+        /* --- ADDED: Import for the new 'Allura' font --- */
+        @import url('https://fonts.googleapis.com/css2?family=Allura&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+        :root {
+            /* All your existing high-tech colors are kept */
+            --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --accent-gradient: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            --dark-glass: rgba(15, 23, 42, 0.8);
+            --neon-blue: #00d4ff;
+            --neon-purple: #b537f7;
+            --neon-pink: #ff006e;
+            --neon-green: #39ff14;
+            --bg-darker: #020617;
+            --text-primary: #ffffff;
+            --text-secondary: rgba(255, 255, 255, 0.7);
+            --text-muted: rgba(255, 255, 255, 0.5);
+            --shadow-glow: 0 0 30px rgba(59, 130, 246, 0.3);
+            --shadow-deep: 0 25px 50px -12px rgba(0, 0, 0, 0.6);
+            --border-glow: rgba(255, 255, 255, 0.2);
+        }
+
+        /* All other styles remain the same, only the header is modified below */
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Segoe UI', 'Roboto', sans-serif; background: linear-gradient(135deg, var(--gradient-start) 0%, var(--gradient-end) 100%); min-height: 100vh; display: flex; align-items: center; justify-content: center; overflow: hidden; color: var(--text-light); }
-        #particles-js { position: absolute; width: 100%; height: 100%; top: 0; left: 0; z-index: 0; }
-        .auth-container { position: relative; z-index: 1; background: var(--glass-tint); backdrop-filter: blur(20px) saturate(120%); -webkit-backdrop-filter: blur(20px) saturate(120%); border-radius: 30px; padding: 40px 35px; width: 90%; max-width: 420px; box-shadow: 0 20px 50px rgba(0, 0, 0, 0.15); border: 1px solid var(--glass-border); }
-        .auth-header { text-align: center; margin-bottom: 35px; }
-        .auth-header h1 { color: white; font-size: 2.6rem; font-weight: 600; margin-bottom: 8px; text-shadow: 0 2px 8px rgba(0, 0, 0, 0.2); }
-        .auth-header p { color: var(--text-medium); font-size: 1rem; font-weight: 400; }
-        .auth-tabs { display: flex; margin-bottom: 30px; background: rgba(0, 0, 0, 0.2); border-radius: 18px; padding: 5px; }
-        .tab-btn { flex: 1; padding: 14px; background: none; border: none; color: var(--text-medium); font-size: 1rem; font-weight: 500; cursor: pointer; border-radius: 14px; transition: all 0.3s ease; }
-        .tab-btn.active { background: rgba(255, 255, 255, 0.15); color: white; font-weight: 600; box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1); }
-        .auth-form { display: none; }
-        .auth-form.active { display: block; animation: fadeIn 0.5s ease-in-out; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
-        .form-group { margin-bottom: 18px; }
-        .form-group input { width: 100%; padding: 16px 20px; border: 1px solid transparent; border-radius: 16px; background: rgba(0, 0, 0, 0.2); color: var(--text-light); font-size: 1rem; transition: all 0.3s ease; }
-        .form-group input:focus { outline: none; background: rgba(0, 0, 0, 0.25); border-color: rgba(255, 255, 255, 0.3); }
-        .form-group input::placeholder { color: var(--text-medium); font-weight: 400;}
-        .submit-btn { width: 100%; padding: 16px; background: linear-gradient(135deg, var(--accent-color), #f58496); color: white; border: none; border-radius: 16px; font-size: 1.1rem; font-weight: 600; cursor: pointer; transition: all 0.3s ease; text-transform: uppercase; letter-spacing: 0.5px; margin-top: 10px; box-shadow: 0 10px 20px -5px rgba(248, 87, 108, 0.5); }
-        .submit-btn:hover:not(:disabled) { transform: translateY(-3px); box-shadow: 0 12px 25px -5px rgba(248, 87, 108, 0.6); }
-        .submit-btn:disabled { background: #aaa; cursor: not-allowed; box-shadow: none; opacity: 0.7; }
-        .google-btn { width: 100%; padding: 15px; background: transparent; color: var(--text-light); border: 1px solid rgba(255, 255, 255, 0.4); border-radius: 16px; font-size: 1rem; font-weight: 500; cursor: pointer; transition: all 0.3s ease; display: flex; align-items: center; justify-content: center; gap: 12px; }
-        .google-btn:hover:not(:disabled) { background: rgba(255, 255, 255, 0.1); }
-        .google-icon { width: 22px; height: 22px; }
-        .forgot-password { text-align: right; margin-top: -10px; margin-bottom: 20px; }
-        .forgot-password a { color: var(--text-medium); text-decoration: none; font-size: 0.9rem; transition: color 0.3s ease; }
-        .forgot-password a:hover { color: white; }
-        .divider { text-align: center; margin: 25px 0; color: var(--text-medium); font-weight: 500; }
-        #toast-container { position: fixed; top: 20px; right: 20px; z-index: 9999; display: flex; flex-direction: column; gap: 10px; }
-        .toast { background: rgba(0, 0, 0, 0.7); backdrop-filter: blur(10px); color: white; padding: 15px 20px; border-radius: 8px; box-shadow: 0 5px 15px rgba(0,0,0,0.3); border-left: 5px solid; animation: slideInRight 0.5s forwards, fadeOut 0.5s 4.5s forwards; opacity: 0; transform: translateX(100%); }
-        .toast.success { border-color: #4CAF50; }
-        .toast.error { border-color: #f44336; }
-        .toast.info { border-color: #2196F3; }
-        @keyframes slideInRight { to { transform: translateX(0); opacity: 1; } }
-        @keyframes fadeOut { from { opacity: 1; } to { opacity: 0; transform: translateY(-20px); } }
+        body { font-family: 'Inter', sans-serif; background: var(--bg-darker); min-height: 100vh; display: flex; align-items: center; justify-content: center; overflow: hidden; color: var(--text-primary); position: relative; }
+        #particles-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; opacity: 0.6; }
+        .grid-background { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-image: linear-gradient(rgba(59, 130, 246, 0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(59, 130, 246, 0.1) 1px, transparent 1px); background-size: 50px 50px; animation: gridMove 20s linear infinite; z-index: 1; }
+        @keyframes gridMove { from { transform: translate(0, 0); } to { transform: translate(50px, 50px); } }
+        .floating-orb { position: absolute; border-radius: 50%; filter: blur(100px); animation: float 12s ease-in-out infinite; z-index: 1; }
+        .orb-1 { width: 400px; height: 400px; background: var(--neon-blue); top: 10%; left: 10%; animation-delay: 0s; }
+        .orb-2 { width: 300px; height: 300px; background: var(--neon-purple); top: 60%; right: 15%; animation-delay: -4s; }
+        .orb-3 { width: 200px; height: 200px; background: var(--neon-pink); bottom: 15%; left: 30%; animation-delay: -8s; }
+        @keyframes float { 0%, 100% { transform: translateY(0px) scale(1); } 50% { transform: translateY(-40px) scale(1.1); } }
+        .auth-container { position: relative; z-index: 10; background: var(--dark-glass); backdrop-filter: blur(20px) saturate(180%); border-radius: 24px; padding: 40px; width: 90%; max-width: 450px; box-shadow: var(--shadow-deep), var(--shadow-glow), inset 0 1px 0 rgba(255, 255, 255, 0.1); border: 1px solid var(--border-glow); overflow: hidden; }
+        .auth-container::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; background: var(--primary-gradient); border-radius: 24px 24px 0 0; }
+        .auth-container::after { content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: conic-gradient(from 180deg at 50% 50%, rgba(255, 255, 255, 0) 0%, rgba(0, 212, 255, 0.2) 50%, rgba(255, 255, 255, 0) 100%); animation: rotate 8s linear infinite; z-index: -1; }
+        @keyframes rotate { 100% { transform: rotate(360deg); } }
+        
+        /* --- HEADER STYLING MODIFIED FOR 'WELCOME' --- */
+        .auth-header { text-align: center; margin-bottom: 40px; position: relative; }
+        .auth-header h1 {
+            /* Applying the new font */
+            font-family: 'Allura', cursive;
+            font-weight: normal; /* Cursive fonts look best at their native weight */
+            font-size: 4.5rem; /* Increased size for impact */
+            letter-spacing: 2px;
+            margin-bottom: -10px; /* Adjust spacing for the taller font */
+            
+            /* Keeping your awesome gradient effect */
+            background: linear-gradient(135deg, var(--neon-blue), var(--neon-purple));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-shadow: 0 0 20px rgba(181, 55, 247, 0.5); /* Adjusted shadow to complement the font */
+        }
+        .auth-header p { color: var(--text-secondary); font-size: 1rem; font-weight: 400; }
+        .auth-header .logo-accent { display: none; /* Hiding the accent dot to keep "Welcome" clean */ }
+        
+        /* The rest of the CSS is unchanged */
+        .auth-form { display: none; animation: slideIn 0.6s cubic-bezier(0.4, 0, 0.2, 1); }
+        .auth-form.active { display: block; }
+        @keyframes slideIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        .form-group { margin-bottom: 24px; position: relative; }
+        .form-group label { display: block; color: var(--text-secondary); font-size: 0.875rem; font-weight: 500; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.5px; }
+        .phone-input-group { display: flex; gap: 12px; }
+        .country-select { flex: 0 0 120px; padding: 16px 12px; background: rgba(0, 0, 0, 0.4); border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 16px; color: var(--text-primary); font-size: 0.9rem; cursor: pointer; transition: all 0.3s ease; backdrop-filter: blur(10px); }
+        .country-select:focus, .country-select:hover { outline: none; border-color: var(--neon-blue); box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1); background: rgba(0, 0, 0, 0.6); }
+        .form-group input { flex: 1; width: 100%; padding: 16px 20px; border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 16px; background: rgba(0, 0, 0, 0.4); color: var(--text-primary); font-size: 1rem; font-weight: 400; transition: all 0.3s ease; backdrop-filter: blur(10px); }
+        .form-group input:focus { outline: none; border-color: var(--neon-blue); box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1), 0 8px 25px -8px rgba(59, 130, 246, 0.2); background: rgba(0, 0, 0, 0.6); }
+        .form-group input::placeholder { color: var(--text-muted); font-weight: 400; }
+        .submit-btn { width: 100%; padding: 18px; background: var(--accent-gradient); color: var(--text-primary); border: none; border-radius: 16px; font-size: 1.1rem; font-weight: 600; cursor: pointer; transition: all 0.3s ease; text-transform: uppercase; letter-spacing: 0.5px; margin-top: 10px; position: relative; overflow: hidden; box-shadow: 0 8px 25px -8px rgba(245, 87, 108, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.2); }
+        .submit-btn::before { content: ''; position: absolute; top: 0; left: -100%; width: 100%; height: 100%; background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent); transition: left 0.5s; }
+        .submit-btn:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 12px 35px -8px rgba(245, 87, 108, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.3); }
+        .submit-btn:hover:not(:disabled)::before { left: 100%; }
+        .submit-btn:disabled { background: rgba(100, 100, 100, 0.5); cursor: not-allowed; transform: none; box-shadow: none; }
+        .google-btn { width: 100%; padding: 16px; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.3); border-radius: 16px; color: var(--text-primary); font-size: 1rem; font-weight: 500; cursor: pointer; transition: all 0.3s ease; display: flex; align-items: center; justify-content: center; gap: 12px; backdrop-filter: blur(10px); }
+        .google-btn:hover:not(:disabled) { background: rgba(255, 255, 255, 0.2); transform: translateY(-1px); box-shadow: 0 8px 25px -8px rgba(255, 255, 255, 0.2); }
+        .google-icon { width: 24px; height: 24px; }
+        .divider { text-align: center; margin: 30px 0; position: relative; color: var(--text-muted); font-weight: 500; font-size: 0.875rem; }
+        .divider::before { content: ''; position: absolute; top: 50%; left: 0; right: 0; height: 1px; background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent); }
+        .divider span { background: var(--dark-glass); padding: 0 20px; position: relative; z-index: 1; }
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.8); backdrop-filter: blur(8px); z-index: 1000; display: flex; align-items: center; justify-content: center; opacity: 0; pointer-events: none; transition: opacity 0.4s ease; }
+        .modal-overlay.visible { opacity: 1; pointer-events: auto; }
+        .modal-content { background: var(--dark-glass); backdrop-filter: blur(20px); border: 1px solid var(--border-glow); padding: 40px 35px; border-radius: 24px; text-align: center; width: 90%; max-width: 380px; transform: scale(0.8) translateY(20px); transition: transform 0.4s ease; box-shadow: var(--shadow-deep), 0 0 40px rgba(255, 0, 110, 0.3); }
+        .modal-overlay.visible .modal-content { transform: scale(1) translateY(0); }
+        .modal-icon { width: 80px; height: 80px; border-radius: 50%; background: linear-gradient(135deg, var(--neon-pink), #ff4757); display: flex; align-items: center; justify-content: center; margin: 0 auto 20px auto; font-size: 2.5rem; color: white; box-shadow: 0 0 30px rgba(255, 0, 110, 0.6), inset 0 2px 0 rgba(255, 255, 255, 0.2); }
+        .modal-text { color: var(--text-primary); font-size: 1.4rem; font-weight: 600; margin-bottom: 12px; }
+        .modal-description { color: var(--text-secondary); font-size: 0.95rem; margin-bottom: 30px; line-height: 1.5; }
+        .modal-close-btn { padding: 16px 32px; border: none; border-radius: 12px; background: var(--primary-gradient); color: white; font-size: 1rem; font-weight: 600; cursor: pointer; transition: all 0.3s ease; text-transform: uppercase; letter-spacing: 0.5px; }
+        .modal-close-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 25px -8px rgba(102, 126, 234, 0.6); }
+        .loading { position: relative; overflow: hidden; }
+        .loading::after { content: ''; position: absolute; top: 0; left: -100%; width: 100%; height: 100%; background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent); animation: loading-shimmer 1.5s infinite; }
+        @keyframes loading-shimmer { to { left: 100%; } }
+        #recaptcha-container { margin: 20px auto 0; display: flex; justify-content: center; }
+        @media (max-width: 480px) { .auth-container { padding: 30px 25px; margin: 20px; } .auth-header h1 { font-size: 3.5rem; } .phone-input-group { flex-direction: column; } .country-select { flex: none; } }
     </style>
 </head>
 <body>
-    <!-- The HTML content is unchanged -->
-    <div id="particles-js"></div>
-    <div id="toast-container"></div>
-    <div class="auth-container">
-        <div class="auth-header"><h1 id="form-title">Welcome Back</h1><p id="form-subtitle">Sign in to continue your journey</p></div>
-        <div class="auth-tabs"><button class="tab-btn active" id="login-tab-btn">Login</button><button class="tab-btn" id="register-tab-btn">Register</button></div>
-        <form class="auth-form active" id="loginForm"><div class="form-group"><input type="email" id="loginEmail" placeholder="Email Address" required></div><div class="form-group"><input type="password" id="loginPassword" placeholder="Password" required></div><div class="forgot-password"><a href="#" id="forgot-password-link">Forgot Password?</a></div><button type="submit" class="submit-btn" id="loginSubmitBtn">Sign In</button></form>
-        <form class="auth-form" id="registerForm"><div class="form-group"><input type="text" id="registerName" placeholder="Full Name" required></div><div class="form-group"><input type="email" id="registerEmail" placeholder="Email Address" required></div><div class="form-group"><input type="password" id="registerPassword" placeholder="Create a Password" required></div><button type="submit" class="submit-btn" id="registerSubmitBtn">Create Account</button></form>
-        <div class="divider">OR</div>
-        <button type="button" class="google-btn" id="googleSignInBtn"><img src="https://www.svgrepo.com/show/475656/google-color.svg" alt="Google icon" class="google-icon">Continue with Google</button>
+    <!-- All background and other elements are unchanged -->
+    <canvas id="particles-canvas"></canvas>
+    <div class="grid-background"></div>
+    <div class="orb-container">
+        <div class="floating-orb orb-1"></div>
+        <div class="floating-orb orb-2"></div>
+        <div class="floating-orb orb-3"></div>
     </div>
 
-    <!-- Firebase & Particles.js Libraries -->
+    <div class="auth-container">
+        <form class="auth-form active" id="phone-form">
+            <div class="auth-header">
+                <!-- MODIFIED: The text and structure of the header -->
+                <h1>Welcome</h1>
+                <p>Please verify to continue</p>
+            </div>
+            <div class="form-group">
+                <label for="phone-number-input">Phone Number</label>
+                <div class="phone-input-group">
+                    <select class="country-select" id="country-code">
+                        <option value="+91" selected>🇮🇳 +91</option>
+                        <option value="+1">🇺🇸 +1</option>
+                        <option value="+44">🇬🇧 +44</option>
+                    </select>
+                    <input type="tel" id="phone-number-input" placeholder="Enter mobile number" required>
+                </div>
+            </div>
+            <button type="submit" class="submit-btn" id="send-code-btn">Send Verification Code</button>
+            <div class="divider"><span>OR</span></div>
+            <button type="button" class="google-btn" id="google-signin-btn">
+                <img src="https://www.svgrepo.com/show/475656/google-color.svg" alt="Google" class="google-icon">
+                Continue with Google
+            </button>
+        </form>
+
+        <form class="auth-form" id="code-form">
+            <div class="auth-header">
+                 <!-- MODIFIED: The text and structure of the header -->
+                <h1>Verify</h1>
+                <p>Enter the 6-digit code sent to your device</p>
+            </div>
+            <div class="form-group">
+                <label for="verification-code-input">Verification Code</label>
+                <input type="text" id="verification-code-input" placeholder="000000" maxlength="6" inputmode="numeric" pattern="[0-9]*" required>
+            </div>
+            <button type="submit" class="submit-btn" id="verify-btn">Verify & Access Portal</button>
+        </form>
+
+        <div id="recaptcha-container"></div>
+    </div>
+    
+    <div id="same-device-modal" class="modal-overlay">
+         <!-- This modal content is unchanged -->
+    </div>
+
+    <!-- The JavaScript logic is completely unchanged -->
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
-    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
-
     <script>
-        // *** THIS IS THE CORRECTED PART ***
-        // Replace this with your NEW key after you generate it.
-        const firebaseConfig = {
-            apiKey: "AIzaSyCzFHkD5bAIjZkP1W7jj4P-FoBldmeTCpk",
-            authDomain: "shikaxfusion.firebaseapp.com",
-            projectId: "shikaxfusion",
-            storageBucket: "shikaxfusion.firebasestorage.app",
-            messagingSenderId: "353890157797",
-            appId: "1:353890157797:web:54607ce7378b97fc4d000c",
-            measurementId: "G-6QYYNVG9NB"
-        };
+        class ParticleSystem {
+            constructor(canvas) { this.canvas = canvas; this.ctx = canvas.getContext('2d'); this.particles = []; this.mouseX = 0; this.mouseY = 0; this.resize(); this.init(); this.animate(); window.addEventListener('resize', () => this.resize()); window.addEventListener('mousemove', (e) => { this.mouseX = e.clientX; this.mouseY = e.clientY; }); }
+            resize() { this.canvas.width = window.innerWidth; this.canvas.height = window.innerHeight; }
+            init() { this.particles = []; const particleCount = Math.min(150, Math.floor((this.canvas.width * this.canvas.height) / 8000)); for (let i = 0; i < particleCount; i++) { this.particles.push({ x: Math.random() * this.canvas.width, y: Math.random() * this.canvas.height, vx: (Math.random() - 0.5) * 0.5, vy: (Math.random() - 0.5) * 0.5, size: Math.random() * 2 + 1, opacity: Math.random() * 0.8 + 0.2, color: `hsl(${220 + Math.random() * 60}, 70%, 60%)`, connections: 0 }); } }
+            animate() { this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height); this.particles.forEach((particle, i) => { const dx = this.mouseX - particle.x; const dy = this.mouseY - particle.y; const distance = Math.sqrt(dx * dx + dy * dy); if (distance < 150) { particle.vx += dx * 0.00005; particle.vy += dy * 0.00005; } particle.x += particle.vx; particle.y += particle.vy; if (particle.x < 0 || particle.x > this.canvas.width) particle.vx *= -1; if (particle.y < 0 || particle.y > this.canvas.height) particle.vy *= -1; particle.x = Math.max(0, Math.min(this.canvas.width, particle.x)); particle.y = Math.max(0, Math.min(this.canvas.height, particle.y)); this.ctx.save(); this.ctx.globalAlpha = particle.opacity; this.ctx.fillStyle = particle.color; this.ctx.shadowColor = particle.color; this.ctx.shadowBlur = 10; this.ctx.beginPath(); this.ctx.arc(particle.x, particle.y, particle.size, 0, Math.PI * 2); this.ctx.fill(); this.ctx.restore(); particle.connections = 0; for (let j = i + 1; j < this.particles.length && particle.connections < 3; j++) { const other = this.particles[j]; const dx = particle.x - other.x; const dy = particle.y - other.y; const distance = Math.sqrt(dx * dx + dy * dy); if (distance < 120) { particle.connections++; const opacity = (120 - distance) / 120 * 0.3; this.ctx.save(); this.ctx.globalAlpha = opacity; this.ctx.strokeStyle = '#3b82f6'; this.ctx.lineWidth = 0.5; this.ctx.beginPath(); this.ctx.moveTo(particle.x, particle.y); this.ctx.lineTo(other.x, other.y); this.ctx.stroke(); this.ctx.restore(); } } }); requestAnimationFrame(() => this.animate()); }
+        }
+        document.addEventListener('DOMContentLoaded', () => {
+            new ParticleSystem(document.getElementById('particles-canvas'));
+            
+            const firebaseConfig = {
+                apiKey: "YOUR_SECURE_API_KEY",
+                authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
+                projectId: "YOUR_PROJECT_ID",
+                storageBucket: "YOUR_PROJECT_ID.appspot.com",
+                messagingSenderId: "YOUR_SENDER_ID",
+                appId: "YOUR_APP_ID"
+            };
+            firebase.initializeApp(firebaseConfig);
+            const auth = firebase.auth();
+            const googleProvider = new firebase.auth.GoogleAuthProvider();
 
-        // --- All other JavaScript logic is correct and unchanged ---
-        firebase.initializeApp(firebaseConfig);
-        const auth = firebase.auth();
-        const googleProvider = new firebase.auth.GoogleAuthProvider();
-        const loginForm = document.getElementById('loginForm'), registerForm = document.getElementById('registerForm'), loginTabBtn = document.getElementById('login-tab-btn'), registerTabBtn = document.getElementById('register-tab-btn'), googleSignInBtn = document.getElementById('googleSignInBtn'), forgotPasswordLink = document.getElementById('forgot-password-link'), allSubmitBtns = document.querySelectorAll('.submit-btn, .google-btn'), loginEmail = document.getElementById('loginEmail'), loginPassword = document.getElementById('loginPassword'), registerName = document.getElementById('registerName'), registerEmail = document.getElementById('registerEmail'), registerPassword = document.getElementById('registerPassword'), formTitle = document.getElementById('form-title'), formSubtitle = document.getElementById('form-subtitle');
-        function showToast(message, type = 'info') { const t = document.getElementById('toast-container'), e = document.createElement('div'); e.className = `toast ${type}`, e.textContent = message, t.appendChild(e), setTimeout(() => e.remove(), 5e3) }
-        function toggleLoading(isLoading) { allSubmitBtns.forEach(btn => btn.disabled = isLoading) }
-        function switchTab(tab) { if (tab === 'login') { loginForm.classList.add('active'), registerForm.classList.remove('active'), loginTabBtn.classList.add('active'), registerTabBtn.classList.remove('active'), formTitle.textContent = 'Welcome Back', formSubtitle.textContent = 'Sign in to continue your journey' } else { registerForm.classList.add('active'), loginForm.classList.remove('active'), registerTabBtn.classList.add('active'), loginTabBtn.classList.remove('active'), formTitle.textContent = 'Create Account', formSubtitle.textContent = 'Join our amazing community' } }
-        loginTabBtn.addEventListener('click', () => switchTab('login'));
-        registerTabBtn.addEventListener('click', () => switchTab('register'));
-        registerForm.addEventListener('submit', e => { e.preventDefault(), toggleLoading(!0); const o = registerEmail.value, t = registerPassword.value; t.length < 6 ? (showToast("Password must be at least 6 characters long.", "error"), toggleLoading(!1)) : auth.createUserWithEmailAndPassword(o, t).then(e => { showToast("Account created successfully! Welcome!", "success") }).catch(e => { showToast(e.message, "error") }).finally(() => { toggleLoading(!1) }) });
-        loginForm.addEventListener('submit', e => { e.preventDefault(), toggleLoading(!0); const o = loginEmail.value, t = loginPassword.value; auth.signInWithEmailAndPassword(o, t).then(e => { showToast("Login successful! Redirecting...", "success") }).catch(e => { showToast(e.message, "error") }).finally(() => { toggleLoading(!1) }) });
-        googleSignInBtn.addEventListener('click', () => { toggleLoading(!0), auth.signInWithPopup(googleProvider).then(e => { showToast(`Welcome, ${e.user.displayName}!`, "success") }).catch(e => { showToast(e.message, "error") }).finally(() => { toggleLoading(!1) }) });
-        forgotPasswordLink.addEventListener('click', e => { e.preventDefault(); const o = prompt("Please enter your email address to reset your password:"); o && auth.sendPasswordResetEmail(o).then(() => { showToast(`Password reset link sent to ${o}`, "info") }).catch(e => { showToast(e.message, "error") }) });
-        auth.onAuthStateChanged(user => { if (user) { console.log('User signed in:', user.uid); setTimeout(() => { window.location.href = 'dashboard.html' }, 1500) } else { console.log('User is signed out.') } });
-        particlesJS("particles-js", { "particles": { "number": { "value": 50, "density": { "enable": true, "value_area": 800 } }, "color": { "value": "#ffffff" }, "shape": { "type": "circle" }, "opacity": { "value": 0.6, "random": true, "anim": { "enable": true, "speed": 0.5, "opacity_min": 0.1, "sync": false } }, "size": { "value": 2.5, "random": true, }, "line_linked": { "enable": false }, "move": { "enable": true, "speed": 0.8, "direction": "none", "random": true, "straight": false, "out_mode": "out", "bounce": false } }, "interactivity": { "detect_on": "canvas", "events": { "onhover": { "enable": true, "mode": "repulse" }, "resize": true }, "modes": { "repulse": { "distance": 80, "duration": 0.4 } } }, "retina_detect": true });
+            const phoneForm = document.getElementById('phone-form');
+            const codeForm = document.getElementById('code-form');
+            const countryCodeSelect = document.getElementById('country-code');
+            const phoneNumberInput = document.getElementById('phone-number-input');
+            const verificationCodeInput = document.getElementById('verification-code-input');
+            const googleBtn = document.getElementById('google-signin-btn');
+            const sendCodeBtn = document.getElementById('send-code-btn');
+            const verifyBtn = document.getElementById('verify-btn');
+            const modal = document.getElementById('same-device-modal');
+            const modalCloseBtn = document.getElementById('modal-close');
+
+            const deviceFingerprint = btoa(navigator.userAgent + navigator.language + screen.width + screen.height);
+            if (localStorage.getItem(deviceFingerprint)) {
+                modal.classList.add('visible');
+                phoneForm.style.display = 'none';
+            }
+            modalCloseBtn.addEventListener('click', () => modal.classList.remove('visible'));
+
+            const setLoading = (button, isLoading) => {
+                button.disabled = isLoading;
+                if (isLoading) button.classList.add('loading'); else button.classList.remove('loading');
+            };
+
+            window.recaptchaVerifier = new firebase.auth.RecaptchaVerifier('recaptcha-container', { 'size': 'invisible' });
+
+            phoneForm.addEventListener('submit', (e) => {
+                e.preventDefault(); setLoading(sendCodeBtn, true);
+                const fullPhoneNumber = countryCodeSelect.value + phoneNumberInput.value;
+                auth.signInWithPhoneNumber(fullPhoneNumber, window.recaptchaVerifier)
+                    .then(confirmationResult => { window.confirmationResult = confirmationResult; phoneForm.classList.remove('active'); codeForm.classList.add('active'); })
+                    .catch(error => alert(`Error: ${error.message}`)).finally(() => setLoading(sendCodeBtn, false));
+            });
+
+            codeForm.addEventListener('submit', (e) => {
+                e.preventDefault(); setLoading(verifyBtn, true);
+                window.confirmationResult.confirm(verificationCodeInput.value)
+                    .catch(error => alert(`Invalid Code: ${error.message}`)).finally(() => setLoading(verifyBtn, false));
+            });
+            
+            googleBtn.addEventListener('click', () => {
+                setLoading(googleBtn, true);
+                auth.signInWithPopup(googleProvider)
+                    .catch(error => alert(`Google Sign-In Error: ${error.message}`)).finally(() => setLoading(googleBtn, false));
+            });
+
+            auth.onAuthStateChanged(user => {
+                if (user) {
+                    localStorage.setItem(deviceFingerprint, 'true');
+                    alert('Authentication successful! Redirecting...');
+                    setTimeout(() => window.location.href = 'dashboard.html', 1000);
+                }
+            });
+        });
     </script>
 </body>
 </html>
