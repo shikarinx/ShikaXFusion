@@ -4,100 +4,58 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard - Test</title>
+    <!-- All CSS remains the same -->
     <style>
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            background-color: #f0f2f5;
-            color: #333;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            min-height: 100vh;
-            margin: 0;
-            text-align: center;
-        }
-        .container {
-            background: white;
-            padding: 40px;
-            border-radius: 12px;
-            box-shadow: 0 8px 30px rgba(0,0,0,0.1);
-        }
-        h1 {
-            color: #2c3e50;
-            margin-bottom: 10px;
-        }
-        p {
-            font-size: 1.2rem;
-            color: #7f8c8d;
-            margin-bottom: 30px;
-        }
-        #user-info {
-            font-weight: bold;
-            color: #2980b9;
-        }
-        #logout-btn {
-            background-color: #e74c3c;
-            color: white;
-            border: none;
-            padding: 12px 25px;
-            border-radius: 8px;
-            font-size: 1rem;
-            font-weight: bold;
-            cursor: pointer;
-            transition: background-color 0.2s;
-        }
-        #logout-btn:hover {
-            background-color: #c0392b;
-        }
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background-color: #f0f2f5; color: #333; display: flex; align-items: center; justify-content: center; min-height: 100vh; margin: 0; text-align: center; }
+        .container { background: white; padding: 40px; border-radius: 12px; box-shadow: 0 8px 30px rgba(0,0,0,0.1); }
+        h1 { color: #2c3e50; margin-bottom: 10px; }
+        p { font-size: 1.2rem; color: #7f8c8d; margin-bottom: 30px; }
+        #user-info { font-weight: bold; color: #2980b9; }
+        #logout-btn { background-color: #e74c3c; color: white; border: none; padding: 12px 25px; border-radius: 8px; font-size: 1rem; font-weight: bold; cursor: pointer; transition: background-color 0.2s; }
+        #logout-btn:hover { background-color: #c0392b; }
     </style>
 </head>
 <body>
-
     <div class="container">
         <h1>✅ Success!</h1>
         <p>You have been registered/logged in. <br> Your email is: <span id="user-info">loading...</span></p>
         <button id="logout-btn">Logout</button>
     </div>
 
-    <!-- You MUST include Firebase SDKs on this page too -->
+    <!-- Firebase SDKs -->
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
 
     <script>
-        // --- IMPORTANT: Use the SAME Firebase config from your auth.html ---
+        // *** THIS IS THE CORRECTED PART ***
+        // Replace this with your NEW key after you generate it.
         const firebaseConfig = {
-          apiKey: "YOUR_NEW_API_KEY",
-          authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
-          projectId: "YOUR_PROJECT_ID",
-          storageBucket: "YOUR_PROJECT_ID.appspot.com",
-          messagingSenderId: "YOUR_SENDER_ID",
-          appId: "YOUR_APP_ID"
+            apiKey: "AIzaSyCzFHkD5bAIjZkP1W7jj4P-FoBldmeTCpk",
+            authDomain: "shikaxfusion.firebaseapp.com",
+            projectId: "shikaxfusion",
+            storageBucket: "shikaxfusion.firebasestorage.app",
+            messagingSenderId: "353890157797",
+            appId: "1:353890157797:web:54607ce7378b97fc4d000c",
+            measurementId: "G-6QYYNVG9NB"
         };
         
-        // --- 1. INITIALIZE FIREBASE & GET REFERENCES ---
+        // --- All other JavaScript logic is correct and unchanged ---
         firebase.initializeApp(firebaseConfig);
         const auth = firebase.auth();
         const userInfoSpan = document.getElementById('user-info');
         const logoutBtn = document.getElementById('logout-btn');
 
-        // --- 2. AUTH GUARD: PROTECT THIS PAGE ---
         auth.onAuthStateChanged(user => {
             if (user) {
-                // User is signed in. Display their email.
-                console.log('Dashboard access granted for:', user.email);
                 userInfoSpan.textContent = user.email;
             } else {
-                // User is not signed in. Redirect them back to the auth page.
-                console.log('Access denied. Redirecting to auth page.');
-                window.location.replace('auth.html'); // Use .replace to prevent "back" button
+                // If user is not logged in, send them back to the auth page.
+                window.location.replace('auth.html'); 
             }
         });
 
-        // --- 3. LOGOUT BUTTON FUNCTIONALITY ---
         logoutBtn.addEventListener('click', () => {
             auth.signOut().then(() => {
-                // Sign-out successful.
-                // The onAuthStateChanged listener above will automatically handle the redirect.
                 console.log('User signed out.');
             }).catch(error => {
                 console.error('Logout Error:', error);
