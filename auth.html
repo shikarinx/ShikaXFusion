@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>FusionAuth - Welcome</title>
     <style>
+        /* CSS is unchanged */
         @import url('https://fonts.googleapis.com/css2?family=Allura&display=swap');
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
         
@@ -30,11 +31,9 @@
         .auth-form.active { display: block; }
         @keyframes slideIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
         .form-group { margin-bottom: 24px; position: relative; }
-        /* MODIFIED: Removed text-transform */
         .form-group label { display: block; font-family: 'Allura', cursive; font-size: 1.5rem; color: var(--text-secondary); margin-bottom: 8px; letter-spacing: 0.5px; }
         .form-group input { flex: 1; width: 100%; padding: 16px 20px; border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 16px; background: rgba(0, 0, 0, 0.4); color: var(--text-primary); font-family: 'Inter', sans-serif; font-size: 1rem; font-weight: 400; transition: all 0.3s ease; backdrop-filter: blur(10px); }
         .form-group input:focus { outline: none; border-color: var(--neon-blue); box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1), 0 8px 25px -8px rgba(59, 130, 246, 0.2); background: rgba(0, 0, 0, 0.6); }
-        /* MODIFIED: Removed text-transform */
         .submit-btn { width: 100%; padding: 18px; background: var(--accent-gradient); color: var(--text-primary); border: none; border-radius: 16px; font-family: 'Allura', cursive; font-size: 1.5rem; font-weight: 600; cursor: pointer; transition: all 0.3s ease; letter-spacing: 0.5px; margin-top: 10px; position: relative; overflow: hidden; box-shadow: 0 8px 25px -8px rgba(245, 87, 108, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.2); }
         .submit-btn:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 12px 35px -8px rgba(245, 87, 108, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.3); }
         .submit-btn:disabled { background: rgba(100, 100, 100, 0.5); cursor: not-allowed; }
@@ -68,8 +67,11 @@
     <div class="auth-container">
         <form class="auth-form active" id="register-form">
             <div class="auth-header"><h1>Welcome</h1><p>Create an account to continue</p></div>
-            <!-- Text below is now Title Case -->
             <div class="form-group"><label for="register-name">Full Name</label><input type="text" id="register-name" placeholder="Enter your name" required></div>
+            
+            <!-- ADDED: Phone number input field -->
+            <div class="form-group"><label for="register-number">Phone Number</label><input type="tel" id="register-number" placeholder="Enter your phone number" required></div>
+            
             <div class="form-group"><label for="register-email">Email Address</label><input type="email" id="register-email" placeholder="you@example.com" required></div>
             <div class="form-group"><label for="register-password">Password</label><input type="password" id="register-password" placeholder="••••••••" required></div>
             <button type="submit" class="submit-btn" id="register-btn">Create Account</button>
@@ -80,7 +82,6 @@
 
         <form class="auth-form" id="login-form">
             <div class="auth-header"><h1>Welcome Back</h1><p>Sign in to your account</p></div>
-            <!-- Text below is now Title Case -->
             <div class="form-group"><label for="login-email">Email Address</label><input type="email" id="login-email" placeholder="you@example.com" required></div>
             <div class="form-group"><label for="login-password">Password</label><input type="password" id="login-password" placeholder="••••••••" required></div>
             <button type="submit" class="submit-btn" id="login-btn">Sign In</button>
@@ -92,8 +93,11 @@
     
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+    <!-- ADDED: Firestore SDK is required to save user data -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+    
     <script>
-        // Unchanged JS from previous version
+        // Particle System and Device Detector classes are unchanged...
         class ParticleSystem { constructor(canvas) { this.canvas = canvas; this.ctx = canvas.getContext('2d'); this.particles = []; this.mouseX = 0; this.mouseY = 0; this.resize(); this.init(); this.animate(); window.addEventListener('resize', () => this.resize()); window.addEventListener('mousemove', (e) => { this.mouseX = e.clientX; this.mouseY = e.clientY; }); } resize() { this.canvas.width = window.innerWidth; this.canvas.height = window.innerHeight; } init() { this.particles = []; const particleCount = Math.min(150, Math.floor((this.canvas.width * this.canvas.height) / 8000)); for (let i = 0; i < particleCount; i++) { this.particles.push({ x: Math.random() * this.canvas.width, y: Math.random() * this.canvas.height, vx: (Math.random() - 0.5) * 0.5, vy: (Math.random() - 0.5) * 0.5, size: Math.random() * 2 + 1, opacity: Math.random() * 0.8 + 0.2, color: `hsl(${220 + Math.random() * 60}, 70%, 60%)`, connections: 0 }); } } animate() { this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height); this.particles.forEach((particle, i) => { const dx = this.mouseX - particle.x; const dy = this.mouseY - particle.y; const distance = Math.sqrt(dx * dx + dy * dy); if (distance < 150) { particle.vx += dx * 0.00005; particle.vy += dy * 0.00005; } particle.x += particle.vx; particle.y += particle.vy; if (particle.x < 0 || particle.x > this.canvas.width) particle.vx *= -1; if (particle.y < 0 || particle.y > this.canvas.height) particle.vy *= -1; this.ctx.save(); this.ctx.globalAlpha = particle.opacity; this.ctx.fillStyle = particle.color; this.ctx.shadowColor = particle.color; this.ctx.shadowBlur = 10; this.ctx.beginPath(); this.ctx.arc(particle.x, particle.y, particle.size, 0, Math.PI * 2); this.ctx.fill(); this.ctx.restore(); particle.connections = 0; for (let j = i + 1; j < this.particles.length && particle.connections < 3; j++) { const other = this.particles[j]; const dx = particle.x - other.x; const dy = particle.y - other.y; const distance = Math.sqrt(dx * dx + dy * dy); if (distance < 120) { particle.connections++; const opacity = (120 - distance) / 120 * 0.3; this.ctx.save(); this.ctx.globalAlpha = opacity; this.ctx.strokeStyle = '#3b82f6'; this.ctx.lineWidth = 0.5; this.ctx.beginPath(); this.ctx.moveTo(particle.x, particle.y); this.ctx.lineTo(other.x, other.y); this.ctx.stroke(); this.ctx.restore(); } } }); requestAnimationFrame(() => this.animate()); } }
         class DeviceDetector { constructor() { this.fingerprint = null; this.generateFingerprint(); } generateFingerprint() { const fingerprintData = [ navigator.userAgent, navigator.language, screen.colorDepth, `${screen.width}x${screen.height}`, new Date().getTimezoneOffset(), navigator.hardwareConcurrency, navigator.platform ]; const fingerprintString = fingerprintData.join('||'); let hash = 0; for (let i = 0; i < fingerprintString.length; i++) { const char = fingerprintString.charCodeAt(i); hash = ((hash << 5) - hash) + char; hash = hash & hash; } this.fingerprint = `fusion_device_${hash}`; } getFingerprint() { return this.fingerprint; } }
 
@@ -112,8 +116,10 @@
             };
             firebase.initializeApp(firebaseConfig);
             const auth = firebase.auth();
+            const db = firebase.firestore(); // MODIFIED: Initialize Firestore
             const googleProvider = new firebase.auth.GoogleAuthProvider();
 
+            // Element references are unchanged
             const registerForm = document.getElementById('register-form');
             const loginForm = document.getElementById('login-form');
             const showLoginLink = document.getElementById('show-login');
@@ -132,21 +138,39 @@
 
             showLoginLink.addEventListener('click', (e) => { e.preventDefault(); registerForm.classList.remove('active'); loginForm.classList.add('active'); });
             showRegisterLink.addEventListener('click', (e) => { e.preventDefault(); loginForm.classList.remove('active'); registerForm.classList.add('active'); });
-
+            
+            // MODIFIED: Registration logic now saves to Firestore
             registerForm.addEventListener('submit', (e) => {
                 e.preventDefault();
                 setLoading(true, 'Creating Account...');
                 const name = document.getElementById('register-name').value;
+                const number = document.getElementById('register-number').value; // Get number
                 const email = document.getElementById('register-email').value;
                 const password = document.getElementById('register-password').value;
+                
                 auth.createUserWithEmailAndPassword(email, password)
-                    .then(userCredential => userCredential.user.updateProfile({ displayName: name }))
+                    .then(userCredential => {
+                        const user = userCredential.user;
+                        // Chain promises: first update auth profile, then create Firestore doc
+                        return user.updateProfile({
+                            displayName: name
+                        }).then(() => {
+                            return db.collection('users').doc(user.uid).set({
+                                balance: 0,
+                                phoneNumber: number, // Save the phone number
+                                history: [],
+                                avatarUrl: '/profile_dp1.png', // A default avatar
+                                createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                            });
+                        });
+                    })
                     .catch(error => {
                         alert(error.message);
                         setLoading(false);
                     });
             });
             
+            // Login form logic is unchanged
             loginForm.addEventListener('submit', (e) => {
                 e.preventDefault();
                 setLoading(true, 'Signing In...');
@@ -158,10 +182,29 @@
                         setLoading(false);
                     });
             });
-
+            
+            // MODIFIED: Google Sign-In now checks and creates a user document in Firestore
             const handleGoogleSignIn = () => {
                 setLoading(true, 'Waiting for Google...');
                 auth.signInWithPopup(googleProvider)
+                    .then((result) => {
+                        const user = result.user;
+                        const userRef = db.collection('users').doc(user.uid);
+
+                        // Check if the user document already exists
+                        return userRef.get().then(doc => {
+                            if (!doc.exists) {
+                                // If it doesn't exist, create it.
+                                return userRef.set({
+                                    balance: 0,
+                                    phoneNumber: user.phoneNumber || "", // Google may provide this, often empty
+                                    history: [],
+                                    avatarUrl: user.photoURL || '/profile_dp1.png', // Use Google photo if available
+                                    createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                                });
+                            }
+                        });
+                    })
                     .catch(error => {
                         alert(error.message);
                         setLoading(false);
@@ -169,12 +212,13 @@
             }
             document.getElementById('google-register-btn').addEventListener('click', handleGoogleSignIn);
             document.getElementById('google-login-btn').addEventListener('click', handleGoogleSignIn);
-
+            
+            // onAuthStateChanged logic is unchanged - it handles the final redirect
             auth.onAuthStateChanged(user => {
                 if (user) {
                     localStorage.setItem(deviceDetector.getFingerprint(), 'true');
                     setLoading(true, 'Success! Redirecting...');
-                    setTimeout(() => window.location.href = 'dashboard.html', 2000);
+                    setTimeout(() => window.location.href = 'dashboard.html', 1500); // slightly faster redirect
                 }
             });
         });
