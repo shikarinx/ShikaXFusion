@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Games | ShikaXFusion</title>
+    <link rel="stylesheet" href="main.css">
+</head>
+<body>
+    <canvas id="particles-canvas"></canvas>
+    <div class="grid-background"></div>
+    <div class="orb-container"><div class="floating-orb orb-1"></div><div class="floating-orb orb-2"></div></div>
+
+    <div class="app-container">
+        <!-- Page Header -->
+        <header class="dashboard-header">
+            <div class="header-left">🇮🇳 ₹0.00</div>
+            <div class="header-right">
+                <div class="brand-name">ShikaXFusion</div>
+                <div class="user-avatar" id="user-avatar-initial">...</div>
+            </div>
+        </header>
+
+        <!-- Main Content for Games -->
+        <main class="main-content">
+            <div class="section-header">
+                <h2>All Games</h2>
+            </div>
+
+            <!-- NEW: Grid container for all games -->
+            <div class="game-grid-container">
+                <!-- Example Game 1 -->
+                <div class="game-grid-card" style="background-image: url('https://img.poki.com/cdn-cgi/image/quality=78,width=600,height=600,fit=cover,f=auto/b19a845e69be20051147a41285497607.png')">
+                    <div class="card-overlay">
+                        <span class="game-title">Galaxy Runner</span>
+                        <div class="play-now-btn">Play Now</div>
+                    </div>
+                </div>
+                <!-- Example Game 2 -->
+                <div class="game-grid-card" style="background-image: url('https://i.ytimg.com/vi/tD8G-tC-k-8/maxresdefault.jpg')">
+                    <div class="card-overlay">
+                        <span class="game-title">Neon Racer</span>
+                        <div class="play-now-btn">Play Now</div>
+                    </div>
+                </div>
+                <!-- Example Game 3 -->
+                <div class="game-grid-card" style="background-image: url('https://img.poki.com/cdn-cgi/image/quality=78,width=600,height=600,fit=cover,f=auto/5e9259a4-a342-4217-9104-35222c6e6430.png')">
+                    <div class="card-overlay">
+                        <span class="game-title">Block Puzzle</span>
+                        <div class="play-now-btn">Play Now</div>
+                    </div>
+                </div>
+                <!-- Example Game 4 -->
+                <div class="game-grid-card" style="background-image: url('https://play-lh.googleusercontent.com/v7JWy5uf_DieyJru44S62tNy3ltw0xB39wX02G0eF1EMs0dG9c-2-C2sS_2s_i5sXQ')">
+                    <div class="card-overlay">
+                        <span class="game-title">Aqua Blitz</span>
+                        <div class="play-now-btn">Play Now</div>
+                    </div>
+                </div>
+                <!-- Add more games as needed -->
+            </div>
+        </main>
+        
+        <!-- Bottom Navigation: "Games" is now the active item -->
+        <nav class="bottom-nav">
+            <a href="dashboard.html" class="nav-item"><svg viewBox="0 0 24 24"><path class="icon-fill" d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg><span>Home</span></a>
+            <a href="tasks.html" class="nav-item"><svg viewBox="0 0 24 24"><path class="icon-fill" d="M20.5 4.5H4.6C3.7 4 3 4.7 3 5.6v12.8C3 19.3 3.7 20 4.6 20h12.8c.9 0 1.6-.7 1.6-1.6V5.6c0-.9-.7-1.6-1.6-1.6zM18 18H6V6h12v12zM9 15h6v-2H9v2zm0-3h6v-2H9v2zm0-3h6V7H9v2z"/></svg><span>Tasks</span></a>
+            <a href="rewards.html" class="nav-item"><svg viewBox="0 0 24 24"><path class="icon-fill" d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg><span>Rewards</span></a>
+            <a href="games.html" class="nav-item active"><svg viewBox="0 0 24 24"><path class="icon-fill" d="M21.58 16.09l-1.1-1.1c-.29-.29-.69-.47-1.12-.52a5.95 5.95 0 00-2.86-2.86c-.05-.43-.23-.83-.52-1.12l-1.1-1.1a1.6 1.6 0 00-2.24 0l-1.1 1.1c-.29.29-.47-.69-.52 1.12a5.95 5.95 0 00-2.86 2.86c-.05.43-.23-.83-.52-1.12l-1.1 1.1a1.6 1.6 0 000 2.24l1.1 1.1c.29.29.69.47 1.12.52a5.95 5.95 0 002.86 2.86c.43.05.83.23 1.12.52l1.1 1.1a1.6 1.6 0 002.24 0l1.1-1.1c.29-.29.47-.69-.52-1.12a5.95 5.95 0 002.86-2.86c.05-.43.23-.83-.52-1.12l1.1-1.1a1.6 1.6 0 000-2.24zM12 15a3 3 0 110-6 3 3 0 010 6z"/></svg><span>Games</span></a>
+            <a href="profile.html" class="nav-item"><svg viewBox="0 0 24 24"><path class="icon-fill" d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg><span>Profile</span></a>
+        </nav>
+    </div>
+
+    <!-- Firebase and Auth Scripts (Identical to other pages) -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+    <script>
+        let firebaseAuthReady = false;
+        document.addEventListener('DOMContentLoaded', () => {
+            // Particle system code is unchanged...
+            class ParticleSystem { constructor(canvas) { this.canvas = canvas; this.ctx = canvas.getContext('2d'); this.particles = []; this.resize(); this.init(); this.animate(); window.addEventListener('resize', () => this.resize()); } resize() { this.canvas.width = window.innerWidth; this.canvas.height = window.innerHeight; } init() { this.particles = []; const particleCount = 100; for (let i = 0; i < particleCount; i++) { this.particles.push({ x: Math.random() * this.canvas.width, y: Math.random() * this.canvas.height, vx: (Math.random() - 0.5) * 0.5, vy: (Math.random() - 0.5) * 0.5, size: Math.random() * 2 + 1, color: `hsl(${220 + Math.random() * 60}, 70%, 60%)` }); } } animate() { this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height); this.particles.forEach(p => { p.x += p.vx; p.y += p.vy; if (p.x < 0 || p.x > this.canvas.width) p.vx *= -1; if (p.y < 0 || p.y > this.canvas.height) p.vy *= -1; this.ctx.fillStyle = p.color; this.ctx.beginPath(); this.ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2); this.ctx.fill(); }); requestAnimationFrame(() => this.animate()); } }
+            new ParticleSystem(document.getElementById('particles-canvas'));
+            
+            const firebaseConfig = {
+                apiKey: "AIzaSyCzFHkD5bAIjZkP1W7jj4P-FoBldmeTCpk",
+                authDomain: "shikaxfusion.firebaseapp.com",
+                projectId: "shikaxfusion",
+                storageBucket: "shikaxfusion.appspot.com",
+                messagingSenderId: "353890157797",
+                appId: "1:353890157797:web:54607ce7378b97fc4d000c"
+            };
+            firebase.initializeApp(firebaseConfig);
+            const auth = firebase.auth();
+            
+            const avatarInitial = document.getElementById('user-avatar-initial');
+            
+            auth.onAuthStateChanged(user => {
+                firebaseAuthReady = true;
+                if (user) {
+                    const displayName = user.displayName || user.email;
+                    if (displayName) {
+                        avatarInitial.textContent = displayName.charAt(0).toUpperCase();
+                    } else {
+                        avatarInitial.textContent = 'U';
+                    }
+                } else {
+                    window.location.replace('auth.html');
+                }
+            });
+        });
+        
+        setTimeout(() => {
+            if (!firebaseAuthReady) {
+                 window.location.replace('auth.html');
+            }
+        }, 3000);
+    </script>
+</body>
+</html>

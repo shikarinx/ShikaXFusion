@@ -120,3 +120,60 @@ body {
 .task-reward { font-family: 'Inter', sans-serif; font-size: 0.85rem; color: var(--text-secondary); }
 .task-action { font-family: 'Inter', sans-serif; font-weight: 600; font-size: 0.9rem; padding: 8px 18px; background: var(--accent-gradient); border-radius: 10px; cursor: pointer; transition: transform 0.2s ease; }
 .task-action:hover { transform: scale(1.05); }
+/* --- NEW: Game Grid Styles (for games.html) --- */
+.game-grid-container {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr); /* Creates a 2-column grid */
+    gap: 15px; /* Space between grid items */
+    padding: 0 20px;
+}
+
+.game-grid-card {
+    height: 180px; /* Taller cards for the grid */
+    border-radius: 18px;
+    position: relative;
+    overflow: hidden;
+    cursor: pointer;
+    background-size: cover;
+    background-position: center;
+    border: 1px solid var(--card-border);
+    transition: transform 0.3s ease;
+}
+
+.game-grid-card:hover {
+    transform: scale(1.05);
+}
+
+.card-overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 10px;
+    background: linear-gradient(0deg, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0) 100%);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.game-title {
+    font-family: 'Inter', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.play-now-btn {
+    font-family: 'Inter', sans-serif;
+    font-size: 0.8rem;
+    font-weight: 500;
+    background: var(--neon-pink);
+    color: var(--text-primary);
+    padding: 6px 12px;
+    border-radius: 8px;
+    transition: background-color 0.2s;
+}
+
+.play-now-btn:hover {
+    background: #ff3d8b;
+}
