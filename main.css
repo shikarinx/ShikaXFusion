@@ -405,3 +405,49 @@ body {
 }```
 
 This sets up a very detailed and functional profile page. The last remaining page is **Rewards**. Let me know when you're ready to create it.
+/* --- Additions for Editable Profile --- */
+.info-form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    padding: 10px 0 20px 0;
+}
+
+.info-form label {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    font-weight: 500;
+}
+
+.info-input {
+    background: rgba(0,0,0,0.4);
+    border: 1px solid var(--card-border);
+    color: var(--text-primary);
+    padding: 12px;
+    border-radius: 10px;
+    font-family: 'Inter', sans-serif;
+    font-size: 1rem;
+    width: 100%;
+}
+
+.info-input:read-only {
+    background: rgba(0,0,0,0.2);
+    cursor: not-allowed;
+    color: var(--text-muted);
+}
+
+.save-changes-btn {
+    font-family: 'Inter', sans-serif;
+    border: none;
+    background: var(--accent-gradient);
+    color: white;
+    padding: 12px;
+    border-radius: 10px;
+    font-weight: 600;
+    cursor: pointer;
+    margin-top: 10px;
+    transition: transform 0.2s ease;
+}
+.save-changes-btn:hover {
+    transform: translateY(-2px);
+}
