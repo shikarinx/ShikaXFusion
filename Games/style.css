@@ -1,0 +1,130 @@
+/* MODIFIED: Complete redesign to match ShikaXFusion theme */
+:root {
+    --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    --accent-gradient: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+    --bg-darker: #020617;
+    --neon-blue: #00d4ff;
+    --neon-pink: #ff006e;
+    --neon-green: #39ff14;
+    --card-bg: rgba(20, 29, 58, 0.6);
+    --card-border: rgba(255, 255, 255, 0.15);
+    --text-primary: #ffffff;
+    --text-secondary: rgba(255, 255, 255, 0.7);
+    --font-heading: 'Allura', cursive;
+    --font-body: 'Inter', sans-serif;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+    font-family: var(--font-body);
+    background-color: var(--bg-darker);
+    color: var(--text-primary);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 1rem;
+}
+
+.game-container {
+    width: 100%;
+    max-width: 450px;
+    background-color: transparent;
+    border-radius: 8px;
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.game-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: 0.75rem;
+}
+
+.logo { font-family: var(--font-heading); font-size: 3rem; background: var(--primary-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+.balance { font-size: 1.5rem; }
+#balance-amount { color: var(--neon-green); font-weight: 600; }
+
+.history-bar {
+    display: flex; gap: 0.5rem; overflow-x: auto; padding: 0.25rem;
+}
+.history-bar::-webkit-scrollbar { height: 4px; }
+.history-bar::-webkit-scrollbar-thumb { background: var(--card-border); border-radius: 2px; }
+
+.history-item {
+    background-color: rgba(0,0,0,0.2); padding: 0.3rem 1rem; border-radius: 16px;
+    border: 1px solid var(--card-border);
+    font-size: 1.1rem; font-weight: 600; white-space: nowrap;
+}
+.history-item.low { color: var(--neon-pink); }
+.history-item.high { color: var(--neon-green); }
+
+.game-screen {
+    background: rgba(0,0,0,0.2);
+    border-radius: 24px; height: 350px; display: flex; justify-content: center;
+    align-items: center; flex-direction: column; position: relative;
+    overflow: hidden; border: 1px solid var(--card-border);
+}
+
+#particle-canvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; }
+
+#rocket, #explosion { /* Shared styles */
+    position: absolute;
+    z-index: 3;
+    display: none;
+}
+#rocket {
+    width: 120px;
+    height: auto;
+    transition: all 0.1s linear;
+    filter: drop-shadow(0 0 15px rgba(0, 212, 255, 0.7));
+}
+#explosion { width: 150px; height: 150px; z-index: 4; border-radius: 50%; }
+
+.game-state-message, .multiplier-display { z-index: 2; text-align: center; }
+
+.game-state-message div:first-child { font-family: var(--font-heading); font-size: 2rem; }
+.game-state-message .countdown, .game-state-message .crashed-at { font-size: 4rem; font-weight: 700; }
+
+.multiplier-display {
+    font-size: 6rem; font-weight: 700;
+    text-shadow: 0 0 20px rgba(0, 212, 255, 0.5);
+    display: none;
+}
+
+.betting-area { display: flex; flex-direction: column; gap: 1rem; }
+.bet-panel {
+    background: var(--card-bg); backdrop-filter: blur(15px);
+    border: 1px solid var(--card-border);
+    border-radius: 24px; padding: 1rem; display: flex; flex-direction: column; gap: 0.75rem;
+}
+.bet-input, .auto-cashout-input {
+    width: 100%;
+    background: rgba(0,0,0,0.4); border: 1px solid var(--card-border);
+    border-radius: 12px; color: var(--text-primary);
+    font-size: 1.8rem; font-family: var(--font-body); padding: 0.5rem; text-align: center; font-weight: 600;
+}
+input[type=number]::-webkit-inner-spin-button { display: none; }
+.quick-bet-buttons { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.5rem; }
+.quick-bet {
+    background-color: rgba(0,0,0,0.2); border: 1px solid var(--card-border);
+    border-radius: 10px; color: var(--text-secondary);
+    padding: 0.6rem; cursor: pointer; font-family: inherit; font-size: 1rem; transition: background-color 0.2s;
+}
+.quick-bet:hover { background-color: var(--card-border); }
+.auto-cashout-controls { text-align: center; }
+.auto-cashout-controls label { font-size: 1.1rem; color: var(--text-secondary); }
+.auto-cashout-controls input { margin-top: 0.25rem; }
+.bet-button {
+    width: 100%; padding: 1rem; border: none; border-radius: 16px; font-size: 1.5rem; font-weight: 700;
+    cursor: pointer; font-family: inherit; transition: all 0.2s; text-transform: uppercase;
+}
+.bet-button:active { transform: scale(0.98); }
+.bet-button.state-bet { background: var(--primary-gradient); color: white; }
+.bet-button.state-cancel { background: var(--accent-gradient); color: white; }
+.bet-button.state-cashout { background: linear-gradient(135deg, #11998e, #38ef7d); color: white; }
+.bet-button:disabled { background: grey; cursor: not-allowed; opacity: 0.6; }

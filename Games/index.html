@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crash Game | ShikaXFusion</title>
+    <!-- MODIFIED: Font and style links -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Allura&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- NEW: Loading overlay to wait for Firebase auth -->
+    <div id="loading-overlay" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #020617; display: flex; align-items: center; justify-content: center; z-index: 1000;"><p style="font-size: 2rem; color: white;">Loading Game...</p></div>
+
+    <div class="game-container" style="display:none;">
+        <header class="game-header">
+            <div class="logo">CRASH</div>
+            <div class="header-controls">
+                <div class="balance">
+                    <span data-lang="balance">Balance</span>: ₹<span id="balance-amount">0.00</span>
+                </div>
+            </div>
+        </header>
+
+        <div class="history-bar" id="history-bar"></div>
+
+        <main class="game-screen" id="game-screen">
+            <canvas id="particle-canvas"></canvas>
+            
+            <!-- MODIFIED: Path goes up one directory to the main folder -->
+            <img src="../my-rocket.png" id="rocket" alt="Rocket">
+            <img src="https://assets.codepen.io/1506195/explosion.gif" id="explosion" alt="Explosion">
+
+            <div class="game-state-message" id="game-state-message"></div>
+            <div class="multiplier-display" id="multiplier-display"></div>
+        </main>
+
+        <footer class="betting-area">
+            <!-- Bet panels are unchanged structurally -->
+            <div class="bet-panel" id="bet-panel-1">
+                <input type="number" class="bet-input" value="10">
+                <div class="quick-bet-buttons">
+                    <button class="quick-bet" data-amount="10">₹10</button>
+                    <button class="quick-bet" data-amount="100">₹100</button>
+                    <button class="quick-bet" data-amount="500">₹500</button>
+                    <button class="quick-bet" data-amount="1000">₹1000</button>
+                </div>
+                <div class="auto-cashout-controls">
+                    <label data-lang="auto_cashout">Auto Cashout</label>
+                    <input type="number" class="auto-cashout-input" placeholder="e.g., 2.00">
+                </div>
+                <button class="bet-button" data-lang="bet">Bet</button>
+            </div>
+        </footer>
+    </div>
+
+    <!-- NEW: Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+    
+    <!-- NEW: Firebase initialization and Auth Guard -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const firebaseConfig = {
+                apiKey: "AIzaSyCzFHkD5bAIjZkP1W7jj4P-FoBldmeTCpk",
+                authDomain: "shikaxfusion.firebaseapp.com",
+                projectId: "shikaxfusion",
+                storageBucket: "shikaxfusion.appspot.com",
+                messagingSenderId: "353890157797",
+                appId: "1:353890157797:web:54607ce7378b97fc4d000c"
+            };
+            firebase.initializeApp(firebaseConfig);
+            const auth = firebase.auth();
+            const db = firebase.firestore();
+
+            const loadingOverlay = document.getElementById('loading-overlay');
+            const gameContainer = document.querySelector('.game-container');
+
+            auth.onAuthStateChanged(user => {
+                if (user) {
+                    // User is logged in, pass user and db to the game script
+                    window.initCrashGame(user, db);
+                    // Hide loading and show game
+                    loadingOverlay.style.display = 'none';
+                    gameContainer.style.display = 'flex';
+                } else {
+                    // Not logged in, redirect to the main auth page
+                    window.location.href = '/auth';
+                }
+            });
+        });
+    </script>
+
+    <!-- The main game logic script -->
+    <script src="script.js"></script>
+</body>
+</html>
