@@ -1,19 +1,18 @@
-// MODIFIED: Wrapped entire script in an initialization function
 window.initCrashGame = (user, db) => {
-    // --- DOM ELEMENTS (Unchanged) ---
+    // DOM ELEMENTS
     const balanceAmountEl = document.getElementById('balance-amount');
     const historyBarEl = document.getElementById('history-bar');
     const gameStateMessageEl = document.getElementById('game-state-message');
     const multiplierDisplayEl = document.getElementById('multiplier-display');
-    const betPanels = [document.getElementById('bet-panel-1')]; // Simplified to one panel for clarity
+    const betPanels = [document.getElementById('bet-panel-1')];
     const rocketEl = document.getElementById('rocket');
     const explosionEl = document.getElementById('explosion');
     const canvas = document.getElementById('particle-canvas');
     const ctx = canvas.getContext('2d');
 
-    // --- GAME STATE & CONFIG ---
-    let balance = 0; // MODIFIED: Balance will be loaded from Firestore
-    const userRef = db.collection('users').doc(user.uid); // NEW: Firestore reference to the user
+    // GAME STATE & CONFIG
+    let balance = 0;
+    const userRef = db.collection('users').doc(user.uid);
     let currentMultiplier = 1.00;
     let gameStatus = 'betting';
     let countdown = 5;
@@ -21,7 +20,7 @@ window.initCrashGame = (user, db) => {
     let gameLoopInterval;
     const bets = [{ placed: false, amount: 0, cashedOut: false }];
 
-    // --- PARTICLE LOGIC (MODIFIED to match ShikaXFusion) ---
+    // PARTICLE & ANIMATION LOGIC
     let particles = [];
     function resizeCanvas() {
         canvas.width = canvas.parentElement.clientWidth;
@@ -40,6 +39,7 @@ window.initCrashGame = (user, db) => {
         }
     }
     function animateParticles() {
+        if (!ctx) return;
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         particles.forEach(p => {
             p.x += p.vx; p.y += p.vy;
@@ -53,7 +53,6 @@ window.initCrashGame = (user, db) => {
         requestAnimationFrame(animateParticles);
     }
     
-    // --- ROCKET ANIMATION (Unchanged) ---
     function updateRocketPosition() {
         if (gameStatus !== 'running') return;
         const progress = Math.min(Math.log(currentMultiplier) / Math.log(crashPoint || 10), 1);
@@ -64,7 +63,7 @@ window.initCrashGame = (user, db) => {
         rocketEl.style.transform = `rotate(${progress * -20}deg)`;
     }
 
-    // --- CORE GAME LOGIC (Balance logic moved to Firestore functions) ---
+    // CORE GAME LOGIC
     const gameTick = () => {
         if (gameStatus === 'betting') {
             countdown -= 0.1;
@@ -79,14 +78,14 @@ window.initCrashGame = (user, db) => {
         }
     };
 
-    const startGame = () => { /* Logic unchanged */
+    const startGame = () => {
         gameStatus = 'running'; crashPoint = calculateCrashPoint(); currentMultiplier = 1.00;
         gameStateMessageEl.style.display = 'none'; multiplierDisplayEl.style.display = 'block';
         rocketEl.style.display = 'block'; explosionEl.style.display = 'none';
         updateRocketPosition(); updateBetButtons('running');
     };
     
-    const endGame = () => { /* Logic unchanged */
+    const endGame = () => {
         gameStatus = 'crashed'; clearInterval(gameLoopInterval);
         rocketEl.style.display = 'none'; explosionEl.style.left = rocketEl.style.left;
         explosionEl.style.top = rocketEl.style.top; explosionEl.style.display = 'block';
@@ -98,7 +97,8 @@ window.initCrashGame = (user, db) => {
         setTimeout(resetForNextRound, 3000);
     };
 
-    const resetForNextRound = () => { /* Logic unchanged */
+    const resetForNextRound = () => {
+        if(gameLoopInterval) clearInterval(gameLoopInterval);
         gameStatus = 'betting'; countdown = 5;
         bets.forEach(bet => { bet.placed = false; bet.cashedOut = false; });
         multiplierDisplayEl.style.color = 'var(--text-primary)'; multiplierDisplayEl.style.display = 'none';
@@ -108,14 +108,14 @@ window.initCrashGame = (user, db) => {
         gameLoopInterval = setInterval(gameTick, 100);
     };
 
-    const calculateCrashPoint = () => { /* Logic unchanged */
+    const calculateCrashPoint = () => {
         const r = Math.random() * 100; if (r < 10) return 1.00;
         if (r < 60) return 1.01 + Math.random() * 0.49;
         if (r < 95) return 1.51 + Math.random() * 8.48;
         return 10.00 + Math.random() * 40;
     };
     
-    // --- UI & EVENT HANDLERS (MODIFIED to use Firestore) ---
+    // UI & EVENT HANDLERS
     const setupBetPanel = (panel, index) => {
         const betInput = panel.querySelector('.bet-input');
         const betButton = panel.querySelector('.bet-button');
@@ -133,10 +133,8 @@ window.initCrashGame = (user, db) => {
     const handleBetButtonClick = (index, amount) => {
         amount = parseFloat(amount);
         if (isNaN(amount) || amount <= 0) return;
-
         if (gameStatus === 'betting') {
             if (!bets[index].placed) {
-                // NEW: Place bet using Firestore
                 if (balance >= amount) {
                     updateBalanceInFirestore(-amount, `Bet placed in Crash Game`).then(success => {
                         if (success) {
@@ -147,7 +145,6 @@ window.initCrashGame = (user, db) => {
                     });
                 } else { alert("Insufficient balance!"); }
             } else {
-                // NEW: Cancel bet using Firestore
                 updateBalanceInFirestore(bets[index].amount, `Bet cancelled in Crash Game`).then(success => {
                     if (success) {
                         bets[index].placed = false;
@@ -164,7 +161,6 @@ window.initCrashGame = (user, db) => {
     const cashoutBet = (index) => {
         if(bets[index].placed && !bets[index].cashedOut){
             const winnings = bets[index].amount * currentMultiplier;
-            // NEW: Add winnings using Firestore
             updateBalanceInFirestore(winnings, `Crash Game win @ ${currentMultiplier.toFixed(2)}x`).then(success => {
                 if (success) {
                     bets[index].cashedOut = true;
@@ -174,7 +170,7 @@ window.initCrashGame = (user, db) => {
         }
     };
 
-    const checkAutoCashouts = () => { /* Logic unchanged */
+    const checkAutoCashouts = () => {
         betPanels.forEach((panel, index) => {
             if (bets[index].placed && !bets[index].cashedOut) {
                 const autoCashoutInput = panel.querySelector('.auto-cashout-input');
@@ -184,42 +180,38 @@ window.initCrashGame = (user, db) => {
         });
     };
     
-    // NEW: Function to handle all balance updates in Firestore
     const updateBalanceInFirestore = async (amount, description) => {
         try {
             await db.runTransaction(async (transaction) => {
                 const userDoc = await transaction.get(userRef);
                 if (!userDoc.exists) { throw "Document does not exist!"; }
-                
                 const newBalance = (userDoc.data().balance || 0) + amount;
                 if (newBalance < 0) { throw "Insufficient funds!"; }
-
                 const newHistoryEntry = {
                     amount: Math.abs(amount),
                     date: new Date(),
                     description: description,
                     type: amount > 0 ? "credit" : "debit"
                 };
-                
                 transaction.update(userRef, {
                     balance: newBalance,
                     history: firebase.firestore.FieldValue.arrayUnion(newHistoryEntry)
                 });
             });
-            return true; // Success
+            return true;
         } catch (error) {
             console.error("Transaction failed: ", error);
             alert("Transaction failed: " + error);
-            return false; // Failure
+            return false;
         }
     };
 
     const updateBalanceUI = (newBalance) => {
-        balance = newBalance; // Update local balance variable
+        balance = newBalance;
         balanceAmountEl.textContent = balance.toFixed(2);
     };
 
-    const updateBetButtons = (status) => { /* Logic unchanged */
+    const updateBetButtons = (status) => {
         bets.forEach((bet, index) => {
             if (status === 'running') {
                 if (bet.placed) updateBetButtonState(index, 'cashout');
@@ -228,7 +220,7 @@ window.initCrashGame = (user, db) => {
         });
     };
 
-    const updateBetButtonState = (index, state) => { /* Logic with simplified language unchanged */
+    const updateBetButtonState = (index, state) => {
         const button = betPanels[index].querySelector('.bet-button');
         button.disabled = false; button.className = 'bet-button';
         switch(state) {
@@ -246,7 +238,7 @@ window.initCrashGame = (user, db) => {
         }
     };
 
-    const addToHistory = (value) => { /* Logic unchanged */
+    const addToHistory = (value) => {
         const newItem = document.createElement('span');
         newItem.textContent = `${value.toFixed(2)}x`;
         newItem.classList.add('history-item');
@@ -256,14 +248,13 @@ window.initCrashGame = (user, db) => {
         if (historyBarEl.children.length > 20) historyBarEl.removeChild(historyBarEl.lastChild);
     };
     
-    // --- INITIALIZATION ---
+    // INITIALIZATION
     const init = () => {
         resizeCanvas();
         createParticles();
         animateParticles();
         window.addEventListener('resize', () => { resizeCanvas(); createParticles(); });
         
-        // NEW: Listen for real-time balance updates from Firestore
         userRef.onSnapshot(doc => {
             if (doc.exists) {
                 updateBalanceUI(doc.data().balance);
