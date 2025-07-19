@@ -1,6 +1,7 @@
 {
   "cleanUrls": true,
   "rewrites": [
-    { "source": "/", "destination": "/auth" }
+    { "source": "/", "destination": "/auth" },
+    { "source": "/offer", "destination": "/offer.html" }
   ]
 }

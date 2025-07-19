@@ -6,41 +6,8 @@
     <title>Tasks | ShikaXFusion</title>
     <link rel="stylesheet" href="main.css">
     <style>
-        /* Style for disabled buttons */
-        .task-action:disabled {
-            background: grey;
-            cursor: not-allowed;
-            transform: none;
-            opacity: 0.7;
-        }
-        /* Style link to look like a button */
-        .task-action-link {
-            display: inline-block;
-            font-family: 'Inter', sans-serif;
-            font-weight: 600;
-            font-size: 0.9rem;
-            padding: 8px 18px;
-            background: var(--accent-gradient);
-            border-radius: 10px;
-            cursor: pointer;
-            transition: transform 0.2s ease;
-            text-decoration: none;
-            color: var(--text-primary);
-        }
-        .task-action-link:hover {
-            transform: scale(1.05);
-        }
-
-        /* MODIFIED: Added styles to make the header avatar an image */
-        .user-avatar {
-            /* This ensures the container has the right shape and gradient */
-            overflow: hidden; /* Hide anything that spills out */
-        }
-        .user-avatar img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover; /* Ensures the image covers the area without distortion */
-        }
+        .task-action:disabled { background: grey; cursor: not-allowed; opacity: 0.7; transform: none; }
+        .user-avatar img { width: 100%; height: 100%; object-fit: cover; }
     </style>
 </head>
 <body>
@@ -49,48 +16,27 @@
     <div class="orb-container"><div class="floating-orb orb-1"></div><div class="floating-orb orb-2"></div></div>
 
     <div class="app-container">
-        <!-- MODIFIED: Page Header now includes an image tag for the avatar -->
         <header class="dashboard-header">
             <div class="header-left" id="user-balance-header">🇮🇳 ₹0.00</div>
             <div class="header-right">
                 <div class="brand-name">ShikaXFusion</div>
-                <div class="user-avatar" id="user-avatar-container">
-                    <img id="header-avatar-img" src="" alt="DP">
-                </div>
+                <div class="user-avatar"><img id="header-avatar-img" src="" alt="DP"></div>
             </div>
         </header>
 
-        <!-- Main Content for Tasks -->
         <main class="main-content">
-            <div class="section-header">
-                <h2>Special Offers</h2>
-            </div>
-            <div class="task-list-container">
-                <div class="task-item">
-                    <div class="task-icon"><svg viewBox="0 0 24 24"><path d="M20 6h-2V4h2v2zm-4 0h-2V4h2v2zM8 6H6V4h2v2zm13 14H3V8h18v12zM5 10h14v8H5v-8z"/></svg></div>
-                    <div class="task-details">
-                        <span class="task-title">Weekly Claim</span>
-                        <span class="task-reward">Claim your weekly ₹1 bonus!</span>
-                    </div>
-                    <button class="task-action" id="weekly-claim-btn" disabled>Claim</button>
-                </div>
-                 <div class="task-item">
-                    <div class="task-icon"><svg viewBox="0 0 24 24"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"></path></svg></div>
-                    <div class="task-details">
-                        <span class="task-title">Install & Withdraw</span>
-                        <span class="task-reward">Earn ₹10</span>
-                    </div>
-                    <a href="https://tinyurl.com/28aonvry" target="_blank" class="task-action-link">Go</a>
-                </div>
+            <div class="section-header"><h2>Special Offers</h2></div>
+            <!-- MODIFIED: This container will now be filled dynamically by JavaScript -->
+            <div id="task-list-container" class="task-list-container">
+                <p>Loading tasks...</p>
             </div>
         </main>
         
-        <!-- Bottom Navigation is unchanged -->
         <nav class="bottom-nav">
             <a href="/dashboard" class="nav-item"><svg viewBox="0 0 24 24"><path class="icon-fill" d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg><span>Home</span></a>
             <a href="/tasks" class="nav-item active"><svg viewBox="0 0 24 24"><path class="icon-fill" d="M20.5 4.5H4.6C3.7 4 3 4.7 3 5.6v12.8C3 19.3 3.7 20 4.6 20h12.8c.9 0 1.6-.7 1.6-1.6V5.6c0-.9-.7-1.6-1.6-1.6zM18 18H6V6h12v12zM9 15h6v-2H9v2zm0-3h6v-2H9v2zm0-3h6V7H9v2z"/></svg><span>Tasks</span></a>
             <a href="/rewards" class="nav-item"><svg viewBox="0 0 24 24"><path class="icon-fill" d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg><span>Rewards</span></a>
-            <a href="/games" class="nav-item"><svg viewBox="0 0 24 24"><path class="icon-fill" d="M21.58 16.09l-1.1-1.1c-.29-.29-.69-.47-1.12-.52a5.95 5.95 0 00-2.86-2.86c-.05-.43-.23-.83-.52-1.12l-1.1-1.1a1.6 1.6 0 00-2.24 0l-1.1 1.1c-.29-.29-.47-.69-.52 1.12a5.95 5.95 0 00-2.86 2.86c-.05.43-.23-.83-.52-1.12l-1.1 1.1a1.6 1.6 0 000 2.24l1.1 1.1c.29-.29.69-.47 1.12-.52a5.95 5.95 0 002.86 2.86c.43.05.83.23 1.12.52l1.1 1.1a1.6 1.6 0 002.24 0l1.1-1.1c-.29-.29-.47-.69-.52-1.12a5.95 5.95 0 002.86-2.86c.05-.43.23-.83-.52-1.12l1.1-1.1a1.6 1.6 0 000-2.24zM12 15a3 3 0 110-6 3 3 0 010 6z"/></svg><span>Games</span></a>
+            <a href="/games" class="nav-item"><svg viewBox="0 0 24 24"><path class="icon-fill" d="M21.58 16.09l-1.1-1.1c-.29-.29-.69-.47-1.12-.52a5.95 5.95 0 00-2.86-2.86c-.05-.43-.23-.83-.52-1.12l-1.1-1.1a1.6 1.6 0 00-2.24 0l-1.1 1.1c-.29-.29-.47-.69-.52 1.12a5.95 5.95 0 00-2.86 2.86c-.05-.43-.23-.83-.52-1.12l-1.1 1.1a1.6 1.6 0 000 2.24l1.1 1.1c.29-.29.69-.47 1.12-.52a5.95 5.95 0 002.86 2.86c.43-.05.83.23 1.12-.52l1.1 1.1a1.6 1.6 0 002.24 0l1.1-1.1c-.29-.29-.47-.69-.52-1.12a5.95 5.95 0 002.86-2.86c.05-.43-.23-.83-.52-1.12l1.1-1.1a1.6 1.6 0 000-2.24zM12 15a3 3 0 110-6 3 3 0 010 6z"/></svg><span>Games</span></a>
             <a href="/profile" class="nav-item"><svg viewBox="0 0 24 24"><path class="icon-fill" d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg><span>Profile</span></a>
         </nav>
     </div>
@@ -118,122 +64,59 @@
             const auth = firebase.auth();
             const db = firebase.firestore();
             
-            // DOM Element References
             const headerAvatarImg = document.getElementById('header-avatar-img');
             const userBalanceHeader = document.getElementById('user-balance-header');
-            const weeklyClaimBtn = document.getElementById('weekly-claim-btn');
+            const taskListContainer = document.getElementById('task-list-container');
 
-            // --- Authentication and Data Loading ---
+            // --- Authentication and User Data Loading ---
             auth.onAuthStateChanged(user => {
                 if (user) {
-                    const userRef = db.collection('users').doc(user.uid);
-                    userRef.onSnapshot(doc => {
+                    db.collection('users').doc(user.uid).onSnapshot(doc => {
                         if (doc.exists) {
                             const data = doc.data();
-                            // Update header with real data
                             userBalanceHeader.textContent = `🇮🇳 ₹${(data.balance || 0).toFixed(2)}`;
-                            headerAvatarImg.src = data.avatarUrl || '/profile_dp1.png'; // Correctly update image source
-
-                            // Check weekly claim status
-                            checkWeeklyClaimStatus(data);
+                            headerAvatarImg.src = data.avatarUrl || '/profile_dp1.png';
                         }
                     });
+                    
+                    // --- NEW: Load tasks dynamically ---
+                    loadDynamicTasks();
+
                 } else {
                     window.location.replace('/auth');
                 }
             });
 
-            // --- CORRECTED: Weekly Claim Functionality ---
-            function checkWeeklyClaimStatus(userData) {
-                const today = new Date();
-                
-                // --- Find the date of the most recent Monday ---
-                const mostRecentMonday = new Date(today);
-                const dayOfWeek = today.getDay(); // Sunday is 0, Monday is 1
-                const daysToSubtract = dayOfWeek === 0 ? 6 : dayOfWeek - 1; // Calculate days to go back to Monday
-                mostRecentMonday.setDate(today.getDate() - daysToSubtract);
-                mostRecentMonday.setHours(0, 0, 0, 0); // Set to the beginning of that Monday
-                
-                let canClaim = true; // Assume user can claim by default
-                
-                // Get the last claim date from Firestore, if it exists
-                const lastClaimTimestamp = userData.lastWeeklyClaim;
-                if (lastClaimTimestamp) {
-                    const lastClaimDate = lastClaimTimestamp.toDate();
-                    // If the last claim was on or after the most recent Monday, user cannot claim again
-                    if (lastClaimDate >= mostRecentMonday) {
-                        canClaim = false;
+            // --- NEW: Function to load tasks from Firestore ---
+            function loadDynamicTasks() {
+                db.collection('tasks').orderBy('order').onSnapshot(snapshot => {
+                    taskListContainer.innerHTML = ''; // Clear previous content
+                    if (snapshot.empty) {
+                        taskListContainer.innerHTML = '<p>No offers available right now. Check back later!</p>';
+                        return;
                     }
-                }
-                
-                // Enable or disable the button based on the check
-                if (canClaim) {
-                    weeklyClaimBtn.disabled = false;
-                    weeklyClaimBtn.textContent = 'Claim ₹1';
-                } else {
-                    weeklyClaimBtn.disabled = true;
-                    weeklyClaimBtn.textContent = 'Claimed';
-                }
-            }
-
-            // --- Transaction logic for claiming is largely the same ---
-            weeklyClaimBtn.addEventListener('click', () => {
-                const user = auth.currentUser;
-                if (!user) return;
-
-                weeklyClaimBtn.disabled = true;
-                weeklyClaimBtn.textContent = 'Claiming...';
-
-                const userRef = db.collection('users').doc(user.uid);
-                
-                db.runTransaction(transaction => {
-                    return transaction.get(userRef).then(doc => {
-                        if (!doc.exists) throw "Document does not exist!";
+                    snapshot.forEach(doc => {
+                        const task = doc.data();
+                        const taskItem = document.createElement('div');
+                        taskItem.classList.add('task-item');
                         
-                        const data = doc.data();
+                        taskItem.innerHTML = `
+                            <div class="task-icon">
+                                <svg viewBox="0 0 24 24"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"></path></svg>
+                            </div>
+                            <div class="task-details">
+                                <span class="task-title">${task.title}</span>
+                                <span class="task-reward">${task.reward}</span>
+                            </div>
+                            <a href="/offer?id=${doc.id}" class="task-action">Go</a>
+                        `;
+                        // Note: Using clean URL for offer page href="/offer?id=..."
                         
-                        // Recalculate claim status inside the transaction for absolute safety
-                        const today = new Date();
-                        const mostRecentMonday = new Date(today);
-                        const dayOfWeek = today.getDay();
-                        const daysToSubtract = dayOfWeek === 0 ? 6 : dayOfWeek - 1;
-                        mostRecentMonday.setDate(today.getDate() - daysToSubtract);
-                        mostRecentMonday.setHours(0, 0, 0, 0);
-
-                        let canClaim = true;
-                        if (data.lastWeeklyClaim && data.lastWeeklyClaim.toDate() >= mostRecentMonday) {
-                            canClaim = false;
-                        }
-                        
-                        if (!canClaim) {
-                            throw "Claim conditions not met!";
-                        }
-
-                        const newBalance = (data.balance || 0) + 1;
-                        const newHistoryEntry = {
-                            amount: 1,
-                            date: new Date(),
-                            description: "Weekly Claim Bonus",
-                            type: "credit"
-                        };
-                        
-                        transaction.update(userRef, {
-                            balance: newBalance,
-                            lastWeeklyClaim: new Date(),
-                            history: firebase.firestore.FieldValue.arrayUnion(newHistoryEntry)
-                        });
+                        taskListContainer.appendChild(taskItem);
                     });
-                }).then(() => {
-                    alert("You have successfully claimed your weekly ₹1 bonus!");
-                    weeklyClaimBtn.textContent = 'Claimed';
-                }).catch(error => {
-                    console.error("Claim failed: ", error);
-                    alert("Could not process your claim. You may have already claimed this week.");
-                    // After failure, re-run the check to reset button state correctly
-                    db.collection('users').doc(user.uid).get().then(doc => checkWeeklyClaimStatus(doc.data()));
                 });
-            });
+            }
         });
     </script>
 </body>
-</html>```
+</html>

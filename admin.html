@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>ShikaXFusion Admin Panel</title>
+    <style>
+        body { font-family: sans-serif; background: #f0f2f5; padding: 20px; }
+        .container { max-width: 800px; margin: auto; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        h1, h2 { color: #333; }
+        input, textarea, button { width: 100%; padding: 10px; margin-bottom: 10px; border-radius: 5px; border: 1px solid #ccc; box-sizing: border-box; }
+        button { background-color: #007bff; color: white; cursor: pointer; border: none; }
+        #task-list li { list-style: none; padding: 10px; border: 1px solid #eee; margin-bottom: 5px; display: flex; justify-content: space-between; align-items: center; }
+        .edit-btn, .delete-btn { width: auto; padding: 5px 10px; margin-left: 10px; }
+        .delete-btn { background-color: #dc3545; }
+    </style>
+</head>
+<body>
+
+    <div class="container" id="admin-container" style="display:none;">
+        <h1>Task Management</h1>
+        
+        <h2>Add / Edit Task</h2>
+        <form id="task-form">
+            <input type="hidden" id="task-id">
+            <input type="text" id="task-title" placeholder="Task Title (e.g., Install & Withdraw)" required>
+            <input type="text" id="task-reward" placeholder="Reward Text (e.g., Earn ₹10)" required>
+            <input type="url" id="task-image-url" placeholder="Image URL (for detail page)" required>
+            <textarea id="task-details" placeholder="Full Task Details..." required></textarea>
+            <input type="url"id="task-action-url" placeholder="Action URL (Link for the 'Go' button)" required>
+            <input type="number" id="task-order" placeholder="Display Order (e.g., 10, 20, 30)" required>
+            <button type="submit">Save Task</button>
+        </form>
+
+        <h2>Current Tasks</h2>
+        <ul id="task-list"></ul>
+    </div>
+
+    <!-- Firebase Scripts -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Simple password protection for the admin panel
+            const correctPassword = "your_secret_password"; // IMPORTANT: Change this!
+            let password = prompt("Enter Admin Password:", "");
+            if (password === correctPassword) {
+                document.getElementById('admin-container').style.display = 'block';
+            } else {
+                alert("Incorrect Password!");
+                return;
+            }
+
+            const firebaseConfig = {
+                apiKey: "AIzaSyCzFHkD5bAIjZkP1W7jj4P-FoBldmeTCpk",
+                authDomain: "shikaxfusion.firebaseapp.com",
+                projectId: "shikaxfusion",
+                storageBucket: "shikaxfusion.appspot.com",
+                messagingSenderId: "353890157797",
+                appId: "1:353890157797:web:54607ce7378b97fc4d000c"
+            };
+            firebase.initializeApp(firebaseConfig);
+            const db = firebase.firestore();
+            const tasksCollection = db.collection('tasks');
+
+            const taskForm = document.getElementById('task-form');
+            const taskList = document.getElementById('task-list');
+
+            // --- Load and Display Tasks ---
+            const loadTasks = () => {
+                tasksCollection.orderBy('order').onSnapshot(snapshot => {
+                    taskList.innerHTML = '';
+                    snapshot.forEach(doc => {
+                        const task = doc.data();
+                        const li = document.createElement('li');
+                        li.innerHTML = `
+                            <span><strong>${task.title}</strong> (Order: ${task.order})</span>
+                            <div>
+                                <button class="edit-btn" data-id="${doc.id}">Edit</button>
+                                <button class="delete-btn" data-id="${doc.id}">Delete</button>
+                            </div>
+                        `;
+                        taskList.appendChild(li);
+                    });
+                });
+            };
+
+            // --- Save or Update Task ---
+            taskForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                const id = document.getElementById('task-id').value;
+                const taskData = {
+                    title: document.getElementById('task-title').value,
+                    reward: document.getElementById('task-reward').value,
+                    imageUrl: document.getElementById('task-image-url').value,
+                    details: document.getElementById('task-details').value,
+                    actionUrl: document.getElementById('task-action-url').value,
+                    order: Number(document.getElementById('task-order').value)
+                };
+
+                if (id) { // If there's an ID, we're editing
+                    tasksCollection.doc(id).update(taskData).then(() => {
+                        alert('Task updated!');
+                        taskForm.reset();
+                    });
+                } else { // Otherwise, we're adding a new task
+                    tasksCollection.add(taskData).then(() => {
+                        alert('Task added!');
+                        taskForm.reset();
+                    });
+                }
+            });
+
+            // --- Edit and Delete Logic ---
+            taskList.addEventListener('click', (e) => {
+                const target = e.target;
+                const id = target.getAttribute('data-id');
+
+                if (target.classList.contains('delete-btn')) {
+                    if (confirm('Are you sure you want to delete this task?')) {
+                        tasksCollection.doc(id).delete();
+                    }
+                }
+
+                if (target.classList.contains('edit-btn')) {
+                    tasksCollection.doc(id).get().then(doc => {
+                        const task = doc.data();
+                        document.getElementById('task-id').value = doc.id;
+                        document.getElementById('task-title').value = task.title;
+                        document.getElementById('task-reward').value = task.reward;
+                        document.getElementById('task-image-url').value = task.imageUrl;
+                        document.getElementById('task-details').value = task.details;
+                        document.getElementById('task-action-url').value = task.actionUrl;
+                        document.getElementById('task-order').value = task.order;
+                        window.scrollTo(0, 0);
+                    });
+                }
+            });
+
+            loadTasks();
+        });
+    </script>
+</body>
+</html>

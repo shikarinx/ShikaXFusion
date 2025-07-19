@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Offer Details | ShikaXFusion</title>
+    <link rel="stylesheet" href="main.css">
+    <style>
+        .offer-details-container { padding: 20px; text-align: center; }
+        .offer-image { max-width: 100%; height: auto; border-radius: 24px; margin-bottom: 20px; border: 2px solid var(--card-border); }
+        .offer-title { font-family: 'Allura', cursive; font-size: 3rem; margin-bottom: 10px; }
+        .offer-reward { font-size: 1.2rem; font-weight: 600; color: var(--neon-green); margin-bottom: 20px; }
+        .offer-description { color: var(--text-secondary); line-height: 1.6; margin-bottom: 30px; }
+        .complete-btn { font-family: 'Inter', sans-serif; text-decoration: none; display: inline-block; padding: 15px 40px; border: none; border-radius: 18px; background: var(--accent-gradient); color: white; font-size: 1.1rem; font-weight: 600; cursor: pointer; }
+    </style>
+</head>
+<body>
+    <canvas id="particles-canvas"></canvas>
+    <div class="grid-background"></div>
+    <div class="orb-container"><div class="floating-orb orb-1"></div><div class="floating-orb orb-2"></div></div>
+
+    <div class="app-container">
+        <header class="dashboard-header">
+            <a href="/tasks" style="text-decoration: none; color: white; font-size: 1.5rem;">← Back</a>
+            <div class="brand-name">ShikaXFusion</div>
+        </header>
+        
+        <main class="main-content">
+            <div class="offer-details-container" id="offer-content">
+                <p>Loading offer...</p>
+            </div>
+        </main>
+    </div>
+
+    <!-- Firebase Scripts -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Particle system code is unchanged
+            class ParticleSystem { constructor(canvas) { this.canvas = canvas; this.ctx = canvas.getContext('2d'); this.particles = []; this.resize(); this.init(); this.animate(); window.addEventListener('resize', () => this.resize()); } resize() { this.canvas.width = window.innerWidth; this.canvas.height = window.innerHeight; } init() { this.particles = []; const particleCount = 100; for (let i = 0; i < particleCount; i++) { this.particles.push({ x: Math.random() * this.canvas.width, y: Math.random() * this.canvas.height, vx: (Math.random() - 0.5) * 0.5, vy: (Math.random() - 0.5) * 0.5, size: Math.random() * 2 + 1, color: `hsl(${220 + Math.random() * 60}, 70%, 60%)` }); } } animate() { this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height); this.particles.forEach(p => { p.x += p.vx; p.y += p.vy; if (p.x < 0 || p.x > this.canvas.width) p.vx *= -1; if (p.y < 0 || p.y > this.canvas.height) p.vy *= -1; this.ctx.fillStyle = p.color; this.ctx.beginPath(); this.ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2); this.ctx.fill(); }); requestAnimationFrame(() => this.animate()); } }
+            new ParticleSystem(document.getElementById('particles-canvas'));
+
+             const firebaseConfig = {
+                apiKey: "AIzaSyCzFHkD5bAIjZkP1W7jj4P-FoBldmeTCpk",
+                authDomain: "shikaxfusion.firebaseapp.com",
+                projectId: "shikaxfusion",
+                storageBucket: "shikaxfusion.appspot.com",
+                messagingSenderId: "353890157797",
+                appId: "1:353890157797:web:54607ce7378b97fc4d000c"
+            };
+            firebase.initializeApp(firebaseConfig);
+            const db = firebase.firestore();
+
+            // Get the task ID from the URL (e.g., offer.html?id=ABCDEFG)
+            const urlParams = new URLSearchParams(window.location.search);
+            const taskId = urlParams.get('id');
+            const offerContent = document.getElementById('offer-content');
+
+            if (taskId) {
+                db.collection('tasks').doc(taskId).get().then(doc => {
+                    if (doc.exists) {
+                        const task = doc.data();
+                        offerContent.innerHTML = `
+                            <img src="${task.imageUrl}" alt="${task.title}" class="offer-image">
+                            <h2 class="offer-title">${task.title}</h2>
+                            <p class="offer-reward">${task.reward}</p>
+                            <p class="offer-description">${task.details}</p>
+                            <a href="${task.actionUrl}" target="_blank" class="complete-btn">Complete Task</a>
+                        `;
+                    } else {
+                        offerContent.innerHTML = `<p>Offer not found.</p>`;
+                    }
+                }).catch(error => {
+                    console.error("Error fetching offer: ", error);
+                    offerContent.innerHTML = `<p>Error loading offer.</p>`;
+                });
+            } else {
+                offerContent.innerHTML = `<p>No offer specified.</p>`;
+            }
+        });
+    </script>
+</body>
+</html>
