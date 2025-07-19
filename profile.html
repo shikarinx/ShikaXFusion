@@ -22,9 +22,7 @@
     <div class="app-container">
         <main class="main-content">
             <div class="profile-header-card">
-                <div class="profile-avatar" id="main-profile-avatar">
-                    <img src="profile_dp1.png" alt="User Avatar" id="current-avatar-img">
-                </div>
+                <div class="profile-avatar" id="main-profile-avatar"><img src="/profile_dp1.png" alt="User Avatar" id="current-avatar-img"></div>
                 <h2 class="profile-name" id="user-display-name">Loading...</h2>
                 <div class="profile-balance" id="user-balance">₹0.00</div>
                 <div class="profile-actions">
@@ -32,42 +30,25 @@
                     <button id="withdraw-btn" class="profile-action-btn withdraw">Withdraw</button>
                 </div>
             </div>
-
             <div class="profile-options-list">
-                <!-- MODIFIED: Information section is now a form -->
                 <div class="accordion-item">
-                    <button class="accordion-header">
-                        <span>Information</span>
-                        <svg class="accordion-arrow" viewBox="0 0 24 24"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6z"/></svg>
-                    </button>
+                    <button class="accordion-header"><span>Information</span><svg class="accordion-arrow" viewBox="0 0 24 24"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6z"/></svg></button>
                     <div class="accordion-panel">
                         <div class="info-form">
-                            <label for="info-name-input">Name</label>
-                            <input type="text" id="info-name-input" class="info-input">
-                            
-                            <label for="info-email-input">Email (read-only)</label>
-                            <input type="email" id="info-email-input" class="info-input" readonly>
-
-                            <label for="info-number-input">Number</label>
-                            <input type="tel" id="info-number-input" class="info-input" placeholder="Not Provided">
-                            
+                            <label for="info-name-input">Name</label><input type="text" id="info-name-input" class="info-input">
+                            <label for="info-email-input">Email (read-only)</label><input type="email" id="info-email-input" class="info-input" readonly>
+                            <label for="info-number-input">Number</label><input type="tel" id="info-number-input" class="info-input" placeholder="Not Provided">
                             <button id="save-info-btn" class="save-changes-btn">Save Changes</button>
                         </div>
                     </div>
                 </div>
-                <!-- History -->
                 <div class="accordion-item">
                     <button class="accordion-header"><span>History</span><svg class="accordion-arrow" viewBox="0 0 24 24"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6z"/></svg></button>
-                    <div class="accordion-panel">
-                        <ul class="transaction-list" id="transaction-history"><li id="no-history-msg">No transactions yet.</li></ul>
-                    </div>
+                    <div class="accordion-panel"><ul class="transaction-list" id="transaction-history"><li id="no-history-msg">No transactions yet.</li></ul></div>
                 </div>
-                <!-- Redeem Code -->
                 <div class="accordion-item">
                     <button class="accordion-header"><span>Redeem Code</span><svg class="accordion-arrow" viewBox="0 0 24 24"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6z"/></svg></button>
-                    <div class="accordion-panel">
-                        <div class="redeem-container"><input type="text" placeholder="Enter your code" class="redeem-input"><button class="redeem-button">Claim</button></div>
-                    </div>
+                    <div class="accordion-panel"><div class="redeem-container"><input type="text" placeholder="Enter your code" class="redeem-input"><button class="redeem-button">Claim</button></div></div>
                 </div>
             </div>
             <button class="logout-btn" id="logout-button">Logout</button>
@@ -77,17 +58,24 @@
             <a href="/dashboard" class="nav-item"><svg viewBox="0 0 24 24"><path class="icon-fill" d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg><span>Home</span></a>
             <a href="/tasks" class="nav-item"><svg viewBox="0 0 24 24"><path class="icon-fill" d="M20.5 4.5H4.6C3.7 4 3 4.7 3 5.6v12.8C3 19.3 3.7 20 4.6 20h12.8c.9 0 1.6-.7 1.6-1.6V5.6c0-.9-.7-1.6-1.6-1.6zM18 18H6V6h12v12zM9 15h6v-2H9v2zm0-3h6v-2H9v2zm0-3h6V7H9v2z"/></svg><span>Tasks</span></a>
             <a href="/rewards" class="nav-item"><svg viewBox="0 0 24 24"><path class="icon-fill" d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg><span>Rewards</span></a>
-            <a href="/games" class="nav-item"><svg viewBox="0 0 24 24"><path class="icon-fill" d="M21.58 16.09l-1.1-1.1c-.29-.29-.69-.47-1.12-.52a5.95 5.95 0 00-2.86-2.86c-.05-.43-.23-.83-.52-1.12l-1.1-1.1a1.6 1.6 0 00-2.24 0l-1.1 1.1c-.29-.29-.47-.69-.52 1.12a5.95 5.95 0 00-2.86 2.86c-.05.43-.23-.83-.52-1.12l-1.1 1.1a1.6 1.6 0 000 2.24l1.1 1.1c.29.29.69-.47 1.12.52a5.95 5.95 0 002.86 2.86c.43.05.83.23 1.12.52l1.1 1.1a1.6 1.6 0 002.24 0l1.1-1.1c.29-.29.47-.69-.52-1.12a5.95 5.95 0 002.86-2.86c.05-.43.23-.83-.52-1.12l1.1-1.1a1.6 1.6 0 000-2.24zM12 15a3 3 0 110-6 3 3 0 010 6z"/></svg><span>Games</span></a>
+            <a href="/games" class="nav-item"><svg viewBox="0 0 24 24"><path class="icon-fill" d="M21.58 16.09l-1.1-1.1c-.29-.29-.69-.47-1.12-.52a5.95 5.95 0 00-2.86-2.86c-.05-.43-.23-.83-.52-1.12l-1.1-1.1a1.6 1.6 0 00-2.24 0l-1.1 1.1c-.29.29-.47-.69-.52 1.12a5.95 5.95 0 00-2.86 2.86c-.05.43-.23-.83-.52-1.12l-1.1 1.1a1.6 1.6 0 000 2.24l1.1 1.1c.29.29.69-.47 1.12-.52a5.95 5.95 0 002.86 2.86c.43.05.83.23 1.12.52l1.1 1.1a1.6 1.6 0 002.24 0l1.1-1.1c-.29-.29-.47-.69-.52-1.12a5.95 5.95 0 002.86-2.86c-.05-.43-.23-.83-.52-1.12l1.1-1.1a1.6 1.6 0 000-2.24zM12 15a3 3 0 110-6 3 3 0 010 6z"/></svg><span>Games</span></a>
             <a href="/profile" class="nav-item active"><svg viewBox="0 0 24 24"><path class="icon-fill" d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg><span>Profile</span></a>
         </nav>
     </div>
 
+    <!-- Firebase Scripts -->
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+    <!-- NEW: Firestore script is required -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+
+    <!-- Page Logic Script -->
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            // Particle system can be kept or removed
-            
+            // Particle system code is unchanged
+            class ParticleSystem { constructor(canvas) { this.canvas = canvas; this.ctx = canvas.getContext('2d'); this.particles = []; this.resize(); this.init(); this.animate(); window.addEventListener('resize', () => this.resize()); } resize() { this.canvas.width = window.innerWidth; this.canvas.height = window.innerHeight; } init() { this.particles = []; const particleCount = 100; for (let i = 0; i < particleCount; i++) { this.particles.push({ x: Math.random() * this.canvas.width, y: Math.random() * this.canvas.height, vx: (Math.random() - 0.5) * 0.5, vy: (Math.random() - 0.5) * 0.5, size: Math.random() * 2 + 1, color: `hsl(${220 + Math.random() * 60}, 70%, 60%)` }); } } animate() { this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height); this.particles.forEach(p => { p.x += p.vx; p.y += p.vy; if (p.x < 0 || p.x > this.canvas.width) p.vx *= -1; if (p.y < 0 || p.y > this.canvas.height) p.vy *= -1; this.ctx.fillStyle = p.color; this.ctx.beginPath(); this.ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2); this.ctx.fill(); }); requestAnimationFrame(() => this.animate()); } }
+            new ParticleSystem(document.getElementById('particles-canvas'));
+
             const firebaseConfig = {
                 apiKey: "AIzaSyCzFHkD5bAIjZkP1W7jj4P-FoBldmeTCpk",
                 authDomain: "shikaxfusion.firebaseapp.com",
@@ -98,49 +86,51 @@
             };
             firebase.initializeApp(firebaseConfig);
             const auth = firebase.auth();
+            const db = firebase.firestore(); // Initialize Firestore
 
-            // --- Element References ---
-            const userDisplayName = document.getElementById('user-display-name');
-            const userBalance = document.getElementById('user-balance');
-            const nameInput = document.getElementById('info-name-input');
-            const emailInput = document.getElementById('info-email-input');
-            const numberInput = document.getElementById('info-number-input');
-            const saveInfoBtn = document.getElementById('save-info-btn');
-            const historyList = document.getElementById('transaction-history');
-            const noHistoryMsg = document.getElementById('no-history-msg');
-            const logoutButton = document.getElementById('logout-button');
-            const mainAvatarContainer = document.getElementById('main-profile-avatar');
-            const currentAvatarImg = document.getElementById('current-avatar-img');
+            // All element references are the same
+            const userDisplayName = document.getElementById('user-display-name'), userBalance = document.getElementById('user-balance'), nameInput = document.getElementById('info-name-input'), emailInput = document.getElementById('info-email-input'), numberInput = document.getElementById('info-number-input'), saveInfoBtn = document.getElementById('save-info-btn'), historyList = document.getElementById('transaction-history'), noHistoryMsg = document.getElementById('no-history-msg'), logoutButton = document.getElementById('logout-button'), mainAvatarContainer = document.getElementById('main-profile-avatar'), currentAvatarImg = document.getElementById('current-avatar-img');
 
-            // --- Load User Data Function ---
+            // --- Firestore Data Loading ---
             function loadUserData(user) {
-                // Get data from localStorage or use Firebase as fallback
-                const storedName = localStorage.getItem('userName') || user.displayName || "New User";
-                const storedNumber = localStorage.getItem('userNumber') || "";
-                const storedBalance = localStorage.getItem('userBalance') || "0.00";
-                const storedAvatar = localStorage.getItem('userAvatar') || 'profile_dp1.png';
-                
-                // Populate the UI
-                userDisplayName.textContent = storedName;
-                userBalance.textContent = `₹${parseFloat(storedBalance).toFixed(2)}`;
-                nameInput.value = storedName;
-                emailInput.value = user.email;
-                numberInput.value = storedNumber;
-                currentAvatarImg.src = storedAvatar;
+                const userRef = db.collection('users').doc(user.uid);
 
-                // Load and render transaction history
-                const transactions = JSON.parse(localStorage.getItem('transactionHistory')) || [];
-                historyList.innerHTML = ''; // Clear the list
-                if (transactions.length > 0) {
-                    transactions.forEach(tx => {
-                        const li = document.createElement('li');
-                        li.textContent = `${tx.date}: ${tx.type} - ₹${tx.amount}`;
-                        li.style.color = tx.type === 'Deposit' ? 'var(--neon-green)' : 'var(--neon-pink)';
-                        historyList.appendChild(li);
-                    });
-                } else {
-                    historyList.appendChild(noHistoryMsg);
-                }
+                userRef.onSnapshot(doc => {
+                    if (doc.exists) {
+                        const data = doc.data();
+                        // Populate UI from Firestore data
+                        userDisplayName.textContent = user.displayName || "New User";
+                        userBalance.textContent = `₹${(data.balance || 0).toFixed(2)}`;
+                        nameInput.value = user.displayName || "";
+                        emailInput.value = user.email;
+                        numberInput.value = data.phoneNumber || "";
+                        currentAvatarImg.src = data.avatarUrl || '/profile_dp1.png';
+
+                        // Render history
+                        const transactions = data.history || [];
+                        historyList.innerHTML = '';
+                        if (transactions.length > 0) {
+                            transactions.slice().reverse().forEach(tx => {
+                                const li = document.createElement('li');
+                                li.textContent = `${new Date(tx.date.seconds * 1000).toLocaleDateString()}: ${tx.description} - ₹${tx.amount.toFixed(2)}`;
+                                li.style.color = tx.type === 'credit' ? 'var(--neon-green)' : 'var(--neon-pink)';
+                                historyList.appendChild(li);
+                            });
+                        } else { historyList.appendChild(noHistoryMsg); }
+
+                    } else {
+                        // Create a new user document if one doesn't exist
+                        userRef.set({
+                            balance: 0,
+                            history: [],
+                            phoneNumber: "",
+                            avatarUrl: '/profile_dp1.png',
+                            createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                        });
+                    }
+                }, error => {
+                    console.error("Error fetching user data:", error);
+                });
             }
 
             // --- Auth Guard ---
@@ -152,49 +142,41 @@
                 }
             });
 
-            // --- Event Listeners ---
-            // Save user information
-            saveInfoBtn.addEventListener('click', () => {
+            // --- Firestore Save Functions ---
+            saveInfoBtn.addEventListener('click', async () => {
                 const newName = nameInput.value.trim();
                 const newNumber = numberInput.value.trim();
+                const user = auth.currentUser;
 
-                localStorage.setItem('userName', newName);
-                localStorage.setItem('userNumber', newNumber);
-
-                // Update the user's profile in Firebase Auth as well
-                auth.currentUser.updateProfile({ displayName: newName });
-
-                // Update UI immediately
-                userDisplayName.textContent = newName;
-                alert('Information saved successfully!');
+                if (user) {
+                    // Update Firebase Auth profile
+                    await user.updateProfile({ displayName: newName });
+                    // Update Firestore document
+                    await db.collection('users').doc(user.uid).update({ phoneNumber: newNumber });
+                    alert('Information saved successfully!');
+                }
             });
             
-            // Logout
+            // --- Other Event Listeners ---
             logoutButton.addEventListener('click', () => auth.signOut());
             
-            // Accordion (code is unchanged)
-            document.querySelectorAll('.accordion-header').forEach(button => {
-                button.addEventListener('click', () => {
-                    const panel = button.nextElementSibling;
-                    button.classList.toggle('active');
-                    if (panel.style.maxHeight) { panel.style.maxHeight = null; } 
-                    else { panel.style.maxHeight = panel.scrollHeight + "px"; }
-                });
-            });
+            document.querySelectorAll('.accordion-header').forEach(button => { button.addEventListener('click', () => { const panel = button.nextElementSibling; button.classList.toggle('active'); if (panel.style.maxHeight) { panel.style.maxHeight = null; } else { panel.style.maxHeight = panel.scrollHeight + "px"; } }); });
 
-            // Avatar Modal (code is unchanged)
             const modal = document.getElementById('avatar-modal');
             mainAvatarContainer.addEventListener('click', () => modal.style.display = 'flex');
             document.getElementById('close-modal-btn').addEventListener('click', () => modal.style.display = 'none');
             const avatarGrid = document.getElementById('avatar-grid-selector');
             for (let i = 1; i <= 10; i++) {
                 const img = document.createElement('img');
-                const src = `profile_dp${i}.png`;
+                const src = `/profile_dp${i}.png`; // Use absolute path
                 img.src = src;
                 img.classList.add('avatar-choice');
-                img.addEventListener('click', () => {
+                img.addEventListener('click', async () => {
                     currentAvatarImg.src = src;
-                    localStorage.setItem('userAvatar', src); // Save choice
+                    // Save avatar choice to Firestore
+                    if (auth.currentUser) {
+                        await db.collection('users').doc(auth.currentUser.uid).update({ avatarUrl: src });
+                    }
                     modal.style.display = 'none';
                 });
                 avatarGrid.appendChild(img);
@@ -202,4 +184,4 @@
         });
     </script>
 </body>
-</html>
+</html>```
