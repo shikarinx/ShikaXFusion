@@ -177,3 +177,231 @@ body {
 .play-now-btn:hover {
     background: #ff3d8b;
 }
+/* --- Profile Page Specific Styles (profile.html) --- */
+.profile-header-card {
+    background: var(--card-bg);
+    margin: 20px 20px 0 20px;
+    border-radius: 24px;
+    border: 1px solid var(--card-border);
+    padding: 25px;
+    text-align: center;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+}
+
+.profile-avatar {
+    width: 100px;
+    height: 100px;
+    margin: 0 auto 15px auto;
+    border-radius: 50%;
+    border: 3px solid var(--neon-pink);
+    cursor: pointer;
+    overflow: hidden;
+    transition: transform 0.3s ease;
+}
+.profile-avatar:hover {
+    transform: scale(1.1);
+    box-shadow: 0 0 20px var(--neon-pink);
+}
+.profile-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.profile-name {
+    font-family: 'Allura', cursive;
+    font-size: 3rem;
+    font-weight: normal;
+    color: var(--text-primary);
+    margin-bottom: 5px;
+}
+
+.profile-balance {
+    font-family: 'Inter', sans-serif;
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: var(--neon-green);
+    text-shadow: 0 0 10px rgba(57, 255, 20, 0.4);
+    margin-bottom: 20px;
+}
+
+.profile-actions {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+}
+
+.profile-action-btn {
+    font-family: 'Inter', sans-serif;
+    border: none;
+    padding: 12px 25px;
+    border-radius: 12px;
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+.profile-action-btn.deposit { background: linear-gradient(135deg, #28a745, #218838); }
+.profile-action-btn.withdraw { background: linear-gradient(135deg, #007bff, #0056b3); }
+.profile-action-btn:hover { transform: translateY(-2px); }
+
+.profile-options-list {
+    margin: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.accordion-item {
+    background: var(--card-bg);
+    border-radius: 18px;
+    border: 1px solid var(--card-border);
+    overflow: hidden;
+}
+
+.accordion-header {
+    background: transparent;
+    border: none;
+    padding: 18px 20px;
+    width: 100%;
+    text-align: left;
+    color: var(--text-primary);
+    font-family: 'Inter', sans-serif;
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.accordion-arrow {
+    width: 24px;
+    height: 24px;
+    fill: var(--text-secondary);
+    transition: transform 0.3s ease;
+}
+.accordion-header.active .accordion-arrow {
+    transform: rotate(180deg);
+}
+
+.accordion-panel {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease-out;
+    padding: 0 20px;
+}
+.accordion-panel .info-list p {
+    padding: 8px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+.accordion-panel .info-list p:last-child { border-bottom: none; }
+
+.transaction-list {
+    list-style: none;
+    padding-bottom: 15px;
+}
+.transaction-list li {
+    padding: 10px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+
+.redeem-container {
+    display: flex;
+    gap: 10px;
+    padding: 10px 0 20px 0;
+}
+.redeem-input {
+    flex-grow: 1;
+    background: rgba(0,0,0,0.4);
+    border: 1px solid var(--card-border);
+    color: var(--text-primary);
+    padding: 12px;
+    border-radius: 10px;
+    font-family: 'Inter', sans-serif;
+    font-size: 1rem;
+}
+.redeem-button {
+    font-family: 'Inter', sans-serif;
+    border: none;
+    background: var(--accent-gradient);
+    color: white;
+    padding: 0 20px;
+    border-radius: 10px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.logout-btn {
+    display: block;
+    width: calc(100% - 40px);
+    margin: 10px auto 20px auto;
+    padding: 15px;
+    border: none;
+    border-radius: 18px;
+    background: linear-gradient(135deg, #dc3545, #c82333);
+    color: white;
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+/* --- Avatar Modal Styles --- */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(2, 6, 23, 0.8);
+    backdrop-filter: blur(10px);
+    display: none; /* Changed to none */
+    align-items: center;
+    justify-content: center;
+    z-index: 10000;
+}
+.modal-content {
+    background: var(--card-bg);
+    padding: 25px;
+    border-radius: 24px;
+    border: 1px solid var(--card-border);
+    width: 90%;
+    max-width: 380px;
+    text-align: center;
+}
+.modal-content h3 {
+    font-family: 'Allura', cursive;
+    font-size: 2.5rem;
+    margin-bottom: 20px;
+}
+.avatar-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(60px, 1fr));
+    gap: 15px;
+}
+.avatar-choice {
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    border-radius: 50%;
+    object-fit: cover;
+    cursor: pointer;
+    border: 2px solid transparent;
+    transition: all 0.2s ease;
+}
+.avatar-choice:hover {
+    border-color: var(--neon-pink);
+    transform: scale(1.1);
+}
+.modal-close-button {
+    margin-top: 25px;
+    padding: 12px 30px;
+    border: none;
+    border-radius: 12px;
+    background: var(--accent-gradient);
+    color: white;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+}```
+
+This sets up a very detailed and functional profile page. The last remaining page is **Rewards**. Let me know when you're ready to create it.
