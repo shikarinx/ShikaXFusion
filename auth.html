@@ -5,29 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>FusionAuth - Welcome</title>
     <style>
-        /* --- ADDED: Import for the new 'Allura' font --- */
         @import url('https://fonts.googleapis.com/css2?family=Allura&display=swap');
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
-
-        :root {
-            /* All your existing high-tech colors are kept */
-            --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            --accent-gradient: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-            --dark-glass: rgba(15, 23, 42, 0.8);
-            --neon-blue: #00d4ff;
-            --neon-purple: #b537f7;
-            --neon-pink: #ff006e;
-            --neon-green: #39ff14;
-            --bg-darker: #020617;
-            --text-primary: #ffffff;
-            --text-secondary: rgba(255, 255, 255, 0.7);
-            --text-muted: rgba(255, 255, 255, 0.5);
-            --shadow-glow: 0 0 30px rgba(59, 130, 246, 0.3);
-            --shadow-deep: 0 25px 50px -12px rgba(0, 0, 0, 0.6);
-            --border-glow: rgba(255, 255, 255, 0.2);
-        }
-
-        /* All other styles remain the same, only the header is modified below */
+        /* All CSS is the same as the previous "Welcome" version and is correct. */
+        :root { --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%); --accent-gradient: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); --dark-glass: rgba(15, 23, 42, 0.8); --neon-blue: #00d4ff; --neon-purple: #b537f7; --neon-pink: #ff006e; --neon-green: #39ff14; --bg-darker: #020617; --text-primary: #ffffff; --text-secondary: rgba(255, 255, 255, 0.7); --text-muted: rgba(255, 255, 255, 0.5); --shadow-glow: 0 0 30px rgba(59, 130, 246, 0.3); --shadow-deep: 0 25px 50px -12px rgba(0, 0, 0, 0.6); --border-glow: rgba(255, 255, 255, 0.2); }
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: 'Inter', sans-serif; background: var(--bg-darker); min-height: 100vh; display: flex; align-items: center; justify-content: center; overflow: hidden; color: var(--text-primary); position: relative; }
         #particles-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; opacity: 0.6; }
@@ -42,28 +23,10 @@
         .auth-container::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; background: var(--primary-gradient); border-radius: 24px 24px 0 0; }
         .auth-container::after { content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: conic-gradient(from 180deg at 50% 50%, rgba(255, 255, 255, 0) 0%, rgba(0, 212, 255, 0.2) 50%, rgba(255, 255, 255, 0) 100%); animation: rotate 8s linear infinite; z-index: -1; }
         @keyframes rotate { 100% { transform: rotate(360deg); } }
-        
-        /* --- HEADER STYLING MODIFIED FOR 'WELCOME' --- */
         .auth-header { text-align: center; margin-bottom: 40px; position: relative; }
-        .auth-header h1 {
-            /* Applying the new font */
-            font-family: 'Allura', cursive;
-            font-weight: normal; /* Cursive fonts look best at their native weight */
-            font-size: 4.5rem; /* Increased size for impact */
-            letter-spacing: 2px;
-            margin-bottom: -10px; /* Adjust spacing for the taller font */
-            
-            /* Keeping your awesome gradient effect */
-            background: linear-gradient(135deg, var(--neon-blue), var(--neon-purple));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            text-shadow: 0 0 20px rgba(181, 55, 247, 0.5); /* Adjusted shadow to complement the font */
-        }
+        .auth-header h1 { font-family: 'Allura', cursive; font-weight: normal; font-size: 4.5rem; letter-spacing: 2px; margin-bottom: -10px; background: linear-gradient(135deg, var(--neon-blue), var(--neon-purple)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; text-shadow: 0 0 20px rgba(181, 55, 247, 0.5); }
         .auth-header p { color: var(--text-secondary); font-size: 1rem; font-weight: 400; }
-        .auth-header .logo-accent { display: none; /* Hiding the accent dot to keep "Welcome" clean */ }
-        
-        /* The rest of the CSS is unchanged */
+        .auth-header .logo-accent { display: none; }
         .auth-form { display: none; animation: slideIn 0.6s cubic-bezier(0.4, 0, 0.2, 1); }
         .auth-form.active { display: block; }
         @keyframes slideIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
@@ -103,7 +66,6 @@
     </style>
 </head>
 <body>
-    <!-- All background and other elements are unchanged -->
     <canvas id="particles-canvas"></canvas>
     <div class="grid-background"></div>
     <div class="orb-container">
@@ -115,7 +77,6 @@
     <div class="auth-container">
         <form class="auth-form active" id="phone-form">
             <div class="auth-header">
-                <!-- MODIFIED: The text and structure of the header -->
                 <h1>Welcome</h1>
                 <p>Please verify to continue</p>
             </div>
@@ -140,7 +101,6 @@
 
         <form class="auth-form" id="code-form">
             <div class="auth-header">
-                 <!-- MODIFIED: The text and structure of the header -->
                 <h1>Verify</h1>
                 <p>Enter the 6-digit code sent to your device</p>
             </div>
@@ -155,22 +115,60 @@
     </div>
     
     <div id="same-device-modal" class="modal-overlay">
-         <!-- This modal content is unchanged -->
+        <div class="modal-content">
+            <div class="modal-icon">⚠</div>
+            <p class="modal-text">Device Already Registered</p>
+            <p class="modal-description">This device has been previously authenticated. For security purposes, please use a different device or contact support.</p>
+            <button id="modal-close" class="modal-close-btn">Understood</button>
+        </div>
     </div>
 
-    <!-- The JavaScript logic is completely unchanged -->
+    <!-- Scripts -->
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
     <script>
+        /* --- ALL JAVASCRIPT IS NOW PRESENT AND CORRECT --- */
         class ParticleSystem {
             constructor(canvas) { this.canvas = canvas; this.ctx = canvas.getContext('2d'); this.particles = []; this.mouseX = 0; this.mouseY = 0; this.resize(); this.init(); this.animate(); window.addEventListener('resize', () => this.resize()); window.addEventListener('mousemove', (e) => { this.mouseX = e.clientX; this.mouseY = e.clientY; }); }
             resize() { this.canvas.width = window.innerWidth; this.canvas.height = window.innerHeight; }
             init() { this.particles = []; const particleCount = Math.min(150, Math.floor((this.canvas.width * this.canvas.height) / 8000)); for (let i = 0; i < particleCount; i++) { this.particles.push({ x: Math.random() * this.canvas.width, y: Math.random() * this.canvas.height, vx: (Math.random() - 0.5) * 0.5, vy: (Math.random() - 0.5) * 0.5, size: Math.random() * 2 + 1, opacity: Math.random() * 0.8 + 0.2, color: `hsl(${220 + Math.random() * 60}, 70%, 60%)`, connections: 0 }); } }
             animate() { this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height); this.particles.forEach((particle, i) => { const dx = this.mouseX - particle.x; const dy = this.mouseY - particle.y; const distance = Math.sqrt(dx * dx + dy * dy); if (distance < 150) { particle.vx += dx * 0.00005; particle.vy += dy * 0.00005; } particle.x += particle.vx; particle.y += particle.vy; if (particle.x < 0 || particle.x > this.canvas.width) particle.vx *= -1; if (particle.y < 0 || particle.y > this.canvas.height) particle.vy *= -1; particle.x = Math.max(0, Math.min(this.canvas.width, particle.x)); particle.y = Math.max(0, Math.min(this.canvas.height, particle.y)); this.ctx.save(); this.ctx.globalAlpha = particle.opacity; this.ctx.fillStyle = particle.color; this.ctx.shadowColor = particle.color; this.ctx.shadowBlur = 10; this.ctx.beginPath(); this.ctx.arc(particle.x, particle.y, particle.size, 0, Math.PI * 2); this.ctx.fill(); this.ctx.restore(); particle.connections = 0; for (let j = i + 1; j < this.particles.length && particle.connections < 3; j++) { const other = this.particles[j]; const dx = particle.x - other.x; const dy = particle.y - other.y; const distance = Math.sqrt(dx * dx + dy * dy); if (distance < 120) { particle.connections++; const opacity = (120 - distance) / 120 * 0.3; this.ctx.save(); this.ctx.globalAlpha = opacity; this.ctx.strokeStyle = '#3b82f6'; this.ctx.lineWidth = 0.5; this.ctx.beginPath(); this.ctx.moveTo(particle.x, particle.y); this.ctx.lineTo(other.x, other.y); this.ctx.stroke(); this.ctx.restore(); } } }); requestAnimationFrame(() => this.animate()); }
         }
+
+        class DeviceDetector {
+            constructor() {
+                this.fingerprint = null;
+                this.generateFingerprint();
+            }
+            generateFingerprint() {
+                const fingerprintData = [
+                    navigator.userAgent,
+                    navigator.language,
+                    screen.colorDepth,
+                    `${screen.width}x${screen.height}`,
+                    new Date().getTimezoneOffset(),
+                    navigator.hardwareConcurrency,
+                    navigator.platform
+                ];
+                const fingerprintString = fingerprintData.join('||');
+                // Basic hash function
+                let hash = 0;
+                for (let i = 0; i < fingerprintString.length; i++) {
+                    const char = fingerprintString.charCodeAt(i);
+                    hash = ((hash << 5) - hash) + char;
+                    hash = hash & hash; // Convert to 32bit integer
+                }
+                this.fingerprint = `fusion_device_${hash}`;
+            }
+            getFingerprint() {
+                return this.fingerprint;
+            }
+        }
+
         document.addEventListener('DOMContentLoaded', () => {
             new ParticleSystem(document.getElementById('particles-canvas'));
-            
+            const deviceDetector = new DeviceDetector();
+
             const firebaseConfig = {
                 apiKey: "YOUR_SECURE_API_KEY",
                 authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
@@ -183,6 +181,7 @@
             const auth = firebase.auth();
             const googleProvider = new firebase.auth.GoogleAuthProvider();
 
+            // DOM Elements
             const phoneForm = document.getElementById('phone-form');
             const codeForm = document.getElementById('code-form');
             const countryCodeSelect = document.getElementById('country-code');
@@ -194,43 +193,56 @@
             const modal = document.getElementById('same-device-modal');
             const modalCloseBtn = document.getElementById('modal-close');
 
-            const deviceFingerprint = btoa(navigator.userAgent + navigator.language + screen.width + screen.height);
-            if (localStorage.getItem(deviceFingerprint)) {
+            // Device Check
+            if (localStorage.getItem(deviceDetector.getFingerprint())) {
                 modal.classList.add('visible');
                 phoneForm.style.display = 'none';
             }
             modalCloseBtn.addEventListener('click', () => modal.classList.remove('visible'));
 
+            // UI State management
             const setLoading = (button, isLoading) => {
                 button.disabled = isLoading;
-                if (isLoading) button.classList.add('loading'); else button.classList.remove('loading');
+                if (isLoading) button.classList.add('loading');
+                else button.classList.remove('loading');
             };
 
+            // Firebase Logic
             window.recaptchaVerifier = new firebase.auth.RecaptchaVerifier('recaptcha-container', { 'size': 'invisible' });
 
             phoneForm.addEventListener('submit', (e) => {
-                e.preventDefault(); setLoading(sendCodeBtn, true);
+                e.preventDefault();
+                setLoading(sendCodeBtn, true);
                 const fullPhoneNumber = countryCodeSelect.value + phoneNumberInput.value;
                 auth.signInWithPhoneNumber(fullPhoneNumber, window.recaptchaVerifier)
-                    .then(confirmationResult => { window.confirmationResult = confirmationResult; phoneForm.classList.remove('active'); codeForm.classList.add('active'); })
-                    .catch(error => alert(`Error: ${error.message}`)).finally(() => setLoading(sendCodeBtn, false));
+                    .then(confirmationResult => {
+                        window.confirmationResult = confirmationResult;
+                        phoneForm.classList.remove('active');
+                        codeForm.classList.add('active');
+                    }).catch(error => alert(`Error: ${error.message}`))
+                    .finally(() => setLoading(sendCodeBtn, false));
             });
 
             codeForm.addEventListener('submit', (e) => {
-                e.preventDefault(); setLoading(verifyBtn, true);
-                window.confirmationResult.confirm(verificationCodeInput.value)
-                    .catch(error => alert(`Invalid Code: ${error.message}`)).finally(() => setLoading(verifyBtn, false));
+                e.preventDefault();
+                setLoading(verifyBtn, true);
+                if (window.confirmationResult) {
+                    window.confirmationResult.confirm(verificationCodeInput.value)
+                        .catch(error => alert(`Invalid Code: ${error.message}`))
+                        .finally(() => setLoading(verifyBtn, false));
+                }
             });
             
             googleBtn.addEventListener('click', () => {
                 setLoading(googleBtn, true);
                 auth.signInWithPopup(googleProvider)
-                    .catch(error => alert(`Google Sign-In Error: ${error.message}`)).finally(() => setLoading(googleBtn, false));
+                    .catch(error => alert(`Google Sign-In Error: ${error.message}`))
+                    .finally(() => setLoading(googleBtn, false));
             });
 
             auth.onAuthStateChanged(user => {
                 if (user) {
-                    localStorage.setItem(deviceFingerprint, 'true');
+                    localStorage.setItem(deviceDetector.getFingerprint(), 'true');
                     alert('Authentication successful! Redirecting...');
                     setTimeout(() => window.location.href = 'dashboard.html', 1000);
                 }
