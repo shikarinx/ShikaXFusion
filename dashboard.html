@@ -3,32 +3,166 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard - Test</title>
-    <!-- All CSS remains the same -->
+    <title>Dashboard - FusionAuth</title>
     <style>
-        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background-color: #f0f2f5; color: #333; display: flex; align-items: center; justify-content: center; min-height: 100vh; margin: 0; text-align: center; }
-        .container { background: white; padding: 40px; border-radius: 12px; box-shadow: 0 8px 30px rgba(0,0,0,0.1); }
-        h1 { color: #2c3e50; margin-bottom: 10px; }
-        p { font-size: 1.2rem; color: #7f8c8d; margin-bottom: 30px; }
-        #user-info { font-weight: bold; color: #2980b9; }
-        #logout-btn { background-color: #e74c3c; color: white; border: none; padding: 12px 25px; border-radius: 8px; font-size: 1rem; font-weight: bold; cursor: pointer; transition: background-color 0.2s; }
-        #logout-btn:hover { background-color: #c0392b; }
+        /* --- 1. Custom Font Definition --- */
+        @font-face {
+            font-family: 'Million Smiles';
+            src: url('Million-Smiles.otf') format('opentype');
+            font-weight: normal;
+            font-style: normal;
+        }
+
+        :root {
+            /* Design System Colors */
+            --bg-main: #f0f2f5;
+            --bg-card: #ffffff;
+            --text-dark: #2c3e50;
+            --text-light: #8a8d93;
+            --green: #4caf50;
+            --orange: #f39c12;
+            --blue: #3498db;
+            --border-color: #e4e6e9;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Million Smiles', 'Segoe UI', 'Roboto', sans-serif;
+            background-color: var(--bg-main);
+            color: var(--text-dark);
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            min-height: 100vh;
+            padding-top: 20px;
+        }
+        
+        /* Simulates the mobile view from the screenshot */
+        .mobile-frame {
+            width: 100%;
+            max-width: 420px;
+            height: calc(100vh - 40px);
+            max-height: 850px;
+            background-color: var(--bg-card);
+            border-radius: 30px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .dashboard-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 25px;
+            flex-shrink: 0;
+        }
+        .dashboard-header h1 { font-size: 1.8rem; font-weight: 600; }
+
+        #logout-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 5px;
+        }
+        #logout-btn svg {
+            width: 28px;
+            height: 28px;
+            stroke: var(--text-dark);
+            stroke-width: 2.5;
+            transition: transform 0.2s ease;
+        }
+        #logout-btn:hover svg { transform: scale(1.1); }
+
+        #user-info-bar {
+            text-align: center;
+            padding: 10px;
+            font-size: 1em;
+            color: var(--text-light);
+            background-color: #fafafa;
+            border-top: 1px solid #eee;
+            border-bottom: 1px solid #eee;
+            flex-shrink: 0;
+        }
+        #user-info-bar span { font-weight: bold; color: var(--text-dark); }
+
+        .dashboard-content {
+            padding: 20px 25px;
+            overflow-y: auto;
+            flex-grow: 1;
+        }
+        
+        /* All other styles for the dashboard UI are here */
+        .action-buttons { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px; }
+        .action-btn { display: flex; align-items: center; justify-content: center; gap: 10px; padding: 15px; border-radius: 18px; border: none; color: white; font-size: 1rem; font-weight: 600; cursor: pointer; transition: transform 0.2s ease, box-shadow 0.2s ease; }
+        .action-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 15px rgba(0,0,0,0.1); }
+        .action-btn svg { width: 22px; height: 22px; }
+        .action-btn.green { background-color: var(--green); }
+        .action-btn.orange { background-color: var(--orange); }
+        .info-banner { display: flex; align-items: center; gap: 12px; padding: 12px 15px; border-radius: 16px; border: 2px solid; margin-bottom: 15px; font-size: 1rem; line-height: 1.4; }
+        .info-banner svg { width: 24px; height: 24px; flex-shrink: 0; }
+        .info-banner.orange { border-color: var(--orange); color: var(--orange); }
+        .info-banner.orange svg { fill: var(--orange); }
+        .info-banner.blue { border-color: var(--blue); color: var(--blue); }
+        .info-banner.blue svg { fill: var(--blue); }
+        .info-banner p { margin: 0; }
+        .file-manager { margin-top: 25px; }
+        .file-toolbar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+        .file-toolbar h2 { font-size: 1.5rem; font-weight: 600; }
+        .file-toolbar .icon-group { display: flex; gap: 15px; }
+        .file-toolbar .icon-group svg { width: 24px; height: 24px; color: var(--text-dark); cursor: pointer; transition: color 0.2s; }
+        .file-toolbar .icon-group svg:hover { color: var(--blue); }
+        .file-list { list-style: none; background-color: var(--bg-main); border-radius: 18px; padding: 10px; }
+        .file-item { display: flex; align-items: center; padding: 15px; cursor: pointer; border-radius: 12px; transition: background-color 0.2s; }
+        .file-item:hover { background-color: #e4e8ed; }
+        .file-item .file-icon { margin-right: 15px; color: var(--text-dark); }
+        .file-item .file-icon svg { width: 28px; height: 28px; }
+        .file-info .filename { font-weight: 600; display: block; font-size: 1.1rem; }
+        .file-info .timestamp { font-size: 0.85rem; color: var(--text-light); }
+
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>✅ Success!</h1>
-        <p>You have been registered/logged in. <br> Your email is: <span id="user-info">loading...</span></p>
-        <button id="logout-btn">Logout</button>
+
+    <div class="mobile-frame">
+        <header class="dashboard-header">
+            <h1>Dashboard</h1>
+            <button id="logout-btn" title="Logout">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
+            </button>
+        </header>
+
+        <div id="user-info-bar">
+            Logged in as: <span id="user-email-display">loading...</span>
+        </div>
+
+        <main class="dashboard-content">
+            <div class="action-buttons">
+                <button class="action-btn green"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>PHP Server Ready</button>
+                <button class="action-btn orange"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white"><path d="M5 16h14v2H5v-2zm7-13L5.33 9h3.74v5h5.86V9h3.74L12 3z"/></svg>Publish Your Website</button>
+            </div>
+            <div class="info-banner orange"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 18.5c.28 0 .5.22.5.5v1c0 .28-.22.5-.5.5h-2c-.28 0-.5-.22-.5-.5v-1c0-.28.22-.5.5-.5h2m-5 0c.28 0 .5.22.5.5v1c0 .28-.22.5-.5.5h-2c-.28 0-.5-.22-.5-.5v-1c0-.28.22-.5.5-.5h2m-5 0c.28 0 .5.22.5.5v1c0 .28-.22.5-.5.5H8c-.28 0-.5-.22-.5-.5v-1c0-.28.22-.5.5-.5h2m11.5-4.5c.45 0 .82-.32.96-.73l1.45-4.27c.1-.29.01-.63-.23-.84l-1.04-1.04c-.1-.1-.22-.15-.35-.15H19V3c0-.55-.45-1-1-1H6c-.55 0-1 .45-1 1v4H3.17c-.13 0-.25.05-.35.15L1.78 8.2c-.24.21-.33.55-.23.84l1.45 4.27c.13.41.51.73.96.73H17v2H7c-.55 0-1 .45-1 1v2c0 .55.45 1 1 1h10c.55 0 1-.45 1-1v-2c.55 0 1-.45 1-1v-2h1.5zM7 4h10v3H7V4z"/></svg><p>Converting your project to an App is a better way for publicity. Do it now with only few easy steps by clicking [Publish Your Project].</p></div>
+            <div class="info-banner blue"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 6H4c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zM4 12h8v6H4v-6zm10 6v-6h6v6h-6zM14 9h6v2h-6V9zM4 9h8v2H4V9z"/></svg><p>Use database to improve your project! Just initialize MariaDB (MySQL) now through PHP Server Ready dialog.</p></div>
+            <div class="file-manager">
+                <div class="file-toolbar"><h2>Website</h2><div class="icon-group"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg></div></div>
+                <ul class="file-list"><li class="file-item"><div class="file-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zM6 20V4h7v5h5v11H6z"/></svg></div><div class="file-info"><span class="filename">Million-Smiles.otf</span><span class="timestamp">2025-07-19 00:07:09</span></div></li><li class="file-item"><div class="file-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zM4 18V6h2.95l-2.32 9H4zm4.53 0L10.85 6H12l-2.32 9h-1.15zm3.58-9l2.32 9h1.15L17.47 6h-1.42zM20 18h-.95l2.32-9H20v12z"/></svg></div><div class="file-info"><span class="filename">dashboard.html</span><span class="timestamp">2025-07-19 00:06:55</span></div></li></ul>
+            </div>
+        </main>
     </div>
 
     <!-- Firebase SDKs -->
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
-
+    
     <script>
-        // *** THIS IS THE CORRECTED PART ***
-        // Replace this with your NEW key after you generate it.
+        // --- PLEASE REPLACE WITH YOUR NEW, SECURE API KEY ---
         const firebaseConfig = {
             apiKey: "AIzaSyCzFHkD5bAIjZkP1W7jj4P-FoBldmeTCpk",
             authDomain: "shikaxfusion.firebaseapp.com",
@@ -38,28 +172,32 @@
             appId: "1:353890157797:web:54607ce7378b97fc4d000c",
             measurementId: "G-6QYYNVG9NB"
         };
-        
-        // --- All other JavaScript logic is correct and unchanged ---
+
+        // --- 1. INITIALIZE FIREBASE & GET REFERENCES ---
         firebase.initializeApp(firebaseConfig);
         const auth = firebase.auth();
-        const userInfoSpan = document.getElementById('user-info');
         const logoutBtn = document.getElementById('logout-btn');
-
+        const userEmailSpan = document.getElementById('user-email-display');
+        
+        // --- 2. AUTH GUARD & USER INFO DISPLAY ---
         auth.onAuthStateChanged(user => {
             if (user) {
-                userInfoSpan.textContent = user.email;
+                console.log('Access granted for user:', user.uid);
+                const displayName = user.displayName || user.email;
+                userEmailSpan.textContent = displayName;
             } else {
-                // If user is not logged in, send them back to the auth page.
-                window.location.replace('auth.html'); 
+                console.log('Access denied. Redirecting to auth page.');
+                window.location.replace('auth.html');
             }
         });
 
+        // --- 3. LOGOUT FUNCTIONALITY ---
         logoutBtn.addEventListener('click', () => {
             auth.signOut().then(() => {
-                console.log('User signed out.');
-            }).catch(error => {
-                console.error('Logout Error:', error);
-                alert('Error signing out.');
+                console.log('User signed out successfully.');
+            }).catch((error) => {
+                console.error('Sign out error:', error);
+                alert('Error signing out. Please try again.');
             });
         });
     </script>
