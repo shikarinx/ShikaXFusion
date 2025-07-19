@@ -1,0 +1,358 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FusionAuth - Secure Login & Register</title>
+    <style>
+        :root {
+            /* Extracted from your image for a perfect match */
+            --gradient-start: #8e76e8;
+            --gradient-end: #6347c7;
+            --accent-color: #f8576c;
+            --glass-tint: rgba(103, 76, 175, 0.25);
+            --glass-border: rgba(255, 255, 255, 0.18);
+            --text-light: #f1f1f1;
+            --text-medium: rgba(255, 255, 255, 0.7);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', 'Roboto', sans-serif;
+            background: linear-gradient(135deg, var(--gradient-start) 0%, var(--gradient-end) 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            color: var(--text-light);
+        }
+
+        /* --- Particle Background --- */
+        #particles-js {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            z-index: 0;
+        }
+
+        .auth-container {
+            position: relative;
+            z-index: 1;
+            background: var(--glass-tint);
+            backdrop-filter: blur(20px) saturate(120%);
+            -webkit-backdrop-filter: blur(20px) saturate(120%);
+            border-radius: 30px;
+            padding: 40px 35px;
+            width: 90%;
+            max-width: 420px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.15);
+            border: 1px solid var(--glass-border);
+        }
+
+        .auth-header {
+            text-align: center;
+            margin-bottom: 35px;
+        }
+
+        .auth-header h1 {
+            color: white;
+            font-size: 2.6rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+            text-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .auth-header p {
+            color: var(--text-medium);
+            font-size: 1rem;
+            font-weight: 400;
+        }
+
+        .auth-tabs {
+            display: flex;
+            margin-bottom: 30px;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 18px;
+            padding: 5px;
+        }
+
+        .tab-btn {
+            flex: 1;
+            padding: 14px;
+            background: none;
+            border: none;
+            color: var(--text-medium);
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            border-radius: 14px;
+            transition: all 0.3s ease;
+        }
+
+        .tab-btn.active {
+            background: rgba(255, 255, 255, 0.15);
+            color: white;
+            font-weight: 600;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .auth-form { display: none; }
+        .auth-form.active {
+            display: block;
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .form-group {
+            margin-bottom: 18px;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 16px 20px;
+            border: 1px solid transparent;
+            border-radius: 16px;
+            background: rgba(0, 0, 0, 0.2);
+            color: var(--text-light);
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            background: rgba(0, 0, 0, 0.25);
+            border-color: rgba(255, 255, 255, 0.3);
+        }
+        .form-group input::placeholder { color: var(--text-medium); font-weight: 400;}
+
+        .submit-btn {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, var(--accent-color), #f58496);
+            color: white;
+            border: none;
+            border-radius: 16px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-top: 10px;
+            box-shadow: 0 10px 20px -5px rgba(248, 87, 108, 0.5);
+        }
+
+        .submit-btn:hover:not(:disabled) {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 25px -5px rgba(248, 87, 108, 0.6);
+        }
+
+        .submit-btn:disabled {
+            background: #aaa;
+            cursor: not-allowed;
+            box-shadow: none;
+            opacity: 0.7;
+        }
+        
+        .google-btn {
+            width: 100%;
+            padding: 15px;
+            background: transparent;
+            color: var(--text-light);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            border-radius: 16px;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+        }
+
+        .google-btn:hover:not(:disabled) {
+            background: rgba(255, 255, 255, 0.1);
+        }
+        
+        .google-icon { width: 22px; height: 22px; }
+
+        .forgot-password {
+            text-align: right;
+            margin-top: -10px;
+            margin-bottom: 20px;
+        }
+
+        .forgot-password a {
+            color: var(--text-medium);
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: color 0.3s ease;
+        }
+
+        .forgot-password a:hover { color: white; }
+        
+        .divider {
+            text-align: center;
+            margin: 25px 0;
+            color: var(--text-medium);
+            font-weight: 500;
+        }
+        
+        /* --- Toast Notification System --- */
+        #toast-container { position: fixed; top: 20px; right: 20px; z-index: 9999; display: flex; flex-direction: column; gap: 10px; }
+        .toast { background: rgba(0, 0, 0, 0.7); backdrop-filter: blur(10px); color: white; padding: 15px 20px; border-radius: 8px; box-shadow: 0 5px 15px rgba(0,0,0,0.3); border-left: 5px solid; animation: slideInRight 0.5s forwards, fadeOut 0.5s 4.5s forwards; opacity: 0; transform: translateX(100%); }
+        .toast.success { border-color: #4CAF50; }
+        .toast.error { border-color: #f44336; }
+        .toast.info { border-color: #2196F3; }
+        @keyframes slideInRight { to { transform: translateX(0); opacity: 1; } }
+        @keyframes fadeOut { from { opacity: 1; } to { opacity: 0; transform: translateY(-20px); } }
+
+    </style>
+</head>
+<body>
+    <div id="particles-js"></div>
+    <div id="toast-container"></div>
+
+    <div class="auth-container">
+        <div class="auth-header">
+            <h1 id="form-title">Welcome Back</h1>
+            <p id="form-subtitle">Sign in to continue your journey</p>
+        </div>
+
+        <div class="auth-tabs">
+            <button class="tab-btn active" id="login-tab-btn">Login</button>
+            <button class="tab-btn" id="register-tab-btn">Register</button>
+        </div>
+
+        <!-- Login Form -->
+        <form class="auth-form active" id="loginForm">
+            <div class="form-group">
+                <input type="email" id="loginEmail" placeholder="Email Address" required>
+            </div>
+            <div class="form-group">
+                <input type="password" id="loginPassword" placeholder="Password" required>
+            </div>
+            <div class="forgot-password">
+                <a href="#" id="forgot-password-link">Forgot Password?</a>
+            </div>
+            <button type="submit" class="submit-btn" id="loginSubmitBtn">Sign In</button>
+        </form>
+
+        <!-- Register Form -->
+        <form class="auth-form" id="registerForm">
+            <div class="form-group">
+                <input type="text" id="registerName" placeholder="Full Name" required>
+            </div>
+            <div class="form-group">
+                <input type="email" id="registerEmail" placeholder="Email Address" required>
+            </div>
+            <div class="form-group">
+                <input type="password" id="registerPassword" placeholder="Create a Password" required>
+            </div>
+            <button type="submit" class="submit-btn" id="registerSubmitBtn">Create Account</button>
+        </form>
+        
+        <div class="divider">OR</div>
+        
+        <button type="button" class="google-btn" id="googleSignInBtn">
+            <img src="https://www.svgrepo.com/show/475656/google-color.svg" alt="Google icon" class="google-icon">
+            Continue with Google
+        </button>
+    </div>
+
+    <!-- Firebase & Particles.js Libraries -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+
+    <script>
+        // --- IMPORTANT: REPLACE WITH YOUR NEW FIREBASE CONFIG ---
+        const firebaseConfig = {
+          apiKey: "YOUR_NEW_API_KEY",
+          authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
+          projectId: "YOUR_PROJECT_ID",
+          storageBucket: "YOUR_PROJECT_ID.appspot.com",
+          messagingSenderId: "YOUR_SENDER_ID",
+          appId: "YOUR_APP_ID"
+        };
+
+        // --- 1. INITIALIZE FIREBASE & SERVICES ---
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const googleProvider = new firebase.auth.GoogleAuthProvider();
+
+        // --- 2. DOM ELEMENT REFERENCES (no changes needed here) ---
+        const loginForm = document.getElementById('loginForm'), registerForm = document.getElementById('registerForm'), loginTabBtn = document.getElementById('login-tab-btn'), registerTabBtn = document.getElementById('register-tab-btn'), googleSignInBtn = document.getElementById('googleSignInBtn'), forgotPasswordLink = document.getElementById('forgot-password-link'), allSubmitBtns = document.querySelectorAll('.submit-btn, .google-btn'), loginEmail = document.getElementById('loginEmail'), loginPassword = document.getElementById('loginPassword'), registerName = document.getElementById('registerName'), registerEmail = document.getElementById('registerEmail'), registerPassword = document.getElementById('registerPassword'), formTitle = document.getElementById('form-title'), formSubtitle = document.getElementById('form-subtitle');
+
+        // --- 3. UI/UX HELPERS & TAB SWITCHING (no changes needed here) ---
+        function showToast(message, type = 'info') { const t = document.getElementById('toast-container'), e = document.createElement('div'); e.className = `toast ${type}`, e.textContent = message, t.appendChild(e), setTimeout(() => e.remove(), 5e3) }
+        function toggleLoading(isLoading) { allSubmitBtns.forEach(btn => btn.disabled = isLoading) }
+        function switchTab(tab) { if (tab === 'login') { loginForm.classList.add('active'), registerForm.classList.remove('active'), loginTabBtn.classList.add('active'), registerTabBtn.classList.remove('active'), formTitle.textContent = 'Welcome Back', formSubtitle.textContent = 'Sign in to continue your journey' } else { registerForm.classList.add('active'), loginForm.classList.remove('active'), registerTabBtn.classList.add('active'), loginTabBtn.classList.remove('active'), formTitle.textContent = 'Create Account', formSubtitle.textContent = 'Join our amazing community' } }
+        loginTabBtn.addEventListener('click', () => switchTab('login'));
+        registerTabBtn.addEventListener('click', () => switchTab('register'));
+
+        // --- 4. FIREBASE AUTHENTICATION LOGIC (no changes needed here) ---
+        registerForm.addEventListener('submit', e => { e.preventDefault(), toggleLoading(!0); const o = registerEmail.value, t = registerPassword.value; t.length < 6 ? (showToast("Password must be at least 6 characters long.", "error"), toggleLoading(!1)) : auth.createUserWithEmailAndPassword(o, t).then(e => { showToast("Account created successfully! Welcome!", "success") }).catch(e => { showToast(e.message, "error") }).finally(() => { toggleLoading(!1) }) });
+        loginForm.addEventListener('submit', e => { e.preventDefault(), toggleLoading(!0); const o = loginEmail.value, t = loginPassword.value; auth.signInWithEmailAndPassword(o, t).then(e => { showToast("Login successful! Redirecting...", "success") }).catch(e => { showToast(e.message, "error") }).finally(() => { toggleLoading(!1) }) });
+        googleSignInBtn.addEventListener('click', () => { toggleLoading(!0), auth.signInWithPopup(googleProvider).then(e => { showToast(`Welcome, ${e.user.displayName}!`, "success") }).catch(e => { showToast(e.message, "error") }).finally(() => { toggleLoading(!1) }) });
+        forgotPasswordLink.addEventListener('click', e => { e.preventDefault(); const o = prompt("Please enter your email address to reset your password:"); o && auth.sendPasswordResetEmail(o).then(() => { showToast(`Password reset link sent to ${o}`, "info") }).catch(e => { showToast(e.message, "error") }) });
+
+        // --- 5. AUTH STATE OBSERVER (no changes needed here) ---
+        auth.onAuthStateChanged(user => { if (user) { console.log('User signed in:', user.uid); setTimeout(() => { window.location.href = 'dashboard.html' }, 1500) } else { console.log('User is signed out.') } });
+
+        // --- 6. DYNAMIC PARTICLE BACKGROUND (Updated to match image) ---
+        particlesJS("particles-js", {
+          "particles": {
+            "number": {
+              "value": 50, /* Fewer particles */
+              "density": { "enable": true, "value_area": 800 }
+            },
+            "color": { "value": "#ffffff" },
+            "shape": { "type": "circle" },
+            "opacity": {
+              "value": 0.6, /* More visible particles */
+              "random": true,
+              "anim": { "enable": true, "speed": 0.5, "opacity_min": 0.1, "sync": false }
+            },
+            "size": {
+              "value": 2.5, /* Smaller particles */
+              "random": true,
+            },
+            "line_linked": {
+              "enable": false /* No lines connecting particles */
+            },
+            "move": {
+              "enable": true, "speed": 0.8, /* Slower movement */
+              "direction": "none", "random": true,
+              "straight": false, "out_mode": "out", "bounce": false
+            }
+          },
+          "interactivity": {
+            "detect_on": "canvas",
+            "events": {
+              "onhover": { "enable": true, "mode": "repulse" },
+              "resize": true
+            },
+            "modes": {
+              "repulse": { "distance": 80, "duration": 0.4 }
+            }
+          },
+          "retina_detect": true
+        });
+    </script>
+</body>
+</html>
