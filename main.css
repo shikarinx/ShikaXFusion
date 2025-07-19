@@ -9,8 +9,9 @@
     --neon-blue: #00d4ff;
     --neon-purple: #b537f7;
     --neon-pink: #ff006e;
+    --neon-green: #39ff14;
     --card-bg: rgba(20, 29, 58, 0.6);
-    --card-border: rgba(255, 255, 255, 0.1);
+    --card-border: rgba(255, 255, 255, 0.15);
     --text-primary: #ffffff;
     --text-secondary: rgba(255, 255, 255, 0.7);
 }
@@ -18,13 +19,12 @@
 * { margin: 0; padding: 0; box-sizing: border-box; }
 
 body {
-    /* FIX: Set the default font to Allura, with Inter as a fallback for readability */
-    font-family: 'Allura', 'Inter', sans-serif;
+    font-family: 'Inter', sans-serif;
     background: var(--bg-darker);
     min-height: 100vh;
     color: var(--text-primary);
     position: relative;
-    overflow: hidden;
+    overflow-y: auto; /* Allow scrolling on the body if needed */
 }
 
 #particles-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; opacity: 0.6; }
@@ -36,68 +36,143 @@ body {
 @keyframes float { 50% { transform: translateY(-40px) scale(1.1); } }
 
 /* --- Main App Structure --- */
-.app-container { width: 100%; max-width: 430px; height: 100vh; margin: auto; background: rgba(0,0,0,0.2); border-left: 1px solid var(--card-border); border-right: 1px solid var(--card-border); display: flex; flex-direction: column; position: relative; z-index: 10; }
-.main-content { flex-grow: 1; overflow-y: auto; padding-top: 20px; }
+.app-container { width: 100%; max-width: 430px; min-height: 100vh; margin: auto; background: rgba(0,0,0,0.2); border-left: 1px solid var(--card-border); border-right: 1px solid var(--card-border); display: flex; flex-direction: column; position: relative; z-index: 10; overflow: hidden; }
+.main-content { flex-grow: 1; overflow-y: auto; padding: 20px 0 120px 0; /* Added bottom padding */ }
 .main-content::-webkit-scrollbar { display: none; }
 
 /* --- Reusable Bottom Navigation --- */
-.bottom-nav { flex-shrink: 0; margin: 20px; padding: 10px; background: rgba(255, 255, 255, 0.9); border-radius: 50px; backdrop-filter: blur(15px); display: flex; justify-content: space-around; align-items: center; box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
-.nav-item { display: flex; flex-direction: column; align-items: center; gap: 4px; color: #555; text-decoration: none; cursor: pointer; transition: color 0.2s ease; background: none; border: none; padding: 5px 10px; font-family: 'Inter', sans-serif; }
+/* MODIFIED: Changed to a transparent glass style */
+.bottom-nav { 
+    position: absolute; /* Changed for positioning at the bottom */
+    bottom: 20px;
+    left: 20px;
+    right: 20px;
+    flex-shrink: 0; 
+    padding: 10px; 
+    background: rgba(15, 23, 42, 0.5); /* Glass background */
+    backdrop-filter: blur(15px); 
+    border: 1px solid var(--card-border);
+    border-radius: 50px; 
+    display: flex; 
+    justify-content: space-around; 
+    align-items: center; 
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3); 
+    z-index: 100;
+}
+.nav-item { display: flex; flex-direction: column; align-items: center; gap: 4px; color: var(--text-secondary); text-decoration: none; cursor: pointer; transition: color 0.2s ease; background: none; border: none; padding: 5px 10px; font-family: 'Inter', sans-serif; }
 .nav-item.active { color: var(--neon-pink); }
-.nav-item:hover { color: #000; }
+.nav-item:hover { color: var(--text-primary); }
 .nav-item svg { width: 24px; height: 24px; }
 .nav-item span { font-size: 0.75rem; font-weight: 600; }
-.nav-item .icon-fill { fill: #888; transition: fill 0.2s; }
+/* MODIFIED: Icon colors updated for new background */
+.nav-item .icon-fill { fill: var(--text-secondary); transition: fill 0.2s; }
 .nav-item.active .icon-fill { fill: var(--neon-pink); }
-.nav-item:hover .icon-fill { fill: #000; }
+.nav-item:hover .icon-fill { fill: var(--text-primary); }
 
 /* --- Dashboard Specific Styles --- */
 .dashboard-header { padding: 20px; display: flex; justify-content: space-between; align-items: center; flex-shrink: 0; }
 .header-left { font-family: 'Inter', sans-serif; font-weight: 600; font-size: 1.2rem; }
 .header-right { display: flex; align-items: center; gap: 15px; }
-.brand-name {
-    font-family: 'Allura', cursive; /* FIX: Using Allura font */
-    font-size: 2.5rem; /* Increased size for better look */
-    /* FIX: Brighter gradient for visibility */
-    background: linear-gradient(135deg, var(--neon-blue), var(--neon-pink));
-    -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
-    /* FIX: Added glow for better visibility */
-    text-shadow: 0 0 15px rgba(0, 212, 255, 0.5);
-}
+.brand-name { font-family: 'Allura', cursive; font-size: 2.5rem; background: linear-gradient(135deg, var(--neon-blue), var(--neon-pink)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; text-shadow: 0 0 15px rgba(0, 212, 255, 0.5); }
 .user-avatar { width: 44px; height: 44px; background: linear-gradient(135deg, #f97794, #623aa2); border-radius: 14px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 1.2rem; }
 
 /* --- Horizontal Scrolling Cards & Section Headers --- */
-.horizontal-scroll-container { display: flex; gap: 20px; overflow-x: auto; padding: 0 0 20px 20px; scroll-snap-type: x mandatory; scrollbar-width: none; }
+.horizontal-scroll-container { display: flex; gap: 20px; overflow-x: auto; padding: 0 20px 20px 20px; scroll-snap-type: x mandatory; scrollbar-width: none; }
 .horizontal-scroll-container::-webkit-scrollbar { display: none; }
-.game-card { flex: 0 0 280px; height: 350px; border-radius: 24px; overflow: hidden; position: relative; background: var(--card-bg); border: 1px solid var(--card-border); box-shadow: 0 10px 30px rgba(0,0,0,0.2); cursor: pointer; transition: transform 0.3s ease; scroll-snap-align: start; }
-.game-card:hover { transform: translateY(-5px); }
-.section-header {
-    padding: 0 20px;
-    margin-bottom: 15px;
+/* MODIFIED: Added centering for play button */
+.game-card { flex: 0 0 280px; height: 350px; border-radius: 24px; overflow: hidden; position: relative; background: var(--card-bg); border: 1px solid var(--card-border); box-shadow: 0 10px 30px rgba(0,0,0,0.2); cursor: pointer; transition: transform 0.3s ease, box-shadow 0.3s ease; scroll-snap-align: start; display: flex; align-items: center; justify-content: center; }
+.game-card:hover { transform: translateY(-5px); box-shadow: 0 15px 40px rgba(0,0,0,0.4); }
+.section-header { padding: 0 20px; margin-bottom: 15px; margin-top: 10px; }
+.section-header h2 { font-family: 'Allura', cursive; font-size: 3rem; font-weight: normal; color: var(--text-primary); text-shadow: 0 0 10px rgba(255,255,255,0.2); }
+
+/* --- NEW: Play Button Styles --- */
+.play-button {
+    width: 70px;
+    height: 70px;
+    background: rgba(0, 212, 255, 0.2);
+    border: 2px solid var(--neon-blue);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(5px);
 }
-.section-header h2 {
-    font-family: 'Allura', cursive; /* FIX: Using Allura font */
-    font-size: 3rem; /* Adjusted size */
-    font-weight: normal;
-    color: var(--text-primary);
+.play-button svg {
+    width: 32px;
+    height: 32px;
+    fill: var(--neon-blue);
+    transition: fill 0.3s ease;
+    margin-left: 5px; /* Optical alignment for play icon */
+}
+.game-card:hover .play-button {
+    background: var(--neon-blue);
+    box-shadow: 0 0 20px rgba(0, 212, 255, 0.5);
+}
+.game-card:hover .play-button svg {
+    fill: var(--bg-darker);
 }
 
-/* --- Other page styles (Tasks, Placeholders) --- */
-/* (These are unchanged but kept for your other pages) */
-.tasks-header { display: flex; justify-content: space-between; align-items: center; padding: 20px 25px; flex-shrink: 0; }
-.tasks-header h1 { font-size: 1.8rem; font-weight: 600; }
-.tasks-header .icon { cursor: pointer; width: 28px; height: 28px; }
-.tasks-content { padding: 0 25px; }
-.action-buttons { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px; }
-.action-btn { font-family: 'Inter', sans-serif; display: flex; align-items: center; justify-content: center; gap: 10px; padding: 15px; border-radius: 18px; border: none; color: white; font-size: 1rem; font-weight: 600; cursor: pointer; transition: transform 0.2s ease; }
-.action-btn.green { background-color: #4caf50; }
-.action-btn.orange { background-color: #f39c12; }
-.info-banner { display: flex; gap: 12px; padding: 12px 15px; border-radius: 16px; border: 2px solid; margin-bottom: 15px; font-size: 1rem; font-family: 'Inter', sans-serif; }
-.info-banner.orange { border-color: #f39c12; color: #f39c12; }
-.info-banner.blue { border-color: #3498db; color: #3498db; }
-.file-manager { margin-top: 25px; }
-.file-list { list-style: none; background: rgba(0,0,0,0.1); border-radius: 18px; padding: 10px; }
-.placeholder-content { display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; height: 100%; padding: 20px; }
-.placeholder-content .icon { font-size: 4rem; margin-bottom: 20px; opacity: 0.5; }
-.placeholder-content h1 { font-size: 2rem; margin-bottom: 10px; font-family: 'Allura', cursive; }
-.placeholder-content p { font-family: 'Inter', sans-serif; color: var(--text-secondary); max-width: 300px; }
+/* --- NEW: Task/Offers List Styles --- */
+.task-list-container {
+    background: var(--card-bg);
+    margin: 0 20px;
+    border-radius: 24px;
+    padding: 15px;
+    border: 1px solid var(--card-border);
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+.task-item {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 10px;
+    background: rgba(0,0,0,0.2);
+    border-radius: 16px;
+}
+.task-icon {
+    width: 40px;
+    height: 40px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--primary-gradient);
+    border-radius: 12px;
+}
+.task-icon svg {
+    width: 22px;
+    height: 22px;
+    fill: var(--text-primary);
+}
+.task-details {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+}
+.task-title {
+    font-family: 'Inter', sans-serif;
+    font-weight: 600;
+    font-size: 1rem;
+    color: var(--text-primary);
+}
+.task-reward {
+    font-family: 'Inter', sans-serif;
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+}
+.task-action {
+    font-family: 'Inter', sans-serif;
+    font-weight: 600;
+    font-size: 0.9rem;
+    padding: 8px 18px;
+    background: var(--accent-gradient);
+    border-radius: 10px;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+}
+.task-action:hover {
+    transform: scale(1.05);
+}

@@ -20,14 +20,60 @@
             </div>
         </header>
         <main class="main-content">
+            <!-- MODIFIED: "Trending Offers" is now "Trending Games" -->
             <div class="section-header">
-                <h2>Trending Offers</h2>
+                <h2>Trending Games</h2>
             </div>
             <div class="horizontal-scroll-container">
-                <div class="game-card"></div>
-                <div class="game-card"></div>
-                <div class="game-card"></div>
+                <!-- MODIFIED: Added a play button inside each card -->
+                <div class="game-card">
+                    <div class="play-button">
+                        <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"></path></svg>
+                    </div>
+                </div>
+                <div class="game-card">
+                    <div class="play-button">
+                        <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"></path></svg>
+                    </div>
+                </div>
+                <div class="game-card">
+                    <div class="play-button">
+                        <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"></path></svg>
+                    </div>
+                </div>
             </div>
+
+            <!-- NEW: "Offers" section with tasks -->
+            <div class="section-header">
+                <h2>Offers</h2>
+            </div>
+            <div class="task-list-container">
+                <div class="task-item">
+                    <div class="task-icon"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"></path></svg></div>
+                    <div class="task-details">
+                        <span class="task-title">Daily Check-in</span>
+                        <span class="task-reward">Claim your daily bonus!</span>
+                    </div>
+                    <div class="task-action">Claim</div>
+                </div>
+                <div class="task-item">
+                    <div class="task-icon"><svg viewBox="0 0 24 24"><path d="M19.5 5.5c-1.38 0-2.5 1.12-2.5 2.5s1.12 2.5 2.5 2.5 2.5-1.12 2.5-2.5-1.12-2.5-2.5-2.5zM15 12c-1.38 0-2.5 1.12-2.5 2.5s1.12 2.5 2.5 2.5 2.5-1.12 2.5-2.5-1.12-2.5-2.5-2.5zM4.5 5.5c-1.38 0-2.5 1.12-2.5 2.5s1.12 2.5 2.5 2.5 2.5-1.12 2.5-2.5-1.12-2.5-2.5-2.5z"></path></svg></div>
+                    <div class="task-details">
+                        <span class="task-title">Play a Game</span>
+                        <span class="task-reward">Earn 50 coins</span>
+                    </div>
+                    <div class="task-action">Go</div>
+                </div>
+                <div class="task-item">
+                    <div class="task-icon"><svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-2 12H6v-2h12v2zm0-3H6V9h12v2zm0-3H6V6h12v2z"></path></svg></div>
+                    <div class="task-details">
+                        <span class="task-title">Complete Survey</span>
+                        <span class="task-reward">Earn 200 coins</span>
+                    </div>
+                    <div class="task-action">Start</div>
+                </div>
+            </div>
+
         </main>
         <nav class="bottom-nav">
             <a href="dashboard.html" class="nav-item active"><svg viewBox="0 0 24 24"><path class="icon-fill" d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg><span>Home</span></a>
@@ -41,17 +87,17 @@
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
     <script>
-        // --- SCRIPT IS NOW FIXED ---
+        // --- SCRIPT IS UNCHANGED FROM PREVIOUS VERSION ---
         let firebaseAuthReady = false;
         document.addEventListener('DOMContentLoaded', () => {
             class ParticleSystem { constructor(canvas) { this.canvas = canvas; this.ctx = canvas.getContext('2d'); this.particles = []; this.resize(); this.init(); this.animate(); window.addEventListener('resize', () => this.resize()); } resize() { this.canvas.width = window.innerWidth; this.canvas.height = window.innerHeight; } init() { this.particles = []; const particleCount = 100; for (let i = 0; i < particleCount; i++) { this.particles.push({ x: Math.random() * this.canvas.width, y: Math.random() * this.canvas.height, vx: (Math.random() - 0.5) * 0.5, vy: (Math.random() - 0.5) * 0.5, size: Math.random() * 2 + 1, color: `hsl(${220 + Math.random() * 60}, 70%, 60%)` }); } } animate() { this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height); this.particles.forEach(p => { p.x += p.vx; p.y += p.vy; if (p.x < 0 || p.x > this.canvas.width) p.vx *= -1; if (p.y < 0 || p.y > this.canvas.height) p.vy *= -1; this.ctx.fillStyle = p.color; this.ctx.beginPath(); this.ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2); this.ctx.fill(); }); requestAnimationFrame(() => this.animate()); } }
             new ParticleSystem(document.getElementById('particles-canvas'));
             
             const firebaseConfig = {
-                apiKey: "AIzaSyCzFHkD5bAIjZkP1W7jj4P-FoBldmeTCpk", // Replace with a new, secure key
+                apiKey: "AIzaSyCzFHkD5bAIjZkP1W7jj4P-FoBldmeTCpk",
                 authDomain: "shikaxfusion.firebaseapp.com",
                 projectId: "shikaxfusion",
-                storageBucket: "shikaxfusion.firebasestorage.app",
+                storageBucket: "shikaxfusion.appspot.com",
                 messagingSenderId: "353890157797",
                 appId: "1:353890157797:web:54607ce7378b97fc4d000c"
             };
