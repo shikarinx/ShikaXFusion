@@ -3,18 +3,98 @@
 <head>
     <meta charset="UTF-8">
     <title>ShikaXFusion Admin Panel</title>
+    <!-- MODIFIED: Importing the main stylesheet to get the CSS variables -->
+    <link rel="stylesheet" href="main.css">
     <style>
-        body { font-family: sans-serif; background: #f0f2f5; padding: 20px; }
-        .container { max-width: 800px; margin: auto; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
-        h1, h2 { color: #333; }
-        input, textarea, button { width: 100%; padding: 10px; margin-bottom: 10px; border-radius: 5px; border: 1px solid #ccc; box-sizing: border-box; }
-        button { background-color: #007bff; color: white; cursor: pointer; border: none; }
-        #task-list li { list-style: none; padding: 10px; border: 1px solid #eee; margin-bottom: 5px; display: flex; justify-content: space-between; align-items: center; }
-        .edit-btn, .delete-btn { width: auto; padding: 5px 10px; margin-left: 10px; }
-        .delete-btn { background-color: #dc3545; }
+        /* --- REDESIGNED ADMIN PANEL STYLES --- */
+        .container {
+            position: relative;
+            z-index: 10;
+            background: rgba(15, 23, 42, 0.8); /* dark-glass */
+            backdrop-filter: blur(20px) saturate(180%);
+            border-radius: 24px;
+            padding: 40px;
+            max-width: 800px;
+            margin: auto;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.6), 0 0 30px rgba(59, 130, 246, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            margin-top: 20px;
+        }
+        h1, h2 {
+            font-family: 'Allura', cursive;
+            font-weight: normal;
+            font-size: 3rem;
+            text-align: center;
+            margin-bottom: 20px;
+            color: var(--text-primary);
+        }
+        h2 { font-size: 2.5rem; margin-top: 30px;}
+
+        input, textarea {
+            width: 100%;
+            padding: 16px 20px;
+            margin-bottom: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 16px;
+            background: rgba(0, 0, 0, 0.4);
+            color: var(--text-primary);
+            font-family: 'Inter', sans-serif;
+            font-size: 1rem;
+            box-sizing: border-box;
+            transition: all 0.3s ease;
+        }
+        input:focus, textarea:focus {
+            outline: none;
+            border-color: var(--neon-blue);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+
+        button[type="submit"] {
+            width: 100%;
+            padding: 18px;
+            background: var(--accent-gradient);
+            color: var(--text-primary);
+            border: none;
+            border-radius: 16px;
+            font-family: 'Inter', sans-serif;
+            font-size: 1.2rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s ease;
+        }
+        button[type="submit"]:hover { transform: translateY(-2px); }
+
+        #task-list { padding: 0; }
+        #task-list li {
+            list-style: none;
+            padding: 15px;
+            background: rgba(0,0,0,0.2);
+            border-radius: 16px;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-family: 'Inter', sans-serif;
+        }
+        .edit-btn, .delete-btn {
+            width: auto;
+            padding: 8px 15px;
+            margin-left: 10px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            border-radius: 10px;
+            cursor: pointer;
+            border: none;
+        }
+        .edit-btn { background-color: var(--neon-blue); color: var(--bg-darker); }
+        .delete-btn { background-color: var(--neon-pink); color: white; }
     </style>
 </head>
 <body>
+    <!-- MODIFIED: Added app background elements -->
+    <canvas id="particles-canvas"></canvas>
+    <div class="grid-background"></div>
+    <div class="orb-container"><div class="floating-orb orb-1"></div><div class="floating-orb orb-2"></div></div>
 
     <div class="container" id="admin-container" style="display:none;">
         <h1>Task Management</h1>
@@ -25,8 +105,8 @@
             <input type="text" id="task-title" placeholder="Task Title (e.g., Install & Withdraw)" required>
             <input type="text" id="task-reward" placeholder="Reward Text (e.g., Earn ₹10)" required>
             <input type="url" id="task-image-url" placeholder="Image URL (for detail page)" required>
-            <textarea id="task-details" placeholder="Full Task Details..." required></textarea>
-            <input type="url"id="task-action-url" placeholder="Action URL (Link for the 'Go' button)" required>
+            <textarea id="task-details" placeholder="Full Task Details..." required rows="4"></textarea>
+            <input type="url" id="task-action-url" placeholder="Action URL (Link for the 'Go' button)" required>
             <input type="number" id="task-order" placeholder="Display Order (e.g., 10, 20, 30)" required>
             <button type="submit">Save Task</button>
         </form>
@@ -35,13 +115,12 @@
         <ul id="task-list"></ul>
     </div>
 
-    <!-- Firebase Scripts -->
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            // Simple password protection for the admin panel
-            const correctPassword = "your_secret_password"; // IMPORTANT: Change this!
+            // MODIFIED: Password updated
+            const correctPassword = "ShikaXFusion";
             let password = prompt("Enter Admin Password:", "");
             if (password === correctPassword) {
                 document.getElementById('admin-container').style.display = 'block';
@@ -49,6 +128,10 @@
                 alert("Incorrect Password!");
                 return;
             }
+
+            // The particle script has been added to make the background work
+            class ParticleSystem { constructor(canvas) { this.canvas = canvas; this.ctx = canvas.getContext('2d'); this.particles = []; this.resize(); this.init(); this.animate(); window.addEventListener('resize', () => this.resize()); } resize() { this.canvas.width = window.innerWidth; this.canvas.height = window.innerHeight; } init() { this.particles = []; const particleCount = 100; for (let i = 0; i < particleCount; i++) { this.particles.push({ x: Math.random() * this.canvas.width, y: Math.random() * this.canvas.height, vx: (Math.random() - 0.5) * 0.5, vy: (Math.random() - 0.5) * 0.5, size: Math.random() * 2 + 1, color: `hsl(${220 + Math.random() * 60}, 70%, 60%)` }); } } animate() { this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height); this.particles.forEach(p => { p.x += p.vx; p.y += p.vy; if (p.x < 0 || p.x > this.canvas.width) p.vx *= -1; if (p.y < 0 || p.y > this.canvas.height) p.vy *= -1; this.ctx.fillStyle = p.color; this.ctx.beginPath(); this.ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2); this.ctx.fill(); }); requestAnimationFrame(() => this.animate()); } }
+            new ParticleSystem(document.getElementById('particles-canvas'));
 
             const firebaseConfig = {
                 apiKey: "AIzaSyCzFHkD5bAIjZkP1W7jj4P-FoBldmeTCpk",
@@ -61,11 +144,9 @@
             firebase.initializeApp(firebaseConfig);
             const db = firebase.firestore();
             const tasksCollection = db.collection('tasks');
-
             const taskForm = document.getElementById('task-form');
             const taskList = document.getElementById('task-list');
 
-            // --- Load and Display Tasks ---
             const loadTasks = () => {
                 tasksCollection.orderBy('order').onSnapshot(snapshot => {
                     taskList.innerHTML = '';
@@ -84,7 +165,6 @@
                 });
             };
 
-            // --- Save or Update Task ---
             taskForm.addEventListener('submit', (e) => {
                 e.preventDefault();
                 const id = document.getElementById('task-id').value;
@@ -97,12 +177,13 @@
                     order: Number(document.getElementById('task-order').value)
                 };
 
-                if (id) { // If there's an ID, we're editing
+                if (id) {
                     tasksCollection.doc(id).update(taskData).then(() => {
                         alert('Task updated!');
                         taskForm.reset();
+                        document.getElementById('task-id').value = '';
                     });
-                } else { // Otherwise, we're adding a new task
+                } else {
                     tasksCollection.add(taskData).then(() => {
                         alert('Task added!');
                         taskForm.reset();
@@ -110,7 +191,6 @@
                 }
             });
 
-            // --- Edit and Delete Logic ---
             taskList.addEventListener('click', (e) => {
                 const target = e.target;
                 const id = target.getAttribute('data-id');
