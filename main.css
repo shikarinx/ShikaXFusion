@@ -1,8 +1,5 @@
 /* --- Global Styles, Fonts & Background --- */
-@font-face {
-    font-family: 'Million Smiles';
-    src: url('Million-Smiles.otf') format('opentype'); 
-}
+@import url('https://fonts.googleapis.com/css2?family=Allura&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 
 :root {
@@ -21,7 +18,8 @@
 * { margin: 0; padding: 0; box-sizing: border-box; }
 
 body {
-    font-family: 'Inter', sans-serif;
+    /* FIX: Set the default font to Allura, with Inter as a fallback for readability */
+    font-family: 'Allura', 'Inter', sans-serif;
     background: var(--bg-darker);
     min-height: 100vh;
     color: var(--text-primary);
@@ -38,25 +36,8 @@ body {
 @keyframes float { 50% { transform: translateY(-40px) scale(1.1); } }
 
 /* --- Main App Structure --- */
-.app-container {
-    width: 100%;
-    max-width: 430px;
-    height: 100vh;
-    margin: auto;
-    background: rgba(0,0,0,0.2);
-    border-left: 1px solid var(--card-border);
-    border-right: 1px solid var(--card-border);
-    display: flex;
-    flex-direction: column;
-    position: relative;
-    z-index: 10;
-}
-.main-content {
-    flex-grow: 1;
-    overflow-y: auto;
-    /* FIX: Added padding to the top to create space from the header */
-    padding-top: 20px; 
-}
+.app-container { width: 100%; max-width: 430px; height: 100vh; margin: auto; background: rgba(0,0,0,0.2); border-left: 1px solid var(--card-border); border-right: 1px solid var(--card-border); display: flex; flex-direction: column; position: relative; z-index: 10; }
+.main-content { flex-grow: 1; overflow-y: auto; padding-top: 20px; }
 .main-content::-webkit-scrollbar { display: none; }
 
 /* --- Reusable Bottom Navigation --- */
@@ -72,9 +53,17 @@ body {
 
 /* --- Dashboard Specific Styles --- */
 .dashboard-header { padding: 20px; display: flex; justify-content: space-between; align-items: center; flex-shrink: 0; }
-.header-left { font-weight: 600; font-size: 1.2rem; }
+.header-left { font-family: 'Inter', sans-serif; font-weight: 600; font-size: 1.2rem; }
 .header-right { display: flex; align-items: center; gap: 15px; }
-.brand-name { font-family: 'Million Smiles', cursive; font-size: 1.8rem; background: var(--primary-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+.brand-name {
+    font-family: 'Allura', cursive; /* FIX: Using Allura font */
+    font-size: 2.5rem; /* Increased size for better look */
+    /* FIX: Brighter gradient for visibility */
+    background: linear-gradient(135deg, var(--neon-blue), var(--neon-pink));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+    /* FIX: Added glow for better visibility */
+    text-shadow: 0 0 15px rgba(0, 212, 255, 0.5);
+}
 .user-avatar { width: 44px; height: 44px; background: linear-gradient(135deg, #f97794, #623aa2); border-radius: 14px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 1.2rem; }
 
 /* --- Horizontal Scrolling Cards & Section Headers --- */
@@ -82,36 +71,33 @@ body {
 .horizontal-scroll-container::-webkit-scrollbar { display: none; }
 .game-card { flex: 0 0 280px; height: 350px; border-radius: 24px; overflow: hidden; position: relative; background: var(--card-bg); border: 1px solid var(--card-border); box-shadow: 0 10px 30px rgba(0,0,0,0.2); cursor: pointer; transition: transform 0.3s ease; scroll-snap-align: start; }
 .game-card:hover { transform: translateY(-5px); }
-
 .section-header {
     padding: 0 20px;
-    /* FIX: Reduced the bottom margin to tighten the gap */
     margin-bottom: 15px;
 }
 .section-header h2 {
-    /* FIX: Applying your custom font to section titles */
-    font-family: 'Million Smiles', cursive;
-    font-size: 2.2rem; /* Adjusted size for the new font */
-    font-weight: normal; /* Cursive fonts look best at their native weight */
+    font-family: 'Allura', cursive; /* FIX: Using Allura font */
+    font-size: 3rem; /* Adjusted size */
+    font-weight: normal;
     color: var(--text-primary);
 }
 
-/* --- Other page styles (Tasks, Placeholders) are unchanged --- */
+/* --- Other page styles (Tasks, Placeholders) --- */
+/* (These are unchanged but kept for your other pages) */
 .tasks-header { display: flex; justify-content: space-between; align-items: center; padding: 20px 25px; flex-shrink: 0; }
 .tasks-header h1 { font-size: 1.8rem; font-weight: 600; }
 .tasks-header .icon { cursor: pointer; width: 28px; height: 28px; }
 .tasks-content { padding: 0 25px; }
 .action-buttons { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px; }
-.action-btn { display: flex; align-items: center; justify-content: center; gap: 10px; padding: 15px; border-radius: 18px; border: none; color: white; font-size: 1rem; font-weight: 600; cursor: pointer; transition: transform 0.2s ease; }
+.action-btn { font-family: 'Inter', sans-serif; display: flex; align-items: center; justify-content: center; gap: 10px; padding: 15px; border-radius: 18px; border: none; color: white; font-size: 1rem; font-weight: 600; cursor: pointer; transition: transform 0.2s ease; }
 .action-btn.green { background-color: #4caf50; }
 .action-btn.orange { background-color: #f39c12; }
-.info-banner { display: flex; gap: 12px; padding: 12px 15px; border-radius: 16px; border: 2px solid; margin-bottom: 15px; font-size: 1rem; }
+.info-banner { display: flex; gap: 12px; padding: 12px 15px; border-radius: 16px; border: 2px solid; margin-bottom: 15px; font-size: 1rem; font-family: 'Inter', sans-serif; }
 .info-banner.orange { border-color: #f39c12; color: #f39c12; }
 .info-banner.blue { border-color: #3498db; color: #3498db; }
 .file-manager { margin-top: 25px; }
 .file-list { list-style: none; background: rgba(0,0,0,0.1); border-radius: 18px; padding: 10px; }
-
 .placeholder-content { display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; height: 100%; padding: 20px; }
 .placeholder-content .icon { font-size: 4rem; margin-bottom: 20px; opacity: 0.5; }
-.placeholder-content h1 { font-size: 2rem; margin-bottom: 10px; }
-.placeholder-content p { color: var(--text-secondary); max-width: 300px; }
+.placeholder-content h1 { font-size: 2rem; margin-bottom: 10px; font-family: 'Allura', cursive; }
+.placeholder-content p { font-family: 'Inter', sans-serif; color: var(--text-secondary); max-width: 300px; }
