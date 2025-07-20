@@ -79,27 +79,32 @@
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            class ParticleSystem { constructor(t){this.canvas=t,this.ctx=t.getContext("2d"),this.particles=[],this.resize(),this.init(),this.animate(),window.addEventListener("resize",()=>this.resize())}resize(){this.canvas.width=window.innerWidth,this.canvas.height=window.innerHeight}init(){this.particles=[];for(let t=0;t<100;t++)this.particles.push({x:Math.random()*this.canvas.width,y:Math.random()*this.canvas.height,vx:.5*(Math.random()-.5),vy:.5*(Math.random()-.5),size:2*Math.random()+1,color:`hsl(${220+60*Math.random()}, 70%, 60%)`})}animate(){this.ctx.clearRect(0,0,this.canvas.width,this.canvas.height),this.particles.forEach(t=>{t.x+=t.vx,t.y+=t.vy,(t.x<0||t.x>this.canvas.width)&&(t.vx*=-1),(t.y<0||t.y>this.canvas.height)&&(t.vy*=-1),this.ctx.fillStyle=t.color,this.ctx.beginPath(),this.ctx.arc(t.x,t.y,t.size,0,2*Math.PI),this.ctx.fill()}),requestAnimationFrame(()=>this.animate())}}
+            // Particle system
+            class ParticleSystem { constructor(canvas) { this.canvas = canvas; this.ctx = canvas.getContext('2d'); this.particles = []; this.resize(); this.init(); this.animate(); window.addEventListener('resize', () => this.resize()); } resize() { this.canvas.width = window.innerWidth; this.canvas.height = window.innerHeight; } init() { this.particles = []; const particleCount = 100; for (let i = 0; i < particleCount; i++) { this.particles.push({ x: Math.random() * this.canvas.width, y: Math.random() * this.canvas.height, vx: (Math.random() - 0.5) * 0.5, vy: (Math.random() - 0.5) * 0.5, size: Math.random() * 2 + 1, color: `hsl(${220 + Math.random() * 60}, 70%, 60%)` }); } } animate() { this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height); this.particles.forEach(p => { p.x += p.vx; p.y += p.vy; if (p.x < 0 || p.x > this.canvas.width) p.vx *= -1; if (p.y < 0 || p.y > this.canvas.height) p.vy *= -1; this.ctx.fillStyle = p.color; this.ctx.beginPath(); this.ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2); this.ctx.fill(); }); requestAnimationFrame(() => this.animate()); } }
             new ParticleSystem(document.getElementById('particles-canvas'));
 
+            // Firebase Config
             const firebaseConfig = { apiKey: "AIzaSyCzFHkD5bAIjZkP1W7jj4P-FoBldmeTCpk", authDomain: "shikaxfusion.firebaseapp.com", projectId: "shikaxfusion", storageBucket: "shikaxfusion.appspot.com", messagingSenderId: "353890157797", appId: "1:353890157797:web:54607ce7378b97fc4d000c" };
             firebase.initializeApp(firebaseConfig);
             const auth = firebase.auth();
             const db = firebase.firestore();
             const googleProvider = new firebase.auth.GoogleAuthProvider();
 
+            // DOM Elements
             const loginContainer = document.getElementById('login-container');
             const adminPanel = document.getElementById('admin-panel');
             const googleLoginBtn = document.getElementById('google-login-btn');
 
             const ADMIN_EMAIL = "shikarin.xx@gmail.com";
 
+            // Event Listener for Login Button
             googleLoginBtn.addEventListener('click', () => {
                 auth.signInWithPopup(googleProvider).catch(error => {
                     alert("Google Sign-In Error: " + error.message);
                 });
             });
 
+            // Auth State Change Logic
             auth.onAuthStateChanged(user => {
                 if (user) {
                     if (user.email === ADMIN_EMAIL) {
@@ -116,6 +121,7 @@
                 }
             });
 
+            // This function contains all the logic for the admin panel itself
             function initializeAdminPanel() {
                 // --- REDEEM CODE MANAGEMENT ---
                 const redeemCodesCollection = db.collection('redeemCodes');
@@ -130,6 +136,7 @@
                 redeemForm.addEventListener('submit', (e) => {
                     e.preventDefault();
                     const codeId = document.getElementById('redeem-code').value.trim();
+                    if (!codeId) return;
                     const codeData = {
                         amount: Number(document.getElementById('redeem-amount').value),
                         maxUses: Number(document.getElementById('redeem-max-uses').value),
@@ -137,13 +144,12 @@
                         claimedBy: [],
                         createdAt: firebase.firestore.FieldValue.serverTimestamp()
                     };
-                    if (!codeId) return;
                     redeemCodesCollection.doc(codeId).set(codeData)
                         .then(() => {
                             alert('Redeem code created successfully!');
                             redeemForm.reset();
                         })
-                        .catch(err => alert('Error: ' + err.message));
+                        .catch(err => alert('Error creating code: ' + err.message));
                 });
 
                 const loadCodes = () => {
