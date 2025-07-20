@@ -22,13 +22,22 @@
             border-radius: 10px;
         }
 
-        /* Ensure game cards are clickable links */
-        .game-card {
-            display: block; /* Make the whole card a clickable area */
+        /* MODIFIED: Resized the trending game cards */
+        #trending-games-container .game-card {
+            height: 160px; /* Made the card shorter */
+            flex-basis: 280px; /* Adjusted width */
+            display: block; 
             text-decoration: none;
             background-size: cover;
             background-position: center;
         }
+
+        /* Styling for the new advertisement container */
+        .ad-container {
+            margin: 25px 20px;
+            text-align: center;
+        }
+
         .task-action:disabled {
             background: grey;
             cursor: not-allowed;
@@ -43,7 +52,6 @@
     <div class="orb-container"><div class="floating-orb orb-1"></div><div class="floating-orb orb-2"></div></div>
 
     <div class="app-container">
-        <!-- MODIFIED: Header is now fully dynamic -->
         <header class="dashboard-header">
             <div class="header-left" id="user-balance-header">🇮🇳 ₹0.00</div>
             <div class="header-right">
@@ -54,12 +62,16 @@
 
         <main class="main-content">
             <div class="section-header"><h2>Trending Games</h2></div>
-            <!-- MODIFIED: This container will be filled with games from Firestore -->
             <div class="horizontal-scroll-container" id="trending-games-container">
                 <p style="color: var(--text-secondary); padding-left: 20px;">Loading games...</p>
             </div>
 
-            <!-- MODIFIED: This section now shows the Bonus Rewards -->
+            <!-- NEW: Advertisement Banner Added -->
+            <div class="ad-container">
+                <iframe src="https://www.profitableratecpm.com/csiexac6?key=f4623ec1279ae316ea30a86f617797e2" 
+                    width="300" height="250" frameborder="0" scrolling="no"></iframe>
+            </div>
+
             <div class="section-header"><h2>Bonus Rewards</h2></div>
             <div class="task-list-container">
                 <div class="task-item">
@@ -81,7 +93,6 @@
             </div>
         </main>
         
-        <!-- MODIFIED: Navigation links updated to use clean URLs consistently -->
         <nav class="bottom-nav">
             <a href="/dashboard" class="nav-item active"><svg viewBox="0 0 24 24"><path class="icon-fill" d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg><span>Home</span></a>
             <a href="/tasks" class="nav-item"><svg viewBox="0 0 24 24"><path class="icon-fill" d="M20.5 4.5H4.6C3.7 4 3 4.7 3 5.6v12.8C3 19.3 3.7 20 4.6 20h12.8c.9 0 1.6-.7 1.6-1.6V5.6c0-.9-.7-1.6-1.6-1.6zM18 18H6V6h12v12zM9 15h6v-2H9v2zm0-3h6v-2H9v2zm0-3h6V7H9v2z"/></svg><span>Tasks</span></a>
@@ -91,13 +102,12 @@
         </nav>
     </div>
 
-    <!-- MODIFIED: Script is completely rewritten for dynamic functionality -->
+    <!-- The script is exactly the same as the previous version -->
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            // Particle system (unchanged)
             class ParticleSystem { constructor(canvas) { this.canvas = canvas; this.ctx = canvas.getContext('2d'); this.particles = []; this.resize(); this.init(); this.animate(); window.addEventListener('resize', () => this.resize()); } resize() { this.canvas.width = window.innerWidth; this.canvas.height = window.innerHeight; } init() { this.particles = []; const particleCount = 100; for (let i = 0; i < particleCount; i++) { this.particles.push({ x: Math.random() * this.canvas.width, y: Math.random() * this.canvas.height, vx: (Math.random() - 0.5) * 0.5, vy: (Math.random() - 0.5) * 0.5, size: Math.random() * 2 + 1, color: `hsl(${220 + Math.random() * 60}, 70%, 60%)` }); } } animate() { this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height); this.particles.forEach(p => { p.x += p.vx; p.y += p.vy; if (p.x < 0 || p.x > this.canvas.width) p.vx *= -1; if (p.y < 0 || p.y > this.canvas.height) p.vy *= -1; this.ctx.fillStyle = p.color; this.ctx.beginPath(); this.ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2); this.ctx.fill(); }); requestAnimationFrame(() => this.animate()); } }
             new ParticleSystem(document.getElementById('particles-canvas'));
             
@@ -106,7 +116,6 @@
             const auth = firebase.auth();
             const db = firebase.firestore();
 
-            // Element references
             const headerAvatarImg = document.getElementById('header-avatar-img');
             const userBalanceHeader = document.getElementById('user-balance-header');
             const trendingGamesContainer = document.getElementById('trending-games-container');
@@ -155,8 +164,6 @@
                         trendingGamesContainer.innerHTML = '<p style="color: var(--text-secondary); padding-left: 20px;">Could not load games.</p>';
                     });
             }
-
-            // --- CLAIM LOGIC (copied from tasks.html) ---
 
             function checkWeeklyClaimStatus(userData) {
                 const today = new Date();
