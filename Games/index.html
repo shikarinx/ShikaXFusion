@@ -8,15 +8,17 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Allura&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
+    <!-- The game script is loaded here to be ready -->
+    <script src="script.js"></script>
 </head>
 <body>
-    <div id="loading-overlay" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #020617; display: flex; align-items: center; justify-content: center; z-index: 1000;">
-        <p style="font-family: 'Inter', sans-serif; font-size: 2rem; color: white;">Loading Game...</p>
+    <div id="loading-overlay">
+        <p>Loading Game...</p>
     </div>
 
     <div class="game-container" style="display:none;">
         <header class="game-header">
-            <a href="/games" style="text-decoration:none; color:white; font-size:1.5rem;">←</a>
+            <a href="/games" class="back-button">←</a>
             <div class="logo">CRASH</div>
             <div class="header-controls">
                 <div class="balance">
@@ -53,44 +55,52 @@
         </footer>
     </div>
 
-    <!-- Firebase SDKs are still needed -->
+    <!-- Firebase SDKs -->
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
     
-    <!-- MODIFIED: This script now gets the EXISTING Firebase instance -->
+    <!-- This is the corrected "bridge" script -->
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             const loadingOverlay = document.getElementById('loading-overlay');
             const gameContainer = document.querySelector('.game-container');
 
-            // Function to check if Firebase is ready
-            function waitForFirebase() {
-                if (firebase.apps.length) {
-                    // Firebase is already initialized by a previous page
-                    const auth = firebase.auth();
-                    const db = firebase.firestore();
+            try {
+                const firebaseConfig = {
+                    apiKey: "AIzaSyCzFHkD5bAIjZkP1W7jj4P-FoBldmeTCpk",
+                    authDomain: "shikaxfusion.firebaseapp.com",
+                    projectId: "shikaxfusion",
+                    storageBucket: "shikaxfusion.appspot.com",
+                    messagingSenderId: "353890157797",
+                    appId: "1:353890157797:web:54607ce7378b97fc4d000c"
+                };
 
-                    auth.onAuthStateChanged(user => {
-                        if (user) {
-                            window.initCrashGame(user, db); // Start the game
-                            loadingOverlay.style.display = 'none';
-                            gameContainer.style.display = 'flex';
-                        } else {
-                            window.location.href = '/auth'; // Redirect if not logged in
-                        }
-                    });
-                } else {
-                    // If Firebase is not ready, wait and try again
-                    setTimeout(waitForFirebase, 50);
+                // Initialize Firebase on this page
+                if (!firebase.apps.length) {
+                    firebase.initializeApp(firebaseConfig);
                 }
+                
+                const auth = firebase.auth();
+                const db = firebase.firestore();
+
+                auth.onAuthStateChanged(user => {
+                    if (user) {
+                        // User is logged in, now we can safely start the game
+                        window.initCrashGame(user, db); 
+                        loadingOverlay.style.display = 'none';
+                        gameContainer.style.display = 'flex';
+                    } else {
+                        // User is not logged in, send them back to the login page
+                        window.location.href = '/auth';
+                    }
+                });
+
+            } catch (error) {
+                console.error("Firebase initialization error:", error);
+                loadingOverlay.innerHTML = "<p>Error loading game. Please try again.</p>";
             }
-            
-            waitForFirebase();
         });
     </script>
-
-    <!-- Main game logic script -->
-    <script src="script.js"></script>
 </body>
 </html>
