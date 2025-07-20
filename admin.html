@@ -19,11 +19,9 @@
         .edit-btn, .delete-btn { width: auto; padding: 8px 15px; margin-left: 10px; font-size: 0.9rem; font-weight: 600; border-radius: 10px; }
         .edit-btn { background-color: var(--neon-blue); color: var(--bg-darker); }
         .delete-btn { background-color: var(--neon-pink); color: white; }
-        /* New Login Styles */
         #login-container { text-align: center; padding: 50px 0; }
         .google-btn { width: auto; padding: 16px 30px; background: #fff; color: #333; font-weight: 600; border-radius: 50px; display: inline-flex; align-items: center; gap: 15px; border: none; }
         .google-btn img { width: 24px; height: 24px; }
-        /* New Redeem Code Styles */
         .redeem-code-gen-form { display: flex; gap: 15px; align-items: center; }
         .redeem-code-gen-form input { flex-grow: 1; }
         .redeem-code-gen-form button { width: auto; flex-shrink: 0; }
@@ -62,7 +60,6 @@
         <hr>
         <h2>Task Management</h2>
         <form id="task-form">
-             <!-- Task fields are unchanged -->
             <input type="hidden" id="task-id"><input type="text" id="task-title" placeholder="Task Title" required><input type="text" id="task-reward" placeholder="Reward Text" required><input type="url" id="task-image-url" placeholder="Image URL (for detail page)" required><textarea id="task-details" placeholder="Full Task Details..." required rows="4"></textarea><input type="url" id="task-action-url" placeholder="Action URL" required><input type="number" id="task-order" placeholder="Display Order" required><button type="submit" class="submit-btn">Save Task</button>
         </form>
         <h2>Current Tasks</h2>
@@ -71,7 +68,6 @@
         <hr>
         <h2>Game Management</h2>
         <form id="game-form">
-            <!-- Game fields are unchanged -->
             <input type="hidden" id="game-id"><input type="text" id="game-title" placeholder="Game Title" required><input type="url" id="game-image-url" placeholder="Image URL" required><input type="text" id="game-url" placeholder="Game URL" required><input type="number" id="game-order" placeholder="Display Order" required><button type="submit" class="submit-btn">Save Game</button>
         </form>
         <h2>Current Games</h2>
@@ -83,8 +79,7 @@
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            // Particle system (unchanged)
-            class ParticleSystem { constructor(canvas) { this.canvas = canvas; this.ctx = canvas.getContext('2d'); this.particles = []; this.resize(); this.init(); this.animate(); window.addEventListener('resize', () => this.resize()); } resize() { this.canvas.width = window.innerWidth; this.canvas.height = window.innerHeight; } init() { this.particles = []; const particleCount = 100; for (let i = 0; i < particleCount; i++) { this.particles.push({ x: Math.random() * this.canvas.width, y: Math.random() * this.canvas.height, vx: (Math.random() - 0.5) * 0.5, vy: (Math.random() - 0.5) * 0.5, size: Math.random() * 2 + 1, color: `hsl(${220 + Math.random() * 60}, 70%, 60%)` }); } } animate() { this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height); this.particles.forEach(p => { p.x += p.vx; p.y += p.vy; if (p.x < 0 || p.x > this.canvas.width) p.vx *= -1; if (p.y < 0 || p.y > this.canvas.height) p.vy *= -1; this.ctx.fillStyle = p.color; this.ctx.beginPath(); this.ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2); this.ctx.fill(); }); requestAnimationFrame(() => this.animate()); } }
+            class ParticleSystem { constructor(t){this.canvas=t,this.ctx=t.getContext("2d"),this.particles=[],this.resize(),this.init(),this.animate(),window.addEventListener("resize",()=>this.resize())}resize(){this.canvas.width=window.innerWidth,this.canvas.height=window.innerHeight}init(){this.particles=[];for(let t=0;t<100;t++)this.particles.push({x:Math.random()*this.canvas.width,y:Math.random()*this.canvas.height,vx:.5*(Math.random()-.5),vy:.5*(Math.random()-.5),size:2*Math.random()+1,color:`hsl(${220+60*Math.random()}, 70%, 60%)`})}animate(){this.ctx.clearRect(0,0,this.canvas.width,this.canvas.height),this.particles.forEach(t=>{t.x+=t.vx,t.y+=t.vy,(t.x<0||t.x>this.canvas.width)&&(t.vx*=-1),(t.y<0||t.y>this.canvas.height)&&(t.vy*=-1),this.ctx.fillStyle=t.color,this.ctx.beginPath(),this.ctx.arc(t.x,t.y,t.size,0,2*Math.PI),this.ctx.fill()}),requestAnimationFrame(()=>this.animate())}}
             new ParticleSystem(document.getElementById('particles-canvas'));
 
             const firebaseConfig = { apiKey: "AIzaSyCzFHkD5bAIjZkP1W7jj4P-FoBldmeTCpk", authDomain: "shikaxfusion.firebaseapp.com", projectId: "shikaxfusion", storageBucket: "shikaxfusion.appspot.com", messagingSenderId: "353890157797", appId: "1:353890157797:web:54607ce7378b97fc4d000c" };
@@ -99,7 +94,6 @@
 
             const ADMIN_EMAIL = "shikarin.xx@gmail.com";
 
-            // --- AUTHENTICATION ---
             googleLoginBtn.addEventListener('click', () => {
                 auth.signInWithPopup(googleProvider).catch(error => {
                     alert("Google Sign-In Error: " + error.message);
@@ -129,7 +123,7 @@
                 const codeList = document.getElementById('code-list');
 
                 document.getElementById('generate-code-btn').addEventListener('click', () => {
-                    const code = 'SHIKA-' + Math.random().toString(36).substr(2, 8).toUpperCase();
+                    const code = 'SHIKA-' + Math.random().toString(36).substring(2, 10).toUpperCase();
                     document.getElementById('redeem-code').value = code;
                 });
 
@@ -176,20 +170,117 @@
                     }
                 });
 
-
-                // --- TASK & GAME MANAGEMENT (Unchanged logic) ---
+                // --- TASK MANAGEMENT ---
                 const tasksCollection = db.collection('tasks');
                 const taskForm = document.getElementById('task-form');
                 const taskList = document.getElementById('task-list');
+
+                const loadTasks = () => {
+                    tasksCollection.orderBy("order").onSnapshot(snapshot => {
+                        taskList.innerHTML = "";
+                        snapshot.forEach(doc => {
+                            const task = doc.data();
+                            const li = document.createElement("li");
+                            li.innerHTML = `<span><strong>${task.title}</strong> (Order: ${task.order})</span><div><button class="edit-btn" data-id="${doc.id}">Edit</button><button class="delete-btn" data-id="${doc.id}">Delete</button></div>`;
+                            taskList.appendChild(li);
+                        });
+                    });
+                };
+
+                taskForm.addEventListener("submit", e => {
+                    e.preventDefault();
+                    const id = document.getElementById("task-id").value;
+                    const taskData = {
+                        title: document.getElementById("task-title").value,
+                        reward: document.getElementById("task-reward").value,
+                        imageUrl: document.getElementById("task-image-url").value,
+                        details: document.getElementById("task-details").value,
+                        actionUrl: document.getElementById("task-action-url").value,
+                        order: Number(document.getElementById("task-order").value)
+                    };
+
+                    const promise = id ? tasksCollection.doc(id).update(taskData) : tasksCollection.add(taskData);
+                    promise.then(() => {
+                        alert(id ? "Task updated!" : "Task added!");
+                        taskForm.reset();
+                        document.getElementById("task-id").value = "";
+                    }).catch(err => alert("Error saving task: " + err.message));
+                });
+
+                taskList.addEventListener("click", e => {
+                    const target = e.target;
+                    const id = target.getAttribute("data-id");
+                    if (target.classList.contains("delete-btn") && confirm("Are you sure?")) {
+                        tasksCollection.doc(id).delete();
+                    }
+                    if (target.classList.contains("edit-btn")) {
+                        tasksCollection.doc(id).get().then(doc => {
+                            const task = doc.data();
+                            document.getElementById("task-id").value = doc.id;
+                            document.getElementById("task-title").value = task.title;
+                            document.getElementById("task-reward").value = task.reward;
+                            document.getElementById("task-image-url").value = task.imageUrl;
+                            document.getElementById("task-details").value = task.details;
+                            document.getElementById("task-action-url").value = task.actionUrl;
+                            document.getElementById("task-order").value = task.order;
+                            window.scrollTo(0, 0);
+                        });
+                    }
+                });
+
+                // --- GAME MANAGEMENT ---
                 const gamesCollection = db.collection('games');
                 const gameForm = document.getElementById('game-form');
                 const gameList = document.getElementById('game-list');
-                const loadTasks = () => { tasksCollection.orderBy("order").onSnapshot(s => { taskList.innerHTML = ""; s.forEach(d => { const t = d.data(), li = document.createElement("li"); li.innerHTML = `<span><strong>${t.title}</strong> (Order: ${t.order})</span><div><button class="edit-btn" data-id="${d.id}">Edit</button><button class="delete-btn" data-id="${d.id}">Delete</button></div>`; taskList.appendChild(li); }); }); };
-                const loadGames = () => { gamesCollection.orderBy('order').onSnapshot(s => { gameList.innerHTML = ''; s.forEach(d => { const g = d.data(), li = document.createElement('li'); li.innerHTML = `<span><strong>${g.title}</strong> (Order: ${g.order})</span><div><button class="edit-btn" data-id="${d.id}">Edit</button><button class="delete-btn" data-id="${d.id}">Delete</button></div>`; gameList.appendChild(li); }); }); };
-                taskForm.addEventListener("submit", e => { e.preventDefault(); const id = document.getElementById("task-id").value; const d = { title: document.getElementById("task-title").value, reward: document.getElementById("task-reward").value, imageUrl: document.getElementById("task-image-url").value, details: document.getElementById("task-details").value, actionUrl: document.getElementById("task-action-url").value, order: Number(document.getElementById("task-order").value) }; (id ? tasksCollection.doc(id).update(d) : tasksCollection.add(d)).then(() => { alert(id ? "Task updated!" : "Task added!"); taskForm.reset(); document.getElementById("task-id").value = ""; }); });
-                taskList.addEventListener("click", e => { const t = e.target, id = t.getAttribute("data-id"); if (t.classList.contains("delete-btn") && confirm("Are you sure?")) tasksCollection.doc(id).delete(); if (t.classList.contains("edit-btn")) tasksCollection.doc(id).get().then(d => { const t = d.data(); document.getElementById("task-id").value = d.id; document.getElementById("task-title").value = t.title; document.getElementById("task-reward").value = t.reward; document.getElementById("task-image-url").value = t.imageUrl; document.getElementById("task-details").value = t.details; document.getElementById("task-action-url").value = t.actionUrl; document.getElementById("task-order").value = t.order; window.scrollTo(0, 0); }); });
-                gameForm.addEventListener('submit', (e) => { e.preventDefault(); const id = document.getElementById('game-id').value; const d = { title: document.getElementById('game-title').value, imageUrl: document.getElementById('game-image-url').value, gameUrl: document.getElementById('game-url').value, order: Number(document.getElementById('game-order').value) }; (id ? gamesCollection.doc(id).update(d) : gamesCollection.add(d)).then(() => { alert(id ? "Game updated!" : "Game added!"); gameForm.reset(); document.getElementById('game-id').value = ''; }); });
-                gameList.addEventListener("click", e => { const t = e.target, id = t.getAttribute("data-id"); if (t.classList.contains("delete-btn") && confirm("Are you sure?")) gamesCollection.doc(id).delete(); if (t.classList.contains("edit-btn")) gamesCollection.doc(id).get().then(d => { const g = d.data(); document.getElementById('game-id').value = d.id; document.getElementById('game-title').value = g.title; document.getElementById('game-image-url').value = g.imageUrl; document.getElementById('game-url').value = g.gameUrl; document.getElementById('game-order').value = g.order; gameForm.scrollIntoView({ behavior: 'smooth' }); }); });
+
+                const loadGames = () => {
+                    gamesCollection.orderBy('order').onSnapshot(snapshot => {
+                        gameList.innerHTML = '';
+                        snapshot.forEach(doc => {
+                            const game = doc.data();
+                            const li = document.createElement('li');
+                            li.innerHTML = `<span><strong>${game.title}</strong> (Order: ${game.order})</span><div><button class="edit-btn" data-id="${doc.id}">Edit</button><button class="delete-btn" data-id="${doc.id}">Delete</button></div>`;
+                            gameList.appendChild(li);
+                        });
+                    });
+                };
+
+                gameForm.addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    const id = document.getElementById('game-id').value;
+                    const gameData = {
+                        title: document.getElementById('game-title').value,
+                        imageUrl: document.getElementById('game-image-url').value,
+                        gameUrl: document.getElementById('game-url').value,
+                        order: Number(document.getElementById('game-order').value)
+                    };
+                    
+                    const promise = id ? gamesCollection.doc(id).update(gameData) : gamesCollection.add(gameData);
+                    promise.then(() => {
+                        alert(id ? "Game updated!" : "Game added!");
+                        gameForm.reset();
+                        document.getElementById('game-id').value = '';
+                    }).catch(err => alert("Error saving game: " + err.message));
+                });
+
+                gameList.addEventListener("click", e => {
+                    const target = e.target;
+                    const id = target.getAttribute("data-id");
+                    if (target.classList.contains("delete-btn") && confirm("Are you sure?")) {
+                        gamesCollection.doc(id).delete();
+                    }
+                    if (target.classList.contains("edit-btn")) {
+                        gamesCollection.doc(id).get().then(doc => {
+                            const game = doc.data();
+                            document.getElementById('game-id').value = doc.id;
+                            document.getElementById('game-title').value = game.title;
+                            document.getElementById('game-image-url').value = game.imageUrl;
+                            document.getElementById('game-url').value = game.gameUrl;
+                            document.getElementById('game-order').value = game.order;
+                            gameForm.scrollIntoView({ behavior: 'smooth' });
+                        });
+                    }
+                });
                 
                 // Initial data load
                 loadTasks();

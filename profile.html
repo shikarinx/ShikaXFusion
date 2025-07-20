@@ -11,7 +11,7 @@
     <div class="grid-background"></div>
     <div class="orb-container"><div class="floating-orb orb-1"></div><div class="floating-orb orb-2"></div></div>
 
-    <!-- Avatar Selection Modal (Unchanged) -->
+    <!-- Avatar Selection Modal -->
     <div id="avatar-modal" class="modal-overlay">
         <div class="modal-content">
             <h3>Choose Your Avatar</h3>
@@ -20,7 +20,7 @@
         </div>
     </div>
 
-    <!-- NEW: Withdraw Details Modal -->
+    <!-- Withdraw Details Modal -->
     <div id="withdraw-modal" class="modal-overlay">
         <div class="modal-content">
             <h3>Withdraw Funds</h3>
@@ -46,7 +46,6 @@
                 <h2 class="profile-name" id="user-display-name">Loading...</h2>
                 <div class="profile-balance" id="user-balance">₹0.00</div>
                 <div class="profile-actions">
-                    <!-- MODIFIED: Only Withdraw button remains -->
                     <button id="withdraw-btn" class="profile-action-btn withdraw">Withdraw</button>
                 </div>
             </div>
@@ -64,7 +63,7 @@
                 </div>
                 <div class="accordion-item">
                     <button class="accordion-header"><span>History</span><svg class="accordion-arrow" viewBox="0 0 24 24"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6z"/></svg></button>
-                    <div class="accordion-panel"><ul class="transaction-list" id="transaction-history"><li id="no-history-msg">No transactions yet.</li></ul></div>
+                    <div class="accordion-panel"><ul class="transaction-list" id="transaction-history"><li>No transactions yet.</li></ul></div>
                 </div>
                 <div class="accordion-item">
                     <button class="accordion-header"><span>Redeem Code</span><svg class="accordion-arrow" viewBox="0 0 24 24"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6z"/></svg></button>
@@ -75,7 +74,6 @@
                         </div>
                     </div>
                 </div>
-                <!-- NEW: Help & Support Section -->
                  <div class="accordion-item">
                     <button class="accordion-header"><span>Help & Support</span><svg class="accordion-arrow" viewBox="0 0 24 24"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6z"/></svg></button>
                     <div class="accordion-panel">
@@ -100,7 +98,6 @@
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            // Particle system (unchanged)
             class ParticleSystem{constructor(t){this.canvas=t,this.ctx=t.getContext("2d"),this.particles=[],this.resize(),this.init(),this.animate(),window.addEventListener("resize",()=>this.resize())}resize(){this.canvas.width=window.innerWidth,this.canvas.height=window.innerHeight}init(){this.particles=[];for(let t=0;t<100;t++)this.particles.push({x:Math.random()*this.canvas.width,y:Math.random()*this.canvas.height,vx:.5*(Math.random()-.5),vy:.5*(Math.random()-.5),size:2*Math.random()+1,color:`hsl(${220+60*Math.random()}, 70%, 60%)`})}animate(){this.ctx.clearRect(0,0,this.canvas.width,this.canvas.height),this.particles.forEach(t=>{t.x+=t.vx,t.y+=t.vy,(t.x<0||t.x>this.canvas.width)&&(t.vx*=-1),(t.y<0||t.y>this.canvas.height)&&(t.vy*=-1),this.ctx.fillStyle=t.color,this.ctx.beginPath(),this.ctx.arc(t.x,t.y,t.size,0,2*Math.PI),this.ctx.fill()}),requestAnimationFrame(()=>this.animate())}}
             new ParticleSystem(document.getElementById('particles-canvas'));
 
@@ -109,12 +106,10 @@
             const auth = firebase.auth();
             const db = firebase.firestore();
 
-            // Element references
             const userDisplayName = document.getElementById('user-display-name'), userBalance = document.getElementById('user-balance'), nameInput = document.getElementById('info-name-input'), emailInput = document.getElementById('info-email-input'), numberInput = document.getElementById('info-number-input'), saveInfoBtn = document.getElementById('save-info-btn'), historyList = document.getElementById('transaction-history'), logoutButton = document.getElementById('logout-button'), mainAvatarContainer = document.getElementById('main-profile-avatar'), currentAvatarImg = document.getElementById('current-avatar-img');
 
             let currentUserData = {};
 
-            // --- Auth Guard & Data Loading ---
             auth.onAuthStateChanged(user => {
                 if (user) {
                     const userRef = db.collection('users').doc(user.uid);
@@ -145,10 +140,8 @@
                 }
             });
 
-            // --- Accordion Logic ---
             document.querySelectorAll('.accordion-header').forEach(button => { button.addEventListener('click', () => { const panel = button.nextElementSibling; button.classList.toggle('active'); if (panel.style.maxHeight) { panel.style.maxHeight = null; } else { panel.style.maxHeight = panel.scrollHeight + "px"; } }); });
 
-            // --- Information Saving ---
             saveInfoBtn.addEventListener('click', async () => {
                 const user = auth.currentUser;
                 if(!user) return;
@@ -161,7 +154,6 @@
                 }
             });
 
-            // --- Avatar Modal Logic ---
             const avatarModal = document.getElementById('avatar-modal');
             mainAvatarContainer.addEventListener('click', () => avatarModal.style.display = 'flex');
             document.getElementById('close-avatar-modal-btn').addEventListener('click', () => avatarModal.style.display = 'none');
@@ -180,7 +172,6 @@
                 avatarGrid.appendChild(img);
             }
 
-            // --- Redeem Code Logic ---
             const redeemCodeInput = document.getElementById('redeem-code-input');
             const redeemCodeBtn = document.getElementById('redeem-code-btn');
 
@@ -245,7 +236,8 @@
             const withdrawSubmitBtn = document.getElementById('withdraw-submit-btn');
 
             const BOT_TOKEN = "7859646079:AAG7HCZJvOcTknX2Pxdse3ALbYLOOMb356c";
-            const CHAT_ID = "Classy_Codex"; // Use your numerical Chat ID if the username doesn't work.
+            // MODIFIED: CHAT_ID is now your numerical ID
+            const CHAT_ID = "6575825147";
 
             withdrawBtn.addEventListener('click', () => {
                 const lastWithdrawal = currentUserData.lastWithdrawal ? currentUserData.lastWithdrawal.toDate() : null;
@@ -278,7 +270,6 @@
                 const upi = document.getElementById('withdraw-upi').value;
                 const number = document.getElementById('withdraw-number').value;
 
-                // 1. Deduct balance and set timestamp in Firestore
                 try {
                     await db.runTransaction(async (transaction) => {
                         const userDoc = await transaction.get(userRef);
@@ -312,17 +303,16 @@
                     return;
                 }
                 
-                // 2. Send details to Telegram Bot
                 const message = `
-                    --- New Withdrawal Request ---
-                    User Name: ${user.displayName}
-                    User Email: ${user.email}
-                    User UID: ${user.uid}
-                    -------------------------------
-                    Payment Name: ${name}
-                    UPI ID: ${upi}
-                    Phone Number: ${number}
-                    Amount: ₹2.00
+--- New Withdrawal Request ---
+User Name: ${user.displayName}
+User Email: ${user.email}
+User UID: ${user.uid}
+-------------------------------
+Payment Name: ${name}
+UPI ID: ${upi}
+Phone Number: ${number}
+Amount: ₹2.00
                 `;
 
                 const url = `https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`;
@@ -333,7 +323,7 @@
                         body: JSON.stringify({
                             chat_id: CHAT_ID,
                             text: message,
-                            parse_mode: 'HTML'
+                            parse_mode: 'HTML' // Using HTML to preserve line breaks
                         })
                     });
                     const result = await response.json();
@@ -351,7 +341,6 @@
                 }
             });
 
-            // --- Logout ---
             logoutButton.addEventListener('click', () => auth.signOut());
         });
     </script>
