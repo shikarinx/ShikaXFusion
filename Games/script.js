@@ -1,32 +1,35 @@
+"use strict";
+
 window.initCrashGame = (user, db) => {
-    // DOM ELEMENTS
+    // --- DOM ELEMENT REFERENCES ---
     const balanceAmountEl = document.getElementById('balance-amount');
     const historyBarEl = document.getElementById('history-bar');
     const gameStateMessageEl = document.getElementById('game-state-message');
     const multiplierDisplayEl = document.getElementById('multiplier-display');
-    const betPanels = [document.getElementById('bet-panel-1')];
+    const betPanels = [document.getElementById('bet-panel-1')]; // Supports multiple bet panels if needed
     const rocketEl = document.getElementById('rocket');
     const explosionEl = document.getElementById('explosion');
     const canvas = document.getElementById('particle-canvas');
     const ctx = canvas.getContext('2d');
 
-    // GAME STATE & CONFIG
+    // --- GAME STATE & CONFIGURATION ---
     let balance = 0;
     const userRef = db.collection('users').doc(user.uid);
     let currentMultiplier = 1.00;
-    let gameStatus = 'betting';
+    let gameStatus = 'betting'; // States: betting, running, crashed
     let countdown = 5;
     let crashPoint = 1.00;
     let gameLoopInterval;
     const bets = [{ placed: false, amount: 0, cashedOut: false }];
 
-    // PARTICLE & ANIMATION LOGIC
+    // --- PARTICLE & ANIMATION LOGIC ---
     let particles = [];
-    function resizeCanvas() {
+    const resizeCanvas = () => {
+        if (!canvas.parentElement) return;
         canvas.width = canvas.parentElement.clientWidth;
         canvas.height = canvas.parentElement.clientHeight;
-    }
-    function createParticles() {
+    };
+    const createParticles = () => {
         particles = [];
         const particleCount = 100;
         for (let i = 0; i < particleCount; i++) {
@@ -37,8 +40,8 @@ window.initCrashGame = (user, db) => {
                 color: `hsl(${220 + Math.random() * 60}, 70%, 60%)`
             });
         }
-    }
-    function animateParticles() {
+    };
+    const animateParticles = () => {
         if (!ctx) return;
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         particles.forEach(p => {
@@ -51,9 +54,8 @@ window.initCrashGame = (user, db) => {
             ctx.fill();
         });
         requestAnimationFrame(animateParticles);
-    }
-    
-    function updateRocketPosition() {
+    };
+    const updateRocketPosition = () => {
         if (gameStatus !== 'running') return;
         const progress = Math.min(Math.log(currentMultiplier) / Math.log(crashPoint || 10), 1);
         const x = progress * (canvas.width - rocketEl.width * 0.8);
@@ -61,132 +63,19 @@ window.initCrashGame = (user, db) => {
         rocketEl.style.left = `${x}px`;
         rocketEl.style.top = `${y}px`;
         rocketEl.style.transform = `rotate(${progress * -20}deg)`;
-    }
-
-    // CORE GAME LOGIC
-    const gameTick = () => {
-        if (gameStatus === 'betting') {
-            countdown -= 0.1;
-            gameStateMessageEl.innerHTML = `<div>Next Round In</div><div class="countdown">${countdown.toFixed(1)}s</div>`;
-            if (countdown <= 0) startGame();
-        } else if (gameStatus === 'running') {
-            currentMultiplier += 0.01 * (1 + currentMultiplier / 20);
-            multiplierDisplayEl.textContent = `${currentMultiplier.toFixed(2)}x`;
-            updateRocketPosition();
-            checkAutoCashouts();
-            if (currentMultiplier >= crashPoint) endGame();
-        }
     };
 
-    const startGame = () => {
-        gameStatus = 'running'; crashPoint = calculateCrashPoint(); currentMultiplier = 1.00;
-        gameStateMessageEl.style.display = 'none'; multiplierDisplayEl.style.display = 'block';
-        rocketEl.style.display = 'block'; explosionEl.style.display = 'none';
-        updateRocketPosition(); updateBetButtons('running');
-    };
-    
-    const endGame = () => {
-        gameStatus = 'crashed'; clearInterval(gameLoopInterval);
-        rocketEl.style.display = 'none'; explosionEl.style.left = rocketEl.style.left;
-        explosionEl.style.top = rocketEl.style.top; explosionEl.style.display = 'block';
-        explosionEl.src = `https://assets.codepen.io/1506195/explosion.gif?t=${new Date().getTime()}`;
-        multiplierDisplayEl.style.color = 'var(--neon-pink)';
-        gameStateMessageEl.innerHTML = `<div>Crashed @</div><div class="crashed-at">${crashPoint.toFixed(2)}x</div>`;
-        gameStateMessageEl.style.display = 'block';
-        addToHistory(crashPoint);
-        setTimeout(resetForNextRound, 3000);
-    };
-
-    const resetForNextRound = () => {
-        if(gameLoopInterval) clearInterval(gameLoopInterval);
-        gameStatus = 'betting'; countdown = 5;
-        bets.forEach(bet => { bet.placed = false; bet.cashedOut = false; });
-        multiplierDisplayEl.style.color = 'var(--text-primary)'; multiplierDisplayEl.style.display = 'none';
-        gameStateMessageEl.style.display = 'block'; explosionEl.style.display = 'none';
-        rocketEl.style.transform = `rotate(0deg)`; updateRocketPosition();
-        updateBetButtons('betting');
-        gameLoopInterval = setInterval(gameTick, 100);
-    };
-
-    const calculateCrashPoint = () => {
-        const r = Math.random() * 100; if (r < 10) return 1.00;
-        if (r < 60) return 1.01 + Math.random() * 0.49;
-        if (r < 95) return 1.51 + Math.random() * 8.48;
-        return 10.00 + Math.random() * 40;
-    };
-    
-    // UI & EVENT HANDLERS
-    const setupBetPanel = (panel, index) => {
-        const betInput = panel.querySelector('.bet-input');
-        const betButton = panel.querySelector('.bet-button');
-        const quickBetButtons = panel.querySelectorAll('.quick-bet');
-        
-        quickBetButtons.forEach(button => {
-            button.addEventListener('click', () => {
-                const amount = button.dataset.amount;
-                betInput.value = parseFloat(amount).toFixed(0);
-            });
-        });
-        betButton.addEventListener('click', () => handleBetButtonClick(index, betInput.value));
-    };
-
-    const handleBetButtonClick = (index, amount) => {
-        amount = parseFloat(amount);
-        if (isNaN(amount) || amount <= 0) return;
-        if (gameStatus === 'betting') {
-            if (!bets[index].placed) {
-                if (balance >= amount) {
-                    updateBalanceInFirestore(-amount, `Bet placed in Crash Game`).then(success => {
-                        if (success) {
-                            bets[index].placed = true;
-                            bets[index].amount = amount;
-                            updateBetButtonState(index, 'cancel');
-                        }
-                    });
-                } else { alert("Insufficient balance!"); }
-            } else {
-                updateBalanceInFirestore(bets[index].amount, `Bet cancelled in Crash Game`).then(success => {
-                    if (success) {
-                        bets[index].placed = false;
-                        bets[index].amount = 0;
-                        updateBetButtonState(index, 'bet');
-                    }
-                });
-            }
-        } else if (gameStatus === 'running' && bets[index].placed && !bets[index].cashedOut) {
-            cashoutBet(index);
-        }
-    };
-    
-    const cashoutBet = (index) => {
-        if(bets[index].placed && !bets[index].cashedOut){
-            const winnings = bets[index].amount * currentMultiplier;
-            updateBalanceInFirestore(winnings, `Crash Game win @ ${currentMultiplier.toFixed(2)}x`).then(success => {
-                if (success) {
-                    bets[index].cashedOut = true;
-                    updateBetButtonState(index, 'cashed_out');
-                }
-            });
-        }
-    };
-
-    const checkAutoCashouts = () => {
-        betPanels.forEach((panel, index) => {
-            if (bets[index].placed && !bets[index].cashedOut) {
-                const autoCashoutInput = panel.querySelector('.auto-cashout-input');
-                const autoCashoutValue = parseFloat(autoCashoutInput.value);
-                if (!isNaN(autoCashoutValue) && currentMultiplier >= autoCashoutValue) { cashoutBet(index); }
-            }
-        });
-    };
-    
+    // --- FIRESTORE & BALANCE LOGIC ---
     const updateBalanceInFirestore = async (amount, description) => {
         try {
             await db.runTransaction(async (transaction) => {
                 const userDoc = await transaction.get(userRef);
-                if (!userDoc.exists) { throw "Document does not exist!"; }
-                const newBalance = (userDoc.data().balance || 0) + amount;
-                if (newBalance < 0) { throw "Insufficient funds!"; }
+                if (!userDoc.exists) throw new Error("User document not found.");
+                
+                const currentBalance = userDoc.data().balance || 0;
+                const newBalance = currentBalance + amount;
+                if (newBalance < 0) throw new Error("Insufficient funds.");
+
                 const newHistoryEntry = {
                     amount: Math.abs(amount),
                     date: new Date(),
@@ -200,32 +89,30 @@ window.initCrashGame = (user, db) => {
             });
             return true;
         } catch (error) {
-            console.error("Transaction failed: ", error);
-            alert("Transaction failed: " + error);
+            console.error("Transaction failed:", error);
+            alert("Transaction failed: " + error.message);
             return false;
         }
     };
 
+    // --- UI & EVENT HANDLERS ---
     const updateBalanceUI = (newBalance) => {
         balance = newBalance;
         balanceAmountEl.textContent = balance.toFixed(2);
     };
-
-    const updateBetButtons = (status) => {
-        bets.forEach((bet, index) => {
-            if (status === 'running') {
-                if (bet.placed) updateBetButtonState(index, 'cashout');
-                else updateBetButtonState(index, 'disabled');
-            } else if (status === 'betting') { updateBetButtonState(index, 'bet'); }
-        });
-    };
-
     const updateBetButtonState = (index, state) => {
         const button = betPanels[index].querySelector('.bet-button');
-        button.disabled = false; button.className = 'bet-button';
+        button.disabled = false;
+        button.className = 'bet-button'; // Reset classes
         switch(state) {
-            case 'bet': button.classList.add('state-bet'); button.textContent = 'Bet'; break;
-            case 'cancel': button.classList.add('state-cancel'); button.textContent = 'Cancel'; break;
+            case 'bet':
+                button.classList.add('state-bet');
+                button.textContent = 'Bet';
+                break;
+            case 'cancel':
+                button.classList.add('state-cancel');
+                button.textContent = 'Cancel';
+                break;
             case 'cashout':
                 button.classList.add('state-cashout');
                 button.textContent = `Cashout (₹${(bets[index].amount * currentMultiplier).toFixed(2)})`;
@@ -234,10 +121,23 @@ window.initCrashGame = (user, db) => {
                 button.disabled = true;
                 button.textContent = `Cashed Out @ ${currentMultiplier.toFixed(2)}x`;
                 break;
-            case 'disabled': button.disabled = true; button.textContent = 'Bet'; break;
+            case 'disabled':
+                button.disabled = true;
+                button.textContent = 'Bet';
+                break;
         }
     };
-
+    const updateAllBetButtons = (status) => {
+        bets.forEach((bet, index) => {
+            if (status === 'running') {
+                if (bet.placed) updateBetButtonState(index, 'cashout');
+                else updateBetButtonState(index, 'disabled');
+            } else if (status === 'betting') {
+                if(bet.placed) updateBetButtonState(index, 'cancel');
+                else updateBetButtonState(index, 'bet');
+            }
+        });
+    };
     const addToHistory = (value) => {
         const newItem = document.createElement('span');
         newItem.textContent = `${value.toFixed(2)}x`;
@@ -245,15 +145,150 @@ window.initCrashGame = (user, db) => {
         if (value < 1.5) newItem.classList.add('low');
         else if (value >= 10) newItem.classList.add('high');
         historyBarEl.prepend(newItem);
-        if (historyBarEl.children.length > 20) historyBarEl.removeChild(historyBarEl.lastChild);
+        if (historyBarEl.children.length > 20) {
+            historyBarEl.removeChild(historyBarEl.lastChild);
+        }
+    };
+    const cashoutBet = (index) => {
+        if(bets[index].placed && !bets[index].cashedOut){
+            const winnings = bets[index].amount * currentMultiplier;
+            updateBalanceInFirestore(winnings, `Crash Game win @ ${currentMultiplier.toFixed(2)}x`).then(success => {
+                if (success) {
+                    bets[index].cashedOut = true;
+                    updateBetButtonState(index, 'cashed_out');
+                }
+            });
+        }
+    };
+    const checkAutoCashouts = () => {
+        betPanels.forEach((panel, index) => {
+            if (bets[index].placed && !bets[index].cashedOut) {
+                const autoCashoutInput = panel.querySelector('.auto-cashout-input');
+                const autoCashoutValue = parseFloat(autoCashoutInput.value);
+                if (!isNaN(autoCashoutValue) && currentMultiplier >= autoCashoutValue) {
+                    cashoutBet(index);
+                }
+            }
+        });
+    };
+    const handleBetButtonClick = (index, amount) => {
+        const parsedAmount = parseFloat(amount);
+        if (isNaN(parsedAmount) || parsedAmount <= 0) return;
+
+        if (gameStatus === 'betting') {
+            if (!bets[index].placed) {
+                if (balance >= parsedAmount) {
+                    updateBalanceInFirestore(-parsedAmount, `Bet placed in Crash Game`).then(success => {
+                        if (success) {
+                            bets[index].placed = true;
+                            bets[index].amount = parsedAmount;
+                            updateBetButtonState(index, 'cancel');
+                        }
+                    });
+                } else {
+                    alert("Insufficient balance!");
+                }
+            } else { // Cancel bet
+                updateBalanceInFirestore(bets[index].amount, `Bet cancelled in Crash Game`).then(success => {
+                    if (success) {
+                        bets[index].placed = false;
+                        bets[index].amount = 0;
+                        updateBetButtonState(index, 'bet');
+                    }
+                });
+            }
+        } else if (gameStatus === 'running' && bets[index].placed && !bets[index].cashedOut) {
+            cashoutBet(index);
+        }
+    };
+    const setupBetPanel = (panel, index) => {
+        const betInput = panel.querySelector('.bet-input');
+        const betButton = panel.querySelector('.bet-button');
+        const quickBetButtons = panel.querySelectorAll('.quick-bet');
+        
+        quickBetButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                betInput.value = parseFloat(button.dataset.amount).toFixed(0);
+            });
+        });
+        betButton.addEventListener('click', () => handleBetButtonClick(index, betInput.value));
+    };
+
+    // --- CORE GAME LOOP ---
+    const calculateCrashPoint = () => {
+        const r = Math.random() * 100;
+        if (r < 10) return 1.00; // 10% chance of instant crash
+        if (r < 60) return 1.01 + Math.random() * 0.49; // ~1-1.5x
+        if (r < 95) return 1.51 + Math.random() * 8.48; // ~1.5-10x
+        return 10.00 + Math.random() * 40; // High multiplier
+    };
+    const startGame = () => {
+        gameStatus = 'running';
+        crashPoint = calculateCrashPoint();
+        currentMultiplier = 1.00;
+        gameStateMessageEl.style.display = 'none';
+        multiplierDisplayEl.style.display = 'block';
+        rocketEl.style.display = 'block';
+        explosionEl.style.display = 'none';
+        updateRocketPosition();
+        updateAllBetButtons('running');
+    };
+    const endGame = () => {
+        gameStatus = 'crashed';
+        clearInterval(gameLoopInterval);
+        rocketEl.style.display = 'none';
+        explosionEl.style.left = rocketEl.style.left;
+        explosionEl.style.top = rocketEl.style.top;
+        explosionEl.style.display = 'block';
+        explosionEl.src = `https://assets.codepen.io/1506195/explosion.gif?t=${new Date().getTime()}`;
+        multiplierDisplayEl.style.color = 'var(--neon-pink)';
+        gameStateMessageEl.innerHTML = `<div>Crashed @</div><div class="crashed-at">${crashPoint.toFixed(2)}x</div>`;
+        gameStateMessageEl.style.display = 'block';
+        addToHistory(crashPoint);
+        setTimeout(resetForNextRound, 3000);
+    };
+    const resetForNextRound = () => {
+        if(gameLoopInterval) clearInterval(gameLoopInterval);
+        gameStatus = 'betting';
+        countdown = 5;
+        bets.forEach(bet => { bet.placed = false; bet.cashedOut = false; });
+        multiplierDisplayEl.style.color = 'var(--text-primary)';
+        multiplierDisplayEl.style.display = 'none';
+        gameStateMessageEl.style.display = 'block';
+        explosionEl.style.display = 'none';
+        rocketEl.style.transform = `rotate(0deg)`;
+        updateRocketPosition();
+        updateAllBetButtons('betting');
+        gameLoopInterval = setInterval(gameTick, 100);
+    };
+    const gameTick = () => {
+        if (gameStatus === 'betting') {
+            countdown -= 0.1;
+            gameStateMessageEl.innerHTML = `<div>Next Round In</div><div class="countdown">${countdown.toFixed(1)}s</div>`;
+            if (countdown <= 0) {
+                startGame();
+            }
+        } else if (gameStatus === 'running') {
+            currentMultiplier += 0.01 * (1 + currentMultiplier / 20);
+            multiplierDisplayEl.textContent = `${currentMultiplier.toFixed(2)}x`;
+            updateRocketPosition();
+            updateAllBetButtons('running');
+            checkAutoCashouts();
+            if (currentMultiplier >= crashPoint) {
+                endGame();
+            }
+        }
     };
     
-    // INITIALIZATION
+    // --- INITIALIZATION ---
     const init = () => {
         resizeCanvas();
         createParticles();
         animateParticles();
-        window.addEventListener('resize', () => { resizeCanvas(); createParticles(); });
+        window.addEventListener('resize', () => {
+            resizeCanvas();
+            createParticles();
+        });
         
         userRef.onSnapshot(doc => {
             if (doc.exists) {
@@ -265,5 +300,6 @@ window.initCrashGame = (user, db) => {
         resetForNextRound();
     };
     
+    // Start the game logic
     init();
 };
