@@ -20,15 +20,12 @@
         </div>
     </div>
 
-    <!-- MODIFIED: Withdraw Details Modal -->
+    <!-- Withdraw Details Modal -->
     <div id="withdraw-modal" class="modal-overlay">
         <div class="modal-content">
             <h3>Withdraw Funds</h3>
             <form id="withdraw-form" class="withdraw-form">
-                <!-- NEW: Amount input field -->
-                <label for="withdraw-amount">Amount (Min: ₹3, Max: ₹5)</label>
-                <input type="number" id="withdraw-amount" class="withdraw-input" min="3" max="5" step="0.01" placeholder="e.g., 4.50" required>
-                
+                <p>Withdrawal Amount: <strong>₹2.00</strong></p>
                 <label for="withdraw-name">Full Name</label>
                 <input type="text" id="withdraw-name" class="withdraw-input" required>
                 <label for="withdraw-upi">UPI ID</label>
@@ -38,8 +35,7 @@
                 <button type="submit" id="withdraw-submit-btn" class="withdraw-submit-btn">Submit Request</button>
             </form>
             <button id="close-withdraw-modal-btn" class="modal-close-button" style="background: grey; margin-top: 0;">Cancel</button>
-            <!-- MODIFIED: Help text updated -->
-            <p class="withdraw-note">You can withdraw once per day. Funds will be sent within 24-48 hours.</p>
+            <p class="withdraw-note">You can withdraw once per week. Funds will be sent within 24-48 hours.</p>
         </div>
     </div>
 
@@ -92,7 +88,7 @@
             <a href="/dashboard" class="nav-item"><svg viewBox="0 0 24 24"><path class="icon-fill" d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg><span>Home</span></a>
             <a href="/tasks" class="nav-item"><svg viewBox="0 0 24 24"><path class="icon-fill" d="M20.5 4.5H4.6C3.7 4 3 4.7 3 5.6v12.8C3 19.3 3.7 20 4.6 20h12.8c.9 0 1.6-.7 1.6-1.6V5.6c0-.9-.7-1.6-1.6-1.6zM18 18H6V6h12v12zM9 15h6v-2H9v2zm0-3h6v-2H9v2zm0-3h6V7H9v2z"/></svg><span>Tasks</span></a>
             <a href="/rewards" class="nav-item"><svg viewBox="0 0 24 24"><path class="icon-fill" d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg><span>Rewards</span></a>
-            <a href="/games" class="nav-item"><svg viewBox="0 0 24 24"><path class="icon-fill" d="M21.58 16.09l-1.1-1.1c-.29-.29-.69-.47-1.12-.52a5.95 5.95 0 00-2.86-2.86c-.05-.43-.23-.83-.52-1.12l-1.1-1.1a1.6 1.6 0 00-2.24 0l-1.1 1.1c-.29-.29-.47-.69-.52-1.12a5.95 5.95 0 00-2.86 2.86c-.05-.43-.23-.83-.52-1.12l-1.1 1.1a1.6 1.6 0 000 2.24l1.1 1.1c.29-.29-.69-.47 1.12-.52a5.95 5.95 0 002.86 2.86c.43-.05.83.23 1.12-.52l1.1 1.1a1.6 1.6 0 002.24 0l1.1-1.1c-.29-.29-.47-.69-.52-1.12a5.95 5.95 0 002.86-2.86c-.05-.43-.23-.83-.52-1.12l1.1-1.1a1.6 1.6 0 000-2.24zM12 15a3 3 0 110-6 3 3 0 010 6z"/></svg><span>Games</span></a>
+            <a href="/games" class="nav-item"><svg viewBox="0 0 24 24"><path class="icon-fill" d="M21.58 16.09l-1.1-1.1c-.29-.29-.69-.47-1.12-.52a5.95 5.95 0 00-2.86-2.86c-.05-.43-.23-.83-.52-1.12l-1.1-1.1a1.6 1.6 0 00-2.24 0l-1.1 1.1c-.29-.29-.47-.69-.52 1.12a5.95 5.95 0 00-2.86-2.86c-.05-.43-.23-.83-.52-1.12l-1.1 1.1a1.6 1.6 0 000 2.24l1.1 1.1c.29-.29-.69-.47 1.12-.52a5.95 5.95 0 002.86 2.86c.43-.05.83.23 1.12-.52l1.1 1.1a1.6 1.6 0 002.24 0l1.1-1.1c-.29-.29-.47-.69-.52-1.12a5.95 5.95 0 002.86-2.86c-.05-.43-.23-.83-.52-1.12l1.1-1.1a1.6 1.6 0 000-2.24zM12 15a3 3 0 110-6 3 3 0 010 6z"/></svg><span>Games</span></a>
             <a href="/profile" class="nav-item active"><svg viewBox="0 0 24 24"><path class="icon-fill" d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg><span>Profile</span></a>
         </nav>
     </div>
@@ -102,17 +98,19 @@
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', () => {
+            // Your original ParticleSystem code
             class ParticleSystem{constructor(t){this.canvas=t,this.ctx=t.getContext("2d"),this.particles=[],this.resize(),this.init(),this.animate(),window.addEventListener("resize",()=>this.resize())}resize(){this.canvas.width=window.innerWidth,this.canvas.height=window.innerHeight}init(){this.particles=[];for(let t=0;t<100;t++)this.particles.push({x:Math.random()*this.canvas.width,y:Math.random()*this.canvas.height,vx:.5*(Math.random()-.5),vy:.5*(Math.random()-.5),size:2*Math.random()+1,color:`hsl(${220+60*Math.random()}, 70%, 60%)`})}animate(){this.ctx.clearRect(0,0,this.canvas.width,this.canvas.height),this.particles.forEach(t=>{t.x+=t.vx,t.y+=t.vy,(t.x<0||t.x>this.canvas.width)&&(t.vx*=-1),(t.y<0||t.y>this.canvas.height)&&(t.vy*=-1),this.ctx.fillStyle=t.color,this.ctx.beginPath(),this.ctx.arc(t.x,t.y,t.size,0,2*Math.PI),this.ctx.fill()}),requestAnimationFrame(()=>this.animate())}}
             new ParticleSystem(document.getElementById('particles-canvas'));
 
+            // Your original Firebase and Element setup
             const firebaseConfig = { apiKey: "AIzaSyCzFHkD5bAIjZkP1W7jj4P-FoBldmeTCpk", authDomain: "shikaxfusion.firebaseapp.com", projectId: "shikaxfusion", storageBucket: "shikaxfusion.appspot.com", messagingSenderId: "353890157797", appId: "1:353890157797:web:54607ce7378b97fc4d000c" };
             firebase.initializeApp(firebaseConfig);
             const auth = firebase.auth();
             const db = firebase.firestore();
-
             const userDisplayName = document.getElementById('user-display-name'), userBalance = document.getElementById('user-balance'), nameInput = document.getElementById('info-name-input'), emailInput = document.getElementById('info-email-input'), numberInput = document.getElementById('info-number-input'), saveInfoBtn = document.getElementById('save-info-btn'), historyList = document.getElementById('transaction-history'), logoutButton = document.getElementById('logout-button'), mainAvatarContainer = document.getElementById('main-profile-avatar'), currentAvatarImg = document.getElementById('current-avatar-img');
             let currentUserData = {};
 
+            // Your original Auth State and Data Loading logic
             auth.onAuthStateChanged(user => {
                 if (user) {
                     const userRef = db.collection('users').doc(user.uid);
@@ -140,95 +138,142 @@
                 } else { window.location.replace('/auth'); }
             });
 
+            // Your original Accordion logic
             document.querySelectorAll('.accordion-header').forEach(button => { button.addEventListener('click', () => { const panel = button.nextElementSibling; button.classList.toggle('active'); if (panel.style.maxHeight) { panel.style.maxHeight = null; } else { panel.style.maxHeight = panel.scrollHeight + "px"; } }); });
-            saveInfoBtn.addEventListener('click', async () => { const user = auth.currentUser; if(!user) return; try { await user.updateProfile({ displayName: nameInput.value.trim() }); await db.collection('users').doc(user.uid).update({ phoneNumber: numberInput.value.trim() }); alert('Information saved!'); } catch(err) { alert('Error: ' + err.message); } });
-            const avatarModal = document.getElementById('avatar-modal'); mainAvatarContainer.addEventListener('click', () => avatarModal.style.display = 'flex'); document.getElementById('close-avatar-modal-btn').addEventListener('click', () => avatarModal.style.display = 'none'); const avatarGrid = document.getElementById('avatar-grid-selector'); for (let i = 1; i <= 10; i++) { const img = document.createElement('img'); const src = `/profile_dp${i}.png`; img.src = src; img.classList.add('avatar-choice'); img.addEventListener('click', async () => { if (auth.currentUser) { await db.collection('users').doc(auth.currentUser.uid).update({ avatarUrl: src }); } avatarModal.style.display = 'none'; }); avatarGrid.appendChild(img); }
-            const redeemCodeInput = document.getElementById('redeem-code-input'); const redeemCodeBtn = document.getElementById('redeem-code-btn');
-            redeemCodeBtn.addEventListener('click', async () => { const code = redeemCodeInput.value.trim().toUpperCase(); const user = auth.currentUser; if (!code || !user) return; redeemCodeBtn.disabled = true; redeemCodeBtn.textContent = 'Verifying...'; const codeRef = db.collection('redeemCodes').doc(code); const userRef = db.collection('users').doc(user.uid); try { await db.runTransaction(async (transaction) => { const codeDoc = await transaction.get(codeRef); const userDoc = await transaction.get(userRef); if (!codeDoc.exists) throw new Error("Invalid redeem code."); if (!userDoc.exists) throw new Error("User not found."); const codeData = codeDoc.data(); const userData = userDoc.data(); if (codeData.uses >= codeData.maxUses) throw new Error("This code has reached its maximum uses."); if (codeData.claimedBy && codeData.claimedBy.includes(user.uid)) throw new Error("You have already used this code."); const newBalance = (userData.balance || 0) + codeData.amount; const newHistoryEntry = { amount: codeData.amount, date: new Date(), description: `Redeemed Code: ${code}`, type: 'credit' }; transaction.update(codeRef, { uses: firebase.firestore.FieldValue.increment(1), claimedBy: firebase.firestore.FieldValue.arrayUnion(user.uid) }); transaction.update(userRef, { balance: newBalance, history: firebase.firestore.FieldValue.arrayUnion(newHistoryEntry) }); }); const finalCodeData = (await codeRef.get()).data(); alert(`Success! ₹${finalCodeData.amount} has been added to your balance.`); redeemCodeInput.value = ''; } catch (error) { alert("Error: " + error.message); } finally { redeemCodeBtn.disabled = false; redeemCodeBtn.textContent = 'Claim'; } });
+            
+            // Your original Information Saving logic
+            saveInfoBtn.addEventListener('click', async () => {
+                const user = auth.currentUser;
+                if(!user) return;
+                try {
+                    await user.updateProfile({ displayName: nameInput.value.trim() });
+                    await db.collection('users').doc(user.uid).update({ phoneNumber: numberInput.value.trim() });
+                    alert('Information saved!');
+                } catch(err) { alert('Error: ' + err.message); }
+            });
 
-            // --- MODIFIED: WITHDRAW LOGIC ---
+            // Your original Avatar Modal logic
+            const avatarModal = document.getElementById('avatar-modal');
+            mainAvatarContainer.addEventListener('click', () => avatarModal.style.display = 'flex');
+            document.getElementById('close-avatar-modal-btn').addEventListener('click', () => avatarModal.style.display = 'none');
+            const avatarGrid = document.getElementById('avatar-grid-selector');
+            for (let i = 1; i <= 10; i++) {
+                const img = document.createElement('img');
+                const src = `/profile_dp${i}.png`;
+                img.src = src;
+                img.classList.add('avatar-choice');
+                img.addEventListener('click', async () => {
+                    if (auth.currentUser) {
+                        await db.collection('users').doc(auth.currentUser.uid).update({ avatarUrl: src });
+                    }
+                    avatarModal.style.display = 'none';
+                });
+                avatarGrid.appendChild(img);
+            }
+
+            // --- ADDED: NEW REDEEM CODE LOGIC ---
+            const redeemCodeInput = document.getElementById('redeem-code-input');
+            const redeemCodeBtn = document.getElementById('redeem-code-btn');
+            
+            redeemCodeBtn.addEventListener('click', async () => {
+                const code = redeemCodeInput.value.trim().toUpperCase();
+                const user = auth.currentUser;
+                if (!code || !user) return;
+
+                redeemCodeBtn.disabled = true;
+                redeemCodeBtn.textContent = 'Verifying...';
+                
+                const codeRef = db.collection('redeemCodes').doc(code);
+                const userRef = db.collection('users').doc(user.uid);
+
+                try {
+                    await db.runTransaction(async (transaction) => {
+                        const codeDoc = await transaction.get(codeRef);
+                        const userDoc = await transaction.get(userRef);
+
+                        if (!codeDoc.exists) throw new Error("Invalid redeem code.");
+                        if (!userDoc.exists) throw new Error("User not found.");
+
+                        const codeData = codeDoc.data();
+                        const userData = userDoc.data();
+
+                        if (codeData.uses >= codeData.maxUses) throw new Error("This code has reached its maximum uses.");
+                        if (codeData.claimedBy && codeData.claimedBy.includes(user.uid)) throw new Error("You have already used this code.");
+
+                        const newBalance = (userData.balance || 0) + codeData.amount;
+                        const newHistoryEntry = {
+                            amount: codeData.amount,
+                            date: new Date(),
+                            description: `Redeemed Code: ${code}`,
+                            type: 'credit'
+                        };
+                        
+                        transaction.update(codeRef, {
+                            uses: firebase.firestore.FieldValue.increment(1),
+                            claimedBy: firebase.firestore.FieldValue.arrayUnion(user.uid)
+                        });
+
+                        transaction.update(userRef, {
+                            balance: newBalance,
+                            history: firebase.firestore.FieldValue.arrayUnion(newHistoryEntry)
+                        });
+                    });
+                    const finalCodeData = (await codeRef.get()).data();
+                    alert(`Success! ₹${finalCodeData.amount} has been added to your balance.`);
+                    redeemCodeInput.value = '';
+                } catch (error) {
+                    alert("Error: " + error.message);
+                } finally {
+                    redeemCodeBtn.disabled = false;
+                    redeemCodeBtn.textContent = 'Claim';
+                }
+            });
+
+            // Your original Withdraw logic
             const withdrawModal = document.getElementById('withdraw-modal');
             const withdrawBtn = document.getElementById('withdraw-btn');
             const closeWithdrawBtn = document.getElementById('close-withdraw-modal-btn');
             const withdrawForm = document.getElementById('withdraw-form');
             const withdrawSubmitBtn = document.getElementById('withdraw-submit-btn');
-            
             const BOT_TOKEN = "7859646079:AAG7HCZJvOcTknX2Pxdse3ALbYLOOMb356c";
             const CHAT_ID = "6575825147";
-
-            function isSameDay(date1, date2) {
-                if (!date1 || !date2) return false;
-                return date1.getFullYear() === date2.getFullYear() &&
-                       date1.getMonth() === date2.getMonth() &&
-                       date1.getDate() === date2.getDate();
-            }
-
             withdrawBtn.addEventListener('click', () => {
                 const lastWithdrawal = currentUserData.lastWithdrawal ? currentUserData.lastWithdrawal.toDate() : null;
-                const today = new Date();
-
-                if (isSameDay(lastWithdrawal, today)) {
-                    alert("You can only make one withdrawal request per day.");
+                const oneWeekAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
+                if (currentUserData.balance < 2) {
+                    alert("You need at least ₹2 to make a withdrawal request.");
                     return;
                 }
-                
-                if (currentUserData.balance < 3) {
-                    alert("You need at least ₹3 to make a withdrawal request.");
+                if (lastWithdrawal && lastWithdrawal > oneWeekAgo) {
+                    alert("You can only make one withdrawal request per week.");
                     return;
                 }
-                
                 withdrawModal.style.display = 'flex';
             });
-            
             closeWithdrawBtn.addEventListener('click', () => {
                 withdrawModal.style.display = 'none';
             });
-
             withdrawForm.addEventListener('submit', async (e) => {
                 e.preventDefault();
                 withdrawSubmitBtn.disabled = true;
                 withdrawSubmitBtn.textContent = 'Submitting...';
-
                 const user = auth.currentUser;
                 const userRef = db.collection('users').doc(user.uid);
-                
-                const withdrawAmount = parseFloat(document.getElementById('withdraw-amount').value);
                 const name = document.getElementById('withdraw-name').value;
                 const upi = document.getElementById('withdraw-upi').value;
                 const number = document.getElementById('withdraw-number').value;
-
-                if (isNaN(withdrawAmount) || withdrawAmount < 3 || withdrawAmount > 5) {
-                    alert("Please enter a valid amount between ₹3 and ₹5.");
-                    withdrawSubmitBtn.disabled = false;
-                    withdrawSubmitBtn.textContent = 'Submit Request';
-                    return;
-                }
-
                 try {
                     await db.runTransaction(async (transaction) => {
                         const userDoc = await transaction.get(userRef);
                         if (!userDoc.exists) throw new Error("User not found.");
-                        
                         const data = userDoc.data();
-                        if ((data.balance || 0) < withdrawAmount) throw new Error("Insufficient balance.");
-                        
+                        if ((data.balance || 0) < 2) throw new Error("Insufficient balance.");
                         const lastWithdrawal = data.lastWithdrawal ? data.lastWithdrawal.toDate() : null;
-                        const today = new Date();
-                        if (isSameDay(lastWithdrawal, today)) throw new Error("Withdrawal already requested today.");
-
-                        const newBalance = data.balance - withdrawAmount;
-                        const newHistoryEntry = {
-                            amount: withdrawAmount,
-                            date: new Date(),
-                            description: 'Withdrawal Request',
-                            type: 'debit'
-                        };
-
-                        transaction.update(userRef, {
-                            balance: newBalance,
-                            lastWithdrawal: new Date(),
-                            history: firebase.firestore.FieldValue.arrayUnion(newHistoryEntry)
-                        });
+                        const oneWeekAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
+                         if (lastWithdrawal && lastWithdrawal > oneWeekAgo) throw new Error("Withdrawal already requested this week.");
+                        const newBalance = data.balance - 2;
+                        const newHistoryEntry = { amount: 2, date: new Date(), description: 'Withdrawal Request', type: 'debit' };
+                        transaction.update(userRef, { balance: newBalance, lastWithdrawal: new Date(), history: firebase.firestore.FieldValue.arrayUnion(newHistoryEntry) });
                     });
                 } catch (error) {
                     alert("Error processing withdrawal: " + error.message);
@@ -236,34 +281,17 @@
                     withdrawSubmitBtn.textContent = 'Submit Request';
                     return;
                 }
-                
-                const message = `
---- New Withdrawal Request ---
-User Name: ${user.displayName}
-Email: ${user.email}
-UID: ${user.uid}
--------------------------------
-Payment Name: ${name}
-UPI ID: ${upi}
-Phone Number: ${number}
-Amount: ₹${withdrawAmount.toFixed(2)}
-                `;
-
+                const message = `\n--- New Withdrawal Request ---\nUser Name: ${user.displayName}\nUser Email: ${user.email}\nUser UID: ${user.uid}\n-------------------------------\nPayment Name: ${name}\nUPI ID: ${upi}\nPhone Number: ${number}\nAmount: ₹2.00\n                `;
                 const url = `https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`;
                 try {
-                    const response = await fetch(url, {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ chat_id: CHAT_ID, text: message })
-                    });
+                    const response = await fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ chat_id: CHAT_ID, text: message, parse_mode: 'HTML' }) });
                     const result = await response.json();
                     if (!result.ok) throw new Error(result.description);
-                    
                     alert("Withdrawal request submitted successfully!");
                     withdrawForm.reset();
                     withdrawModal.style.display = 'none';
                 } catch (error) {
-                    alert("Your request was submitted, but there was an error sending the notification. Please contact support.");
+                    alert("Your request was submitted, but there was an error sending the notification. Please contact support if you don't receive your payment.");
                     console.error("Telegram Error:", error);
                 } finally {
                     withdrawSubmitBtn.disabled = false;
@@ -271,6 +299,7 @@ Amount: ₹${withdrawAmount.toFixed(2)}
                 }
             });
 
+            // Your original Logout logic
             logoutButton.addEventListener('click', () => auth.signOut());
         });
     </script>

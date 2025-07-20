@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ShikaXFusion Admin Panel</title>
     <style>
-        /* A simple, clean, and functional UI */
+        /* Your original, working styles */
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
             background-color: #111;
@@ -69,7 +69,7 @@
         }
         .edit-btn { background-color: #ffc107; color: #111; }
         .delete-btn { background-color: #dc3545; }
-        /* ADDED: Styles for Reward Post Section */
+        /* Styles for Redeem Code Section */
         .redeem-code-gen-form { display: flex; gap: 10px; align-items: center; }
         .redeem-code-gen-form input { flex-grow: 1; }
         .redeem-code-gen-form button { width: auto; flex-shrink: 0; padding: 12px 20px; }
@@ -89,21 +89,22 @@
     <!-- The Main Admin Panel (hidden by default) -->
     <div class="container" id="admin-panel" style="display:none;">
         <h1>Admin Dashboard</h1>
-
-        <!-- ADDED: Reward Post Management Section -->
-        <hr>
-        <h2>Reward Post Management</h2>
-        <form id="reward-post-form">
-            <input type="text" id="post-title" placeholder="Post Title (e.g., 🔥 New Earning App!)" required>
-            <input type="url" id="post-image-url" placeholder="Image URL for the post" required>
-            <textarea id="post-description" placeholder="Post Description (e.g., Signup Bonus ₹5...)" required rows="4"></textarea>
-            <input type="url" id="post-action-url" placeholder="Action URL (the link for the button)" required>
-            <input type="text" id="post-button-text" placeholder="Button Text (e.g., Claim Now)" required>
-            <button type="submit">Save Reward Post</button>
-        </form>
-        <h2>Current Reward Posts</h2>
-        <ul id="reward-post-list" class="item-list"></ul>
         
+        <!-- ADDED: Redeem Code Management Section -->
+        <hr>
+        <h2>Redeem Code Management</h2>
+        <form id="redeem-code-form">
+            <div class="redeem-code-gen-form">
+                <input type="text" id="redeem-code" placeholder="Enter or Generate Code" required>
+                <button type="button" id="generate-code-btn">Generate</button>
+            </div>
+            <input type="number" id="redeem-amount" placeholder="Reward Amount (e.g., 10)" required>
+            <input type="number" id="redeem-max-uses" placeholder="Max Uses (e.g., 100)" required>
+            <button type="submit">Create Code</button>
+        </form>
+        <h2>Active Codes</h2>
+        <ul id="code-list" class="item-list"></ul>
+
         <hr>
         <h2>Task Management</h2>
         <form id="task-form">
@@ -161,51 +162,50 @@
                 firebase.initializeApp(firebaseConfig);
                 const db = firebase.firestore();
 
-                // --- ADDED: REWARD POST MANAGEMENT LOGIC ---
-                const rewardPostsCollection = db.collection('rewardPosts');
-                const rewardPostForm = document.getElementById('reward-post-form');
-                const rewardPostList = document.getElementById('reward-post-list');
-
-                rewardPostForm.addEventListener('submit', e => {
-                    e.preventDefault();
-                    const postData = {
-                        title: document.getElementById('post-title').value,
-                        imageUrl: document.getElementById('post-image-url').value,
-                        description: document.getElementById('post-description').value,
-                        actionUrl: document.getElementById('post-action-url').value,
-                        buttonText: document.getElementById('post-button-text').value,
-                        createdAt: firebase.firestore.FieldValue.serverTimestamp()
-                    };
-                    rewardPostsCollection.add(postData)
-                        .then(() => {
-                            alert('Reward post saved successfully!');
-                            rewardPostForm.reset();
-                        })
-                        .catch(err => alert('Error saving post: ' + err.message));
+                // --- ADDED: REDEEM CODE MANAGEMENT LOGIC ---
+                const redeemCodesCollection = db.collection('redeemCodes');
+                const redeemForm = document.getElementById('redeem-code-form');
+                const codeList = document.getElementById('code-list');
+                document.getElementById('generate-code-btn').addEventListener('click', () => {
+                    const code = 'SHIKA-' + Math.random().toString(36).substring(2, 10).toUpperCase();
+                    document.getElementById('redeem-code').value = code;
                 });
-
-                const loadRewardPosts = () => {
-                    rewardPostsCollection.orderBy('createdAt', 'desc').onSnapshot(snapshot => {
-                        rewardPostList.innerHTML = '';
+                redeemForm.addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    const codeId = document.getElementById('redeem-code').value.trim();
+                    if (!codeId) return;
+                    const codeData = { 
+                        amount: Number(document.getElementById('redeem-amount').value), 
+                        maxUses: Number(document.getElementById('redeem-max-uses').value), 
+                        uses: 0, 
+                        claimedBy: [], 
+                        createdAt: firebase.firestore.FieldValue.serverTimestamp() 
+                    };
+                    redeemCodesCollection.doc(codeId).set(codeData)
+                        .then(() => { alert('Redeem code created!'); redeemForm.reset(); })
+                        .catch(err => alert('Error: ' + err.message));
+                });
+                const loadCodes = () => {
+                    redeemCodesCollection.orderBy('createdAt', 'desc').onSnapshot(snapshot => {
+                        codeList.innerHTML = '';
                         snapshot.forEach(doc => {
-                            const post = doc.data();
+                            const code = doc.data();
                             const li = document.createElement('li');
-                            li.innerHTML = `<span><strong>${post.title}</strong></span><div class="list-buttons"><button class="delete-btn" data-id="${doc.id}">Delete</button></div>`;
-                            rewardPostList.appendChild(li);
+                            li.innerHTML = `<span><strong>${doc.id}</strong> | ₹${code.amount} | Uses: ${code.uses}/${code.maxUses}</span><div class="list-buttons"><button class="delete-btn" data-id="${doc.id}">Delete</button></div>`;
+                            codeList.appendChild(li);
                         });
                     });
                 };
-
-                rewardPostList.addEventListener('click', e => {
+                codeList.addEventListener('click', e => {
                     const target = e.target;
                     if (target.classList.contains('delete-btn')) {
                         const id = target.getAttribute('data-id');
-                        if (confirm(`Are you sure you want to delete this post?`)) {
-                            rewardPostsCollection.doc(id).delete();
+                        if (confirm(`Are you sure you want to delete code: ${id}?`)) {
+                            redeemCodesCollection.doc(id).delete();
                         }
                     }
                 });
-                
+
                 // --- TASK MANAGEMENT (Your Original Code) ---
                 const tasksCollection = db.collection('tasks');
                 const taskForm = document.getElementById('task-form');
@@ -299,7 +299,7 @@
                 // Initial data load
                 loadTasks();
                 loadGames();
-                loadRewardPosts(); // ADDED: Load the new posts
+                loadCodes(); // ADDED: Load the redeem codes
             }
         });
     </script>
