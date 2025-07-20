@@ -5,7 +5,7 @@
     <title>ShikaXFusion Admin Panel</title>
     <link rel="stylesheet" href="main.css">
     <style>
-        /* --- REDESIGNED ADMIN PANEL STYLES (from previous version) --- */
+        /* Styles are unchanged */
         .container {
             position: relative;
             z-index: 10;
@@ -95,7 +95,6 @@
     <div class="grid-background"></div>
     <div class="orb-container"><div class="floating-orb orb-1"></div><div class="floating-orb orb-2"></div></div>
 
-    <!-- MODIFIED: The container is now hidden by default until login is confirmed -->
     <div class="container" id="admin-container" style="display:none;">
         <h1>Admin Dashboard</h1>
         
@@ -127,16 +126,13 @@
         <ul id="game-list" class="item-list"></ul>
     </div>
 
-    <!-- MODIFIED: Firebase Auth script added -->
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
     <script>
-        // --- MODIFIED: COMPLETE SCRIPT REWRITE FOR FIREBASE AUTH ---
         document.addEventListener('DOMContentLoaded', () => {
             const adminContainer = document.getElementById('admin-container');
             
-            // Particle System code (unchanged)
             class ParticleSystem { constructor(canvas) { this.canvas = canvas; this.ctx = canvas.getContext('2d'); this.particles = []; this.resize(); this.init(); this.animate(); window.addEventListener('resize', () => this.resize()); } resize() { this.canvas.width = window.innerWidth; this.canvas.height = window.innerHeight; } init() { this.particles = []; const particleCount = 100; for (let i = 0; i < particleCount; i++) { this.particles.push({ x: Math.random() * this.canvas.width, y: Math.random() * this.canvas.height, vx: (Math.random() - 0.5) * 0.5, vy: (Math.random() - 0.5) * 0.5, size: Math.random() * 2 + 1, color: `hsl(${220 + Math.random() * 60}, 70%, 60%)` }); } } animate() { this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height); this.particles.forEach(p => { p.x += p.vx; p.y += p.vy; if (p.x < 0 || p.x > this.canvas.width) p.vx *= -1; if (p.y < 0 || p.y > this.canvas.height) p.vy *= -1; this.ctx.fillStyle = p.color; this.ctx.beginPath(); this.ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2); this.ctx.fill(); }); requestAnimationFrame(() => this.animate()); } }
             new ParticleSystem(document.getElementById('particles-canvas'));
 
@@ -145,22 +141,17 @@
             const auth = firebase.auth();
             const db = firebase.firestore();
 
-            // --- AUTHENTICATION CHECK ---
             auth.onAuthStateChanged(user => {
                 if (user) {
-                    // If user is logged in, show the admin panel
-                    console.log("Admin authenticated:", user.email);
                     adminContainer.style.display = 'block';
                     initializeAdminPanel();
                 } else {
-                    // If no user is logged in, redirect to the main auth page
-                    console.log("No user logged in. Redirecting to /auth");
                     window.location.href = '/auth';
                 }
             });
 
             function initializeAdminPanel() {
-                // --- TASK MANAGEMENT ---
+                // --- TASK MANAGEMENT (Unchanged) ---
                 const tasksCollection = db.collection('tasks');
                 const taskForm = document.getElementById('task-form');
                 const taskList = document.getElementById('task-list');
@@ -194,9 +185,7 @@
                         alert(id ? "Task updated!" : "Task added!");
                         taskForm.reset();
                         document.getElementById("task-id").value = "";
-                    }).catch(err => {
-                        alert("Error saving task: " + err.message);
-                    });
+                    }).catch(err => alert("Error saving task: " + err.message));
                 });
 
                 taskList.addEventListener("click", e => {
@@ -220,7 +209,7 @@
                     }
                 });
 
-                // --- GAME MANAGEMENT ---
+                // --- GAME MANAGEMENT (MODIFIED) ---
                 const gamesCollection = db.collection('games');
                 const gameForm = document.getElementById('game-form');
                 const gameList = document.getElementById('game-list');
@@ -231,7 +220,8 @@
                         snapshot.forEach(doc => {
                             const game = doc.data();
                             const li = document.createElement('li');
-                            li.innerHTML = `<span><strong>${game.title}</strong> (Order: ${game.order})</span><div><button class="edit-btn-game" data-id="${doc.id}">Edit</button><button class="delete-btn-game" data-id="${doc.id}">Delete</button></div>`;
+                            // MODIFIED: Use the correct 'edit-btn' and 'delete-btn' classes
+                            li.innerHTML = `<span><strong>${game.title}</strong> (Order: ${game.order})</span><div><button class="edit-btn" data-id="${doc.id}">Edit</button><button class="delete-btn" data-id="${doc.id}">Delete</button></div>`;
                             gameList.appendChild(li);
                         });
                     });
@@ -252,18 +242,19 @@
                         alert(id ? "Game updated!" : "Game added!");
                         gameForm.reset();
                         document.getElementById('game-id').value = '';
-                    }).catch(err => {
-                        alert("Error saving game: " + err.message);
-                    });
+                    }).catch(err => alert("Error saving game: " + err.message));
                 });
 
+                // MODIFIED: This event listener now targets the game list but looks for the corrected button classes
                 gameList.addEventListener("click", e => {
                     const target = e.target;
                     const id = target.getAttribute("data-id");
-                    if (target.classList.contains("delete-btn-game") && confirm("Are you sure?")) {
+                    // MODIFIED: Look for 'delete-btn' class
+                    if (target.classList.contains("delete-btn") && confirm("Are you sure?")) {
                         gamesCollection.doc(id).delete();
                     }
-                    if (target.classList.contains("edit-btn-game")) {
+                    // MODIFIED: Look for 'edit-btn' class
+                    if (target.classList.contains("edit-btn")) {
                         gamesCollection.doc(id).get().then(doc => {
                             const game = doc.data();
                             document.getElementById('game-id').value = doc.id;
