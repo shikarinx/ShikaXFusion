@@ -8,12 +8,10 @@
     <style>
         .task-action:disabled { background: grey; cursor: not-allowed; opacity: 0.7; transform: none; }
         
-        /* MODIFIED: Added styles for the avatar and a new "king frame" */
         .user-avatar { 
-            /* This is the outer frame */
-            border: 3px solid #FFD700; /* Gold color */
-            box-shadow: 0 0 15px rgba(255, 215, 0, 0.6); /* Gold glow */
-            padding: 2px; /* Space between frame and image */
+            border: 3px solid #FFD700;
+            box-shadow: 0 0 15px rgba(255, 215, 0, 0.6);
+            padding: 2px;
             background: linear-gradient(135deg, #f97794, #623aa2);
             overflow: hidden;
         }
@@ -21,7 +19,7 @@
             width: 100%; 
             height: 100%; 
             object-fit: cover; 
-            border-radius: 10px; /* Slightly round the inner image corners */
+            border-radius: 10px;
         }
     </style>
 </head>
@@ -42,7 +40,6 @@
         <main class="main-content">
             <div class="section-header"><h2>Bonus Rewards</h2></div>
             <div class="task-list-container">
-                <!-- Weekly Claim (Unchanged) -->
                 <div class="task-item">
                     <div class="task-icon"><svg viewBox="0 0 24 24"><path fill="white" d="M20 6h-2V4h2v2zm-4 0h-2V4h2v2zM8 6H6V4h2v2zm13 14H3V8h18v12zM5 10h14v8H5v-8z"/></svg></div>
                     <div class="task-details">
@@ -51,12 +48,12 @@
                     </div>
                     <button class="task-action" id="weekly-claim-btn" disabled>Claim</button>
                 </div>
-                <!-- NEW: Monthly Claim Task -->
                 <div class="task-item">
                     <div class="task-icon"><svg viewBox="0 0 24 24"><path fill="white" d="M19 4h-1V2h-2v2H8V2H6v2H5c-1.11 0-1.99.9-1.99 2L3 20a2 2 0 002 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 16H5V8h14v12z"/></svg></div>
                     <div class="task-details">
                         <span class="task-title">Monthly Claim</span>
-                        <span class="task-reward">Claim your monthly ₹5 bonus!</span>
+                        <!-- MODIFIED: Amount changed to 2 -->
+                        <span class="task-reward">Claim your monthly ₹2 bonus!</span>
                     </div>
                     <button class="task-action" id="monthly-claim-btn" disabled>Claim</button>
                 </div>
@@ -92,7 +89,6 @@
             const userBalanceHeader = document.getElementById('user-balance-header');
             const taskListContainer = document.getElementById('task-list-container');
             const weeklyClaimBtn = document.getElementById('weekly-claim-btn');
-            // NEW: Monthly claim button reference
             const monthlyClaimBtn = document.getElementById('monthly-claim-btn');
 
             auth.onAuthStateChanged(user => {
@@ -104,7 +100,6 @@
                             userBalanceHeader.textContent = `🇮🇳 ₹${(data.balance || 0).toFixed(2)}`;
                             headerAvatarImg.src = data.avatarUrl || '/profile_dp1.png';
                             checkWeeklyClaimStatus(data);
-                            // NEW: Check monthly claim status
                             checkMonthlyClaimStatus(data);
                         }
                     });
@@ -138,8 +133,6 @@
                 });
             }
 
-            // --- CLAIM LOGIC ---
-
             function checkWeeklyClaimStatus(userData) {
                 const today = new Date();
                 const mostRecentMonday = new Date(today);
@@ -160,7 +153,6 @@
                 }
             }
 
-            // NEW: Monthly Claim Status Logic
             function checkMonthlyClaimStatus(userData) {
                 const today = new Date();
                 const firstDayOfMonth = new Date(today.getFullYear(), today.getMonth(), 1);
@@ -170,7 +162,8 @@
                 }
                 if (canClaim) {
                     monthlyClaimBtn.disabled = false;
-                    monthlyClaimBtn.textContent = 'Claim ₹5';
+                    // MODIFIED: Amount changed to 2
+                    monthlyClaimBtn.textContent = 'Claim ₹2';
                 } else {
                     monthlyClaimBtn.disabled = true;
                     monthlyClaimBtn.textContent = 'Claimed';
@@ -181,12 +174,11 @@
                 handleClaim('weekly', 1);
             });
             
-            // NEW: Monthly Claim Button Event Listener
             monthlyClaimBtn.addEventListener('click', () => {
-                handleClaim('monthly', 5);
+                // MODIFIED: Amount changed to 2
+                handleClaim('monthly', 2);
             });
 
-            // NEW: Generic Claim Handler Function
             function handleClaim(claimType, amount) {
                 const user = auth.currentUser;
                 if (!user) return;
@@ -204,7 +196,6 @@
                         const data = doc.data();
                         let canClaim = true;
                         
-                        // Check eligibility based on claim type
                         if (claimType === 'weekly') {
                             const today = new Date();
                             const mostRecentMonday = new Date(today);
@@ -250,7 +241,6 @@
                 }).catch(error => {
                     console.error("Claim failed: ", error);
                     alert(`Could not process claim. You may have already claimed this ${claimType}.`);
-                    // Re-check status after a failed attempt
                     db.collection('users').doc(user.uid).get().then(doc => {
                         if (claimType === 'weekly') checkWeeklyClaimStatus(doc.data());
                         else checkMonthlyClaimStatus(doc.data());
@@ -260,4 +250,4 @@
         });
     </script>
 </body>
-</html>```
+</html>
