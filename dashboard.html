@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard | ShikaXFusion</title>
     <link rel="stylesheet" href="main.css">
-    <!-- MODIFIED: Added styles for the dynamic content -->
     <style>
         /* Gold frame for the user avatar */
         .user-avatar { 
@@ -21,21 +20,14 @@
             object-fit: cover; 
             border-radius: 10px;
         }
-
-        /* MODIFIED: Resized the trending game cards */
+        
         #trending-games-container .game-card {
-            height: 160px; /* Made the card shorter */
-            flex-basis: 280px; /* Adjusted width */
+            height: 160px;
+            flex-basis: 280px;
             display: block; 
             text-decoration: none;
             background-size: cover;
             background-position: center;
-        }
-
-        /* Styling for the new advertisement container */
-        .ad-container {
-            margin: 25px 20px;
-            text-align: center;
         }
 
         .task-action:disabled {
@@ -44,9 +36,20 @@
             opacity: 0.7;
             transform: none;
         }
+        
+        /* NOTE: The ad-container for the banner ad has been removed as per the new request */
     </style>
 </head>
 <body>
+    <!-- NEW: Interstitial Ad Modal (hidden by default) -->
+    <div id="interstitial-ad" class="interstitial-ad-overlay">
+        <div class="interstitial-ad-content">
+            <button id="ad-close-btn" disabled>×</button>
+            <iframe id="ad-iframe" src="" width="320" height="250" frameborder="0" scrolling="no"></iframe>
+            <div id="ad-countdown"></div>
+        </div>
+    </div>
+
     <canvas id="particles-canvas"></canvas>
     <div class="grid-background"></div>
     <div class="orb-container"><div class="floating-orb orb-1"></div><div class="floating-orb orb-2"></div></div>
@@ -64,12 +67,6 @@
             <div class="section-header"><h2>Trending Games</h2></div>
             <div class="horizontal-scroll-container" id="trending-games-container">
                 <p style="color: var(--text-secondary); padding-left: 20px;">Loading games...</p>
-            </div>
-
-            <!-- NEW: Advertisement Banner Added -->
-            <div class="ad-container">
-                <iframe src="https://www.profitableratecpm.com/csiexac6?key=f4623ec1279ae316ea30a86f617797e2" 
-                    width="300" height="250" frameborder="0" scrolling="no"></iframe>
             </div>
 
             <div class="section-header"><h2>Bonus Rewards</h2></div>
@@ -97,17 +94,17 @@
             <a href="/dashboard" class="nav-item active"><svg viewBox="0 0 24 24"><path class="icon-fill" d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg><span>Home</span></a>
             <a href="/tasks" class="nav-item"><svg viewBox="0 0 24 24"><path class="icon-fill" d="M20.5 4.5H4.6C3.7 4 3 4.7 3 5.6v12.8C3 19.3 3.7 20 4.6 20h12.8c.9 0 1.6-.7 1.6-1.6V5.6c0-.9-.7-1.6-1.6-1.6zM18 18H6V6h12v12zM9 15h6v-2H9v2zm0-3h6v-2H9v2zm0-3h6V7H9v2z"/></svg><span>Tasks</span></a>
             <a href="/rewards" class="nav-item"><svg viewBox="0 0 24 24"><path class="icon-fill" d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg><span>Rewards</span></a>
-            <a href="/games" class="nav-item"><svg viewBox="0 0 24 24"><path class="icon-fill" d="M21.58 16.09l-1.1-1.1c-.29-.29-.69-.47-1.12-.52a5.95 5.95 0 00-2.86-2.86c-.05-.43-.23-.83-.52-1.12l-1.1-1.1a1.6 1.6 0 00-2.24 0l-1.1 1.1c-.29-.29-.47-.69-.52 1.12a5.95 5.95 0 00-2.86 2.86c-.05-.43-.23-.83-.52-1.12l-1.1 1.1a1.6 1.6 0 000 2.24l1.1 1.1c.29-.29-.69-.47 1.12-.52a5.95 5.95 0 002.86 2.86c.43-.05.83.23 1.12-.52l1.1 1.1a1.6 1.6 0 002.24 0l1.1-1.1c-.29-.29-.47-.69-.52-1.12a5.95 5.95 0 002.86-2.86c-.05-.43-.23-.83-.52-1.12l1.1-1.1a1.6 1.6 0 000-2.24zM12 15a3 3 0 110-6 3 3 0 010 6z"/></svg><span>Games</span></a>
+            <a href="/games" class="nav-item"><svg viewBox="0 0 24 24"><path class="icon-fill" d="M21.58 16.09l-1.1-1.1c-.29-.29-.69-.47-1.12-.52a5.95 5.95 0 00-2.86-2.86c-.05-.43-.23-.83-.52-1.12l-1.1-1.1a1.6 1.6 0 00-2.24 0l-1.1 1.1c-.29-.29-.47-.69-.52 1.12a5.95 5.95 0 00-2.86-2.86c-.05-.43-.23-.83-.52-1.12l-1.1 1.1a1.6 1.6 0 000 2.24l1.1 1.1c.29-.29-.69-.47 1.12-.52a5.95 5.95 0 002.86 2.86c.43-.05.83.23 1.12-.52l1.1 1.1a1.6 1.6 0 002.24 0l1.1-1.1c-.29-.29-.47-.69-.52-1.12a5.95 5.95 0 002.86-2.86c-.05-.43-.23-.83-.52-1.12l1.1-1.1a1.6 1.6 0 000-2.24zM12 15a3 3 0 110-6 3 3 0 010 6z"/></svg><span>Games</span></a>
             <a href="/profile" class="nav-item"><svg viewBox="0 0 24 24"><path class="icon-fill" d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg><span>Profile</span></a>
         </nav>
     </div>
 
-    <!-- The script is exactly the same as the previous version -->
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', () => {
+            // Particle system (unchanged)
             class ParticleSystem { constructor(canvas) { this.canvas = canvas; this.ctx = canvas.getContext('2d'); this.particles = []; this.resize(); this.init(); this.animate(); window.addEventListener('resize', () => this.resize()); } resize() { this.canvas.width = window.innerWidth; this.canvas.height = window.innerHeight; } init() { this.particles = []; const particleCount = 100; for (let i = 0; i < particleCount; i++) { this.particles.push({ x: Math.random() * this.canvas.width, y: Math.random() * this.canvas.height, vx: (Math.random() - 0.5) * 0.5, vy: (Math.random() - 0.5) * 0.5, size: Math.random() * 2 + 1, color: `hsl(${220 + Math.random() * 60}, 70%, 60%)` }); } } animate() { this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height); this.particles.forEach(p => { p.x += p.vx; p.y += p.vy; if (p.x < 0 || p.x > this.canvas.width) p.vx *= -1; if (p.y < 0 || p.y > this.canvas.height) p.vy *= -1; this.ctx.fillStyle = p.color; this.ctx.beginPath(); this.ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2); this.ctx.fill(); }); requestAnimationFrame(() => this.animate()); } }
             new ParticleSystem(document.getElementById('particles-canvas'));
             
@@ -116,12 +113,56 @@
             const auth = firebase.auth();
             const db = firebase.firestore();
 
+            // Element references (with new ad elements)
+            const adOverlay = document.getElementById('interstitial-ad');
+            const adCloseBtn = document.getElementById('ad-close-btn');
+            const adCountdown = document.getElementById('ad-countdown');
+            const adIframe = document.getElementById('ad-iframe');
+
             const headerAvatarImg = document.getElementById('header-avatar-img');
             const userBalanceHeader = document.getElementById('user-balance-header');
             const trendingGamesContainer = document.getElementById('trending-games-container');
             const weeklyClaimBtn = document.getElementById('weekly-claim-btn');
             const monthlyClaimBtn = document.getElementById('monthly-claim-btn');
 
+            let adTimer; // To hold the interval
+            const AD_URL = "https://www.profitableratecpm.com/csiexac6?key=f4623ec1279ae316ea30a86f617797e2";
+
+            // --- AD MODAL LOGIC ---
+            function showInterstitialAd(continueAction) {
+                adIframe.src = AD_URL; // Load ad when showing
+                adOverlay.style.display = 'flex';
+                adCountdown.style.display = 'block';
+                adCloseBtn.disabled = true;
+                adCloseBtn.textContent = '';
+                
+                let countdown = 5;
+                adCountdown.textContent = `You can close this in ${countdown}s`;
+
+                adTimer = setInterval(() => {
+                    countdown--;
+                    if (countdown > 0) {
+                        adCountdown.textContent = `You can close this in ${countdown}s`;
+                    } else {
+                        clearInterval(adTimer);
+                        adCountdown.style.display = 'none';
+                        adCloseBtn.disabled = false;
+                        adCloseBtn.textContent = '×';
+                    }
+                }, 1000);
+                
+                // Use {once: true} to ensure the event listener is removed after firing
+                adCloseBtn.addEventListener('click', () => {
+                    adIframe.src = "about:blank"; // Unload ad
+                    adOverlay.style.display = 'none';
+                    clearInterval(adTimer); // Stop timer just in case
+                    if (typeof continueAction === 'function') {
+                        continueAction();
+                    }
+                }, { once: true });
+            }
+
+            // --- MAIN APP LOGIC ---
             auth.onAuthStateChanged(user => {
                 if (user) {
                     const userRef = db.collection('users').doc(user.uid);
@@ -151,11 +192,21 @@
                         snapshot.forEach(doc => {
                             const game = doc.data();
                             const gameCard = document.createElement('a');
-                            gameCard.href = game.gameUrl;
+                            // Set href to '#' and handle navigation in the event listener
+                            gameCard.href = '#'; 
                             gameCard.classList.add('game-card');
                             gameCard.style.backgroundImage = `url('${game.imageUrl}')`;
                             
                             gameCard.innerHTML = `<div class="play-button"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"></path></svg></div>`;
+                            
+                            // MODIFIED: Show ad on click
+                            gameCard.addEventListener('click', (e) => {
+                                e.preventDefault();
+                                showInterstitialAd(() => {
+                                    window.location.href = game.gameUrl;
+                                });
+                            });
+                            
                             trendingGamesContainer.appendChild(gameCard);
                         });
                     })
@@ -165,12 +216,11 @@
                     });
             }
 
+            // --- CLAIM LOGIC ---
             function checkWeeklyClaimStatus(userData) {
                 const today = new Date();
                 const mostRecentMonday = new Date(today);
-                const dayOfWeek = today.getDay();
-                const daysToSubtract = dayOfWeek === 0 ? 6 : dayOfWeek - 1;
-                mostRecentMonday.setDate(today.getDate() - daysToSubtract);
+                mostRecentMonday.setDate(today.getDate() - (today.getDay() === 0 ? 6 : today.getDay() - 1));
                 mostRecentMonday.setHours(0, 0, 0, 0);
                 let canClaim = !userData.lastWeeklyClaim || userData.lastWeeklyClaim.toDate() < mostRecentMonday;
                 weeklyClaimBtn.disabled = !canClaim;
@@ -185,8 +235,15 @@
                 monthlyClaimBtn.textContent = canClaim ? 'Claim' : 'Claimed';
             }
             
-            weeklyClaimBtn.addEventListener('click', () => handleClaim('weekly', 1));
-            monthlyClaimBtn.addEventListener('click', () => handleClaim('monthly', 2));
+            // MODIFIED: Show ad before calling handleClaim
+            weeklyClaimBtn.addEventListener('click', () => {
+                if (weeklyClaimBtn.disabled) return;
+                showInterstitialAd(() => handleClaim('weekly', 1));
+            });
+            monthlyClaimBtn.addEventListener('click', () => {
+                if (monthlyClaimBtn.disabled) return;
+                showInterstitialAd(() => handleClaim('monthly', 2));
+            });
 
             function handleClaim(claimType, amount) {
                 const user = auth.currentUser;
@@ -229,13 +286,16 @@
                     });
                 }).then(() => {
                     alert(`You have successfully claimed your ${claimType} ₹${amount} bonus!`);
-                    button.textContent = 'Claimed';
                 }).catch(error => {
                     console.error("Claim failed: ", error);
                     alert(`Could not process claim. You may have already claimed this ${claimType}.`);
+                }).finally(() => {
+                    // Re-check status from a fresh DB read to ensure UI is correct
                     db.collection('users').doc(user.uid).get().then(doc => {
-                        if (claimType === 'weekly') checkWeeklyClaimStatus(doc.data());
-                        else checkMonthlyClaimStatus(doc.data());
+                        if (doc.exists) {
+                            if (claimType === 'weekly') checkWeeklyClaimStatus(doc.data());
+                            else checkMonthlyClaimStatus(doc.data());
+                        }
                     });
                 });
             }

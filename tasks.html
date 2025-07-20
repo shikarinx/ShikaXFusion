@@ -24,6 +24,15 @@
     </style>
 </head>
 <body>
+    <!-- NEW: Interstitial Ad Modal (hidden by default) -->
+    <div id="interstitial-ad" class="interstitial-ad-overlay">
+        <div class="interstitial-ad-content">
+            <button id="ad-close-btn" disabled>×</button>
+            <iframe id="ad-iframe" src="" width="320" height="250" frameborder="0" scrolling="no"></iframe>
+            <div id="ad-countdown"></div>
+        </div>
+    </div>
+
     <canvas id="particles-canvas"></canvas>
     <div class="grid-background"></div>
     <div class="orb-container"><div class="floating-orb orb-1"></div><div class="floating-orb orb-2"></div></div>
@@ -52,7 +61,6 @@
                     <div class="task-icon"><svg viewBox="0 0 24 24"><path fill="white" d="M19 4h-1V2h-2v2H8V2H6v2H5c-1.11 0-1.99.9-1.99 2L3 20a2 2 0 002 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 16H5V8h14v12z"/></svg></div>
                     <div class="task-details">
                         <span class="task-title">Monthly Claim</span>
-                        <!-- MODIFIED: Amount changed to 2 -->
                         <span class="task-reward">Claim your monthly ₹2 bonus!</span>
                     </div>
                     <button class="task-action" id="monthly-claim-btn" disabled>Claim</button>
@@ -60,7 +68,7 @@
             </div>
 
             <div class="section-header"><h2>Special Offers</h2></div>
-            <div id="task-list-container" class="task-list-container">
+            <div id="task-list-dynamic-container" class="task-list-container">
                 <p style="text-align: center; color: var(--text-secondary);">Loading offers...</p>
             </div>
         </main>
@@ -79,18 +87,64 @@
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', () => {
+            // Particle system (unchanged)
             class ParticleSystem { constructor(canvas) { this.canvas = canvas; this.ctx = canvas.getContext('2d'); this.particles = []; this.resize(); this.init(); this.animate(); window.addEventListener('resize', () => this.resize()); } resize() { this.canvas.width = window.innerWidth; this.canvas.height = window.innerHeight; } init() { this.particles = []; const particleCount = 100; for (let i = 0; i < particleCount; i++) { this.particles.push({ x: Math.random() * this.canvas.width, y: Math.random() * this.canvas.height, vx: (Math.random() - 0.5) * 0.5, vy: (Math.random() - 0.5) * 0.5, size: Math.random() * 2 + 1, color: `hsl(${220 + Math.random() * 60}, 70%, 60%)` }); } } animate() { this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height); this.particles.forEach(p => { p.x += p.vx; p.y += p.vy; if (p.x < 0 || p.x > this.canvas.width) p.vx *= -1; if (p.y < 0 || p.y > this.canvas.height) p.vy *= -1; this.ctx.fillStyle = p.color; this.ctx.beginPath(); this.ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2); this.ctx.fill(); }); requestAnimationFrame(() => this.animate()); } }
             new ParticleSystem(document.getElementById('particles-canvas'));
+            
             const firebaseConfig = { apiKey: "AIzaSyCzFHkD5bAIjZkP1W7jj4P-FoBldmeTCpk", authDomain: "shikaxfusion.firebaseapp.com", projectId: "shikaxfusion", storageBucket: "shikaxfusion.appspot.com", messagingSenderId: "353890157797", appId: "1:353890157797:web:54607ce7378b97fc4d000c" };
             firebase.initializeApp(firebaseConfig);
             const auth = firebase.auth();
             const db = firebase.firestore();
+
+            // Element references (with new ad elements)
+            const adOverlay = document.getElementById('interstitial-ad');
+            const adCloseBtn = document.getElementById('ad-close-btn');
+            const adCountdown = document.getElementById('ad-countdown');
+            const adIframe = document.getElementById('ad-iframe');
+
             const headerAvatarImg = document.getElementById('header-avatar-img');
             const userBalanceHeader = document.getElementById('user-balance-header');
-            const taskListContainer = document.getElementById('task-list-container');
+            const taskListContainer = document.getElementById('task-list-dynamic-container');
             const weeklyClaimBtn = document.getElementById('weekly-claim-btn');
             const monthlyClaimBtn = document.getElementById('monthly-claim-btn');
 
+            let adTimer;
+            const AD_URL = "https://www.profitableratecpm.com/csiexac6?key=f4623ec1279ae316ea30a86f617797e2";
+
+            // --- AD MODAL LOGIC (Same as dashboard) ---
+            function showInterstitialAd(continueAction) {
+                adIframe.src = AD_URL;
+                adOverlay.style.display = 'flex';
+                adCountdown.style.display = 'block';
+                adCloseBtn.disabled = true;
+                adCloseBtn.textContent = '';
+                
+                let countdown = 5;
+                adCountdown.textContent = `You can close this in ${countdown}s`;
+
+                adTimer = setInterval(() => {
+                    countdown--;
+                    if (countdown > 0) {
+                        adCountdown.textContent = `You can close this in ${countdown}s`;
+                    } else {
+                        clearInterval(adTimer);
+                        adCountdown.style.display = 'none';
+                        adCloseBtn.disabled = false;
+                        adCloseBtn.textContent = '×';
+                    }
+                }, 1000);
+                
+                adCloseBtn.addEventListener('click', () => {
+                    adIframe.src = "about:blank";
+                    adOverlay.style.display = 'none';
+                    clearInterval(adTimer);
+                    if (typeof continueAction === 'function') {
+                        continueAction();
+                    }
+                }, { once: true });
+            }
+
+            // --- MAIN APP LOGIC ---
             auth.onAuthStateChanged(user => {
                 if (user) {
                     const userRef = db.collection('users').doc(user.uid);
@@ -120,133 +174,114 @@
                         const task = doc.data();
                         const taskItem = document.createElement('div');
                         taskItem.classList.add('task-item');
+                        const offerUrl = `/offer?id=${doc.id}`;
                         taskItem.innerHTML = `
                             <div class="task-icon"><svg viewBox="0 0 24 24"><path fill="white" d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"></path></svg></div>
                             <div class="task-details">
                                 <span class="task-title">${task.title}</span>
                                 <span class="task-reward">${task.reward}</span>
                             </div>
-                            <a href="/offer?id=${doc.id}" class="task-action">Go</a>
+                            <a href="#" data-url="${offerUrl}" class="task-action offer-link">Go</a>
                         `;
+                        // MODIFIED: Attach event listener to the "Go" link
+                        taskItem.querySelector('.offer-link').addEventListener('click', (e) => {
+                            e.preventDefault();
+                            const destinationUrl = e.target.getAttribute('data-url');
+                            showInterstitialAd(() => {
+                                window.location.href = destinationUrl;
+                            });
+                        });
                         taskListContainer.appendChild(taskItem);
                     });
                 });
             }
 
-            function checkWeeklyClaimStatus(userData) {
-                const today = new Date();
-                const mostRecentMonday = new Date(today);
-                const dayOfWeek = today.getDay();
-                const daysToSubtract = dayOfWeek === 0 ? 6 : dayOfWeek - 1;
-                mostRecentMonday.setDate(today.getDate() - daysToSubtract);
-                mostRecentMonday.setHours(0, 0, 0, 0);
-                let canClaim = true;
-                if (userData.lastWeeklyClaim && userData.lastWeeklyClaim.toDate() >= mostRecentMonday) {
-                    canClaim = false;
-                }
-                if (canClaim) {
-                    weeklyClaimBtn.disabled = false;
-                    weeklyClaimBtn.textContent = 'Claim ₹1';
-                } else {
-                    weeklyClaimBtn.disabled = true;
-                    weeklyClaimBtn.textContent = 'Claimed';
-                }
-            }
+            // --- CLAIM LOGIC ---
+            const claimLogic = {
+                // The handleClaim, checkWeeklyClaimStatus, and checkMonthlyClaimStatus functions are identical to the dashboard version.
+                // To save space, they are not repeated here but are the same as in the previous file.
+                checkWeeklyClaimStatus: function(userData) {
+                    const today = new Date();
+                    const mostRecentMonday = new Date(today);
+                    mostRecentMonday.setDate(today.getDate() - (today.getDay() === 0 ? 6 : today.getDay() - 1));
+                    mostRecentMonday.setHours(0, 0, 0, 0);
+                    let canClaim = !userData.lastWeeklyClaim || userData.lastWeeklyClaim.toDate() < mostRecentMonday;
+                    weeklyClaimBtn.disabled = !canClaim;
+                    weeklyClaimBtn.textContent = canClaim ? 'Claim' : 'Claimed';
+                },
+                checkMonthlyClaimStatus: function(userData) {
+                    const today = new Date();
+                    const firstDayOfMonth = new Date(today.getFullYear(), today.getMonth(), 1);
+                    let canClaim = !userData.lastMonthlyClaim || userData.lastMonthlyClaim.toDate() < firstDayOfMonth;
+                    monthlyClaimBtn.disabled = !canClaim;
+                    monthlyClaimBtn.textContent = canClaim ? 'Claim' : 'Claimed';
+                },
+                handleClaim: function(claimType, amount) {
+                    const user = auth.currentUser;
+                    if (!user) return;
+                    
+                    const button = (claimType === 'weekly') ? weeklyClaimBtn : monthlyClaimBtn;
+                    button.disabled = true;
+                    button.textContent = 'Claiming...';
 
-            function checkMonthlyClaimStatus(userData) {
-                const today = new Date();
-                const firstDayOfMonth = new Date(today.getFullYear(), today.getMonth(), 1);
-                let canClaim = true;
-                if (userData.lastMonthlyClaim && userData.lastMonthlyClaim.toDate() >= firstDayOfMonth) {
-                    canClaim = false;
+                    const userRef = db.collection('users').doc(user.uid);
+                    
+                    db.runTransaction(transaction => {
+                        return transaction.get(userRef).then(doc => {
+                            if (!doc.exists) throw "Document does not exist!";
+                            
+                            const data = doc.data();
+                            let canClaim = false;
+                            
+                            if (claimType === 'weekly') {
+                                const today = new Date();
+                                const mostRecentMonday = new Date(today);
+                                mostRecentMonday.setDate(today.getDate() - (today.getDay() === 0 ? 6 : today.getDay() - 1));
+                                mostRecentMonday.setHours(0, 0, 0, 0);
+                                canClaim = !data.lastWeeklyClaim || data.lastWeeklyClaim.toDate() < mostRecentMonday;
+                            } else if (claimType === 'monthly') {
+                                const today = new Date();
+                                const firstDayOfMonth = new Date(today.getFullYear(), today.getMonth(), 1);
+                                canClaim = !data.lastMonthlyClaim || data.lastMonthlyClaim.toDate() < firstDayOfMonth;
+                            }
+
+                            if (!canClaim) throw `Already claimed this ${claimType}.`;
+                            
+                            const newBalance = (data.balance || 0) + amount;
+                            const newHistoryEntry = { amount, date: new Date(), description: `${claimType.charAt(0).toUpperCase() + claimType.slice(1)} Claim Bonus`, type: "credit" };
+                            
+                            const updateData = { balance: newBalance, history: firebase.firestore.FieldValue.arrayUnion(newHistoryEntry) };
+                            updateData[claimType === 'weekly' ? 'lastWeeklyClaim' : 'lastMonthlyClaim'] = new Date();
+
+                            transaction.update(userRef, updateData);
+                        });
+                    }).then(() => {
+                        alert(`You have successfully claimed your ${claimType} ₹${amount} bonus!`);
+                    }).catch(error => {
+                        console.error("Claim failed: ", error);
+                        alert(`Could not process claim. You may have already claimed this ${claimType}.`);
+                    }).finally(() => {
+                        db.collection('users').doc(user.uid).get().then(doc => {
+                            if (doc.exists) {
+                                claimLogic.checkWeeklyClaimStatus(doc.data());
+                                claimLogic.checkMonthlyClaimStatus(doc.data());
+                            }
+                        });
+                    });
                 }
-                if (canClaim) {
-                    monthlyClaimBtn.disabled = false;
-                    // MODIFIED: Amount changed to 2
-                    monthlyClaimBtn.textContent = 'Claim ₹2';
-                } else {
-                    monthlyClaimBtn.disabled = true;
-                    monthlyClaimBtn.textContent = 'Claimed';
-                }
-            }
+            };
+            
+            // Re-assigning functions for clarity
+            const { checkWeeklyClaimStatus, checkMonthlyClaimStatus, handleClaim } = claimLogic;
             
             weeklyClaimBtn.addEventListener('click', () => {
-                handleClaim('weekly', 1);
+                if(weeklyClaimBtn.disabled) return;
+                showInterstitialAd(() => handleClaim('weekly', 1));
             });
-            
             monthlyClaimBtn.addEventListener('click', () => {
-                // MODIFIED: Amount changed to 2
-                handleClaim('monthly', 2);
+                if(monthlyClaimBtn.disabled) return;
+                showInterstitialAd(() => handleClaim('monthly', 2));
             });
-
-            function handleClaim(claimType, amount) {
-                const user = auth.currentUser;
-                if (!user) return;
-                
-                const button = (claimType === 'weekly') ? weeklyClaimBtn : monthlyClaimBtn;
-                button.disabled = true;
-                button.textContent = 'Claiming...';
-
-                const userRef = db.collection('users').doc(user.uid);
-                
-                db.runTransaction(transaction => {
-                    return transaction.get(userRef).then(doc => {
-                        if (!doc.exists) throw "Document does not exist!";
-                        
-                        const data = doc.data();
-                        let canClaim = true;
-                        
-                        if (claimType === 'weekly') {
-                            const today = new Date();
-                            const mostRecentMonday = new Date(today);
-                            mostRecentMonday.setDate(today.getDate() - (today.getDay() === 0 ? 6 : today.getDay() - 1));
-                            mostRecentMonday.setHours(0, 0, 0, 0);
-                            if (data.lastWeeklyClaim && data.lastWeeklyClaim.toDate() >= mostRecentMonday) {
-                                canClaim = false;
-                            }
-                        } else if (claimType === 'monthly') {
-                            const today = new Date();
-                            const firstDayOfMonth = new Date(today.getFullYear(), today.getMonth(), 1);
-                             if (data.lastMonthlyClaim && data.lastMonthlyClaim.toDate() >= firstDayOfMonth) {
-                                canClaim = false;
-                            }
-                        }
-
-                        if (!canClaim) throw `Already claimed this ${claimType}.`;
-                        
-                        const newBalance = (data.balance || 0) + amount;
-                        const newHistoryEntry = {
-                            amount: amount,
-                            date: new Date(),
-                            description: `${claimType.charAt(0).toUpperCase() + claimType.slice(1)} Claim Bonus`,
-                            type: "credit"
-                        };
-                        
-                        const updateData = {
-                            balance: newBalance,
-                            history: firebase.firestore.FieldValue.arrayUnion(newHistoryEntry)
-                        };
-
-                        if (claimType === 'weekly') {
-                            updateData.lastWeeklyClaim = new Date();
-                        } else {
-                            updateData.lastMonthlyClaim = new Date();
-                        }
-
-                        transaction.update(userRef, updateData);
-                    });
-                }).then(() => {
-                    alert(`You have successfully claimed your ${claimType} ₹${amount} bonus!`);
-                    button.textContent = 'Claimed';
-                }).catch(error => {
-                    console.error("Claim failed: ", error);
-                    alert(`Could not process claim. You may have already claimed this ${claimType}.`);
-                    db.collection('users').doc(user.uid).get().then(doc => {
-                        if (claimType === 'weekly') checkWeeklyClaimStatus(doc.data());
-                        else checkMonthlyClaimStatus(doc.data());
-                    });
-                });
-            }
         });
     </script>
 </body>
