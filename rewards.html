@@ -106,7 +106,7 @@
             <a href="/dashboard" class="nav-item"><svg viewBox="0 0 24 24"><path class="icon-fill" d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg><span>Home</span></a>
             <a href="/tasks" class="nav-item"><svg viewBox="0 0 24 24"><path class="icon-fill" d="M20.5 4.5H4.6C3.7 4 3 4.7 3 5.6v12.8C3 19.3 3.7 20 4.6 20h12.8c.9 0 1.6-.7 1.6-1.6V5.6c0-.9-.7-1.6-1.6-1.6zM18 18H6V6h12v12zM9 15h6v-2H9v2zm0-3h6v-2H9v2zm0-3h6V7H9v2z"/></svg><span>Tasks</span></a>
             <a href="/rewards" class="nav-item active"><svg viewBox="0 0 24 24"><path class="icon-fill" d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg><span>Rewards</span></a>
-            <a href="/games" class="nav-item"><svg viewBox="0 0 24 24"><path class="icon-fill" d="M21.58 16.09l-1.1-1.1c-.29-.29-.69-.47-1.12-.52a5.95 5.95 0 00-2.86-2.86c-.05-.43-.23-.83-.52-1.12l-1.1-1.1a1.6 1.6 0 00-2.24 0l-1.1 1.1c-.29-.29-.47-.69-.52-1.12a5.95 5.95 0 00-2.86-2.86c-.05-.43-.23-.83-.52-1.12l-1.1 1.1a1.6 1.6 0 000 2.24l1.1 1.1c.29-.29-.69-.47 1.12-.52a5.95 5.95 0 002.86 2.86c.43-.05.83.23 1.12-.52l1.1 1.1a1.6 1.6 0 002.24 0l1.1-1.1c-.29-.29-.47-.69-.52-1.12a5.95 5.95 0 002.86-2.86c-.05-.43-.23-.83-.52-1.12l1.1-1.1a1.6 1.6 0 000-2.24zM12 15a3 3 0 110-6 3 3 0 010 6z"/></svg><span>Games</span></a>
+            <a href="/games" class="nav-item"><svg viewBox="0 0 24 24"><path class="icon-fill" d="M21.58 16.09l-1.1-1.1c-.29-.29-.69-.47-1.12-.52a5.95 5.95 0 00-2.86-2.86c-.05-.43-.23-.83-.52-1.12l-1.1-1.1a1.6 1.6 0 00-2.24 0l-1.1 1.1c-.29-.29-.47-.69-.52-1.12a5.95 5.95 0 00-2.86 2.86c-.05-.43-.23-.83-.52-1.12l-1.1 1.1a1.6 1.6 0 000 2.24l1.1 1.1c.29-.29-.69-.47 1.12-.52a5.95 5.95 0 002.86 2.86c.43-.05.83.23 1.12-.52l1.1 1.1a1.6 1.6 0 002.24 0l1.1-1.1c-.29-.29-.47-.69-.52-1.12a5.95 5.95 0 002.86-2.86c-.05-.43-.23-.83-.52-1.12l1.1-1.1a1.6 1.6 0 000-2.24zM12 15a3 3 0 110-6 3 3 0 010 6z"/></svg><span>Games</span></a>
             <a href="/profile" class="nav-item"><svg viewBox="0 0 24 24"><path class="icon-fill" d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg><span>Profile</span></a>
         </nav>
     </div>
@@ -158,11 +158,10 @@
                         const card = document.createElement('div');
                         card.className = 'reward-post-card';
                         
-                        // Sanitize description to prevent HTML injection, but keep newlines
-                        const descriptionText = document.createTextNode(post.description);
-                        const descriptionP = document.createElement('p');
-                        descriptionP.className = 'reward-post-description';
-                        descriptionP.appendChild(descriptionText);
+                        // Use a div for the description to handle newlines correctly
+                        const descriptionDiv = document.createElement('div');
+                        descriptionDiv.className = 'reward-post-description';
+                        descriptionDiv.innerText = post.description; // innerText respects newlines and is safe
 
                         card.innerHTML = `
                             <img src="${post.imageUrl}" alt="${post.title}" class="reward-post-image">
@@ -173,8 +172,7 @@
                             </div>
                         `;
                         
-                        // Safely append the description
-                        card.querySelector(`#desc-container-${doc.id}`).appendChild(descriptionP);
+                        card.querySelector(`#desc-container-${doc.id}`).appendChild(descriptionDiv);
                         rewardFeedContainer.appendChild(card);
                     });
                 });
