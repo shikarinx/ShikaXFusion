@@ -5,89 +5,28 @@
     <title>ShikaXFusion Admin Panel</title>
     <link rel="stylesheet" href="main.css">
     <style>
-        /* Styles are unchanged */
-        .container {
-            position: relative;
-            z-index: 10;
-            background: rgba(15, 23, 42, 0.8);
-            backdrop-filter: blur(20px) saturate(180%);
-            border-radius: 24px;
-            padding: 40px;
-            max-width: 800px;
-            margin: auto;
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.6), 0 0 30px rgba(59, 130, 246, 0.3);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            margin-top: 20px;
-        }
-        h1, h2 {
-            font-family: 'Allura', cursive;
-            font-weight: normal;
-            font-size: 3rem;
-            text-align: center;
-            margin-bottom: 20px;
-            color: var(--text-primary);
-        }
-        h2 { font-size: 2.5rem; margin-top: 30px;}
+        .container { z-index: 10; background: rgba(15, 23, 42, 0.8); backdrop-filter: blur(20px); border-radius: 24px; padding: 40px; max-width: 800px; margin: 20px auto; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.6); border: 1px solid rgba(255, 255, 255, 0.2); }
+        h1, h2 { font-family: 'Allura', cursive; font-weight: normal; font-size: 3rem; text-align: center; margin-bottom: 20px; color: var(--text-primary); }
+        h2 { font-size: 2.5rem; margin-top: 30px; }
         hr { border: 1px solid rgba(255, 255, 255, 0.2); margin: 40px 0; }
-
-        input, textarea {
-            width: 100%;
-            padding: 16px 20px;
-            margin-bottom: 15px;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: 16px;
-            background: rgba(0, 0, 0, 0.4);
-            color: var(--text-primary);
-            font-family: 'Inter', sans-serif;
-            font-size: 1rem;
-            box-sizing: border-box;
-            transition: all 0.3s ease;
-        }
-        input:focus, textarea:focus {
-            outline: none;
-            border-color: var(--neon-blue);
-            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
-        }
-
-        button[type="submit"] {
-            width: 100%;
-            padding: 18px;
-            background: var(--accent-gradient);
-            color: var(--text-primary);
-            border: none;
-            border-radius: 16px;
-            font-family: 'Inter', sans-serif;
-            font-size: 1.2rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: transform 0.2s ease;
-        }
-        button[type="submit"]:hover { transform: translateY(-2px); }
-
-        .item-list { padding: 0; }
-        .item-list li {
-            list-style: none;
-            padding: 15px;
-            background: rgba(0,0,0,0.2);
-            border-radius: 16px;
-            margin-bottom: 10px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            font-family: 'Inter', sans-serif;
-        }
-        .edit-btn, .delete-btn {
-            width: auto;
-            padding: 8px 15px;
-            margin-left: 10px;
-            font-size: 0.9rem;
-            font-weight: 600;
-            border-radius: 10px;
-            cursor: pointer;
-            border: none;
-        }
+        input, textarea, button { width: 100%; padding: 16px 20px; margin-bottom: 15px; border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 16px; background: rgba(0, 0, 0, 0.4); color: var(--text-primary); font-family: 'Inter', sans-serif; font-size: 1rem; box-sizing: border-box; transition: all 0.3s ease; }
+        input:focus, textarea:focus { outline: none; border-color: var(--neon-blue); box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1); }
+        button { cursor: pointer; }
+        button:hover { transform: translateY(-2px); }
+        .submit-btn { background: var(--accent-gradient); font-size: 1.2rem; font-weight: 600; }
+        .item-list { padding: 0; list-style: none; }
+        .item-list li { padding: 15px; background: rgba(0,0,0,0.2); border-radius: 16px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; }
+        .edit-btn, .delete-btn { width: auto; padding: 8px 15px; margin-left: 10px; font-size: 0.9rem; font-weight: 600; border-radius: 10px; }
         .edit-btn { background-color: var(--neon-blue); color: var(--bg-darker); }
         .delete-btn { background-color: var(--neon-pink); color: white; }
+        /* New Login Styles */
+        #login-container { text-align: center; padding: 50px 0; }
+        .google-btn { width: auto; padding: 16px 30px; background: #fff; color: #333; font-weight: 600; border-radius: 50px; display: inline-flex; align-items: center; gap: 15px; border: none; }
+        .google-btn img { width: 24px; height: 24px; }
+        /* New Redeem Code Styles */
+        .redeem-code-gen-form { display: flex; gap: 15px; align-items: center; }
+        .redeem-code-gen-form input { flex-grow: 1; }
+        .redeem-code-gen-form button { width: auto; flex-shrink: 0; }
     </style>
 </head>
 <body>
@@ -95,19 +34,36 @@
     <div class="grid-background"></div>
     <div class="orb-container"><div class="floating-orb orb-1"></div><div class="floating-orb orb-2"></div></div>
 
-    <div class="container" id="admin-container" style="display:none;">
+    <div class="container" id="login-container">
+        <h1>Admin Login</h1>
+        <button id="google-login-btn" class="google-btn">
+            <img src="https://www.svgrepo.com/show/475656/google-color.svg" alt="Google">
+            Sign in with Google
+        </button>
+    </div>
+
+    <div class="container" id="admin-panel" style="display:none;">
         <h1>Admin Dashboard</h1>
         
+        <hr>
+        <h2>Redeem Code Management</h2>
+        <form id="redeem-code-form">
+            <div class="redeem-code-gen-form">
+                <input type="text" id="redeem-code" placeholder="Enter or Generate Code" required>
+                <button type="button" id="generate-code-btn">Generate</button>
+            </div>
+            <input type="number" id="redeem-amount" placeholder="Reward Amount (e.g., 10)" required>
+            <input type="number" id="redeem-max-uses" placeholder="Max Uses (e.g., 100)" required>
+            <button type="submit" class="submit-btn">Create Code</button>
+        </form>
+        <h2>Active Codes</h2>
+        <ul id="code-list" class="item-list"></ul>
+
+        <hr>
         <h2>Task Management</h2>
         <form id="task-form">
-            <input type="hidden" id="task-id">
-            <input type="text" id="task-title" placeholder="Task Title" required>
-            <input type="text" id="task-reward" placeholder="Reward Text" required>
-            <input type="url" id="task-image-url" placeholder="Image URL (for detail page)" required>
-            <textarea id="task-details" placeholder="Full Task Details..." required rows="4"></textarea>
-            <input type="url" id="task-action-url" placeholder="Action URL" required>
-            <input type="number" id="task-order" placeholder="Display Order" required>
-            <button type="submit">Save Task</button>
+             <!-- Task fields are unchanged -->
+            <input type="hidden" id="task-id"><input type="text" id="task-title" placeholder="Task Title" required><input type="text" id="task-reward" placeholder="Reward Text" required><input type="url" id="task-image-url" placeholder="Image URL (for detail page)" required><textarea id="task-details" placeholder="Full Task Details..." required rows="4"></textarea><input type="url" id="task-action-url" placeholder="Action URL" required><input type="number" id="task-order" placeholder="Display Order" required><button type="submit" class="submit-btn">Save Task</button>
         </form>
         <h2>Current Tasks</h2>
         <ul id="task-list" class="item-list"></ul>
@@ -115,12 +71,8 @@
         <hr>
         <h2>Game Management</h2>
         <form id="game-form">
-            <input type="hidden" id="game-id">
-            <input type="text" id="game-title" placeholder="Game Title (e.g., Ludo King)" required>
-            <input type="url" id="game-image-url" placeholder="Image URL (for game card)" required>
-            <input type="text" id="game-url" placeholder="Game URL (Link to play, e.g., /Games/index.html)" required>
-            <input type="number" id="game-order" placeholder="Display Order" required>
-            <button type="submit">Save Game</button>
+            <!-- Game fields are unchanged -->
+            <input type="hidden" id="game-id"><input type="text" id="game-title" placeholder="Game Title" required><input type="url" id="game-image-url" placeholder="Image URL" required><input type="text" id="game-url" placeholder="Game URL" required><input type="number" id="game-order" placeholder="Display Order" required><button type="submit" class="submit-btn">Save Game</button>
         </form>
         <h2>Current Games</h2>
         <ul id="game-list" class="item-list"></ul>
@@ -131,8 +83,7 @@
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            const adminContainer = document.getElementById('admin-container');
-            
+            // Particle system (unchanged)
             class ParticleSystem { constructor(canvas) { this.canvas = canvas; this.ctx = canvas.getContext('2d'); this.particles = []; this.resize(); this.init(); this.animate(); window.addEventListener('resize', () => this.resize()); } resize() { this.canvas.width = window.innerWidth; this.canvas.height = window.innerHeight; } init() { this.particles = []; const particleCount = 100; for (let i = 0; i < particleCount; i++) { this.particles.push({ x: Math.random() * this.canvas.width, y: Math.random() * this.canvas.height, vx: (Math.random() - 0.5) * 0.5, vy: (Math.random() - 0.5) * 0.5, size: Math.random() * 2 + 1, color: `hsl(${220 + Math.random() * 60}, 70%, 60%)` }); } } animate() { this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height); this.particles.forEach(p => { p.x += p.vx; p.y += p.vy; if (p.x < 0 || p.x > this.canvas.width) p.vx *= -1; if (p.y < 0 || p.y > this.canvas.height) p.vy *= -1; this.ctx.fillStyle = p.color; this.ctx.beginPath(); this.ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2); this.ctx.fill(); }); requestAnimationFrame(() => this.animate()); } }
             new ParticleSystem(document.getElementById('particles-canvas'));
 
@@ -140,136 +91,110 @@
             firebase.initializeApp(firebaseConfig);
             const auth = firebase.auth();
             const db = firebase.firestore();
+            const googleProvider = new firebase.auth.GoogleAuthProvider();
+
+            const loginContainer = document.getElementById('login-container');
+            const adminPanel = document.getElementById('admin-panel');
+            const googleLoginBtn = document.getElementById('google-login-btn');
+
+            const ADMIN_EMAIL = "shikarin.xx@gmail.com";
+
+            // --- AUTHENTICATION ---
+            googleLoginBtn.addEventListener('click', () => {
+                auth.signInWithPopup(googleProvider).catch(error => {
+                    alert("Google Sign-In Error: " + error.message);
+                });
+            });
 
             auth.onAuthStateChanged(user => {
                 if (user) {
-                    adminContainer.style.display = 'block';
-                    initializeAdminPanel();
+                    if (user.email === ADMIN_EMAIL) {
+                        loginContainer.style.display = 'none';
+                        adminPanel.style.display = 'block';
+                        initializeAdminPanel();
+                    } else {
+                        alert("Access Denied. This email is not authorized.");
+                        auth.signOut();
+                    }
                 } else {
-                    window.location.href = '/auth';
+                    loginContainer.style.display = 'block';
+                    adminPanel.style.display = 'none';
                 }
             });
 
             function initializeAdminPanel() {
-                // --- TASK MANAGEMENT (Unchanged) ---
+                // --- REDEEM CODE MANAGEMENT ---
+                const redeemCodesCollection = db.collection('redeemCodes');
+                const redeemForm = document.getElementById('redeem-code-form');
+                const codeList = document.getElementById('code-list');
+
+                document.getElementById('generate-code-btn').addEventListener('click', () => {
+                    const code = 'SHIKA-' + Math.random().toString(36).substr(2, 8).toUpperCase();
+                    document.getElementById('redeem-code').value = code;
+                });
+
+                redeemForm.addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    const codeId = document.getElementById('redeem-code').value.trim();
+                    const codeData = {
+                        amount: Number(document.getElementById('redeem-amount').value),
+                        maxUses: Number(document.getElementById('redeem-max-uses').value),
+                        uses: 0,
+                        claimedBy: [],
+                        createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                    };
+                    if (!codeId) return;
+                    redeemCodesCollection.doc(codeId).set(codeData)
+                        .then(() => {
+                            alert('Redeem code created successfully!');
+                            redeemForm.reset();
+                        })
+                        .catch(err => alert('Error: ' + err.message));
+                });
+
+                const loadCodes = () => {
+                    redeemCodesCollection.orderBy('createdAt', 'desc').onSnapshot(snapshot => {
+                        codeList.innerHTML = '';
+                        snapshot.forEach(doc => {
+                            const code = doc.data();
+                            const li = document.createElement('li');
+                            li.innerHTML = `
+                                <span><strong>${doc.id}</strong> | Amount: ₹${code.amount} | Uses: ${code.uses}/${code.maxUses}</span>
+                                <button class="delete-btn" data-id="${doc.id}">Delete</button>
+                            `;
+                            codeList.appendChild(li);
+                        });
+                    });
+                };
+                
+                codeList.addEventListener('click', e => {
+                    if (e.target.classList.contains('delete-btn')) {
+                        const id = e.target.dataset.id;
+                        if (confirm(`Are you sure you want to delete code ${id}?`)) {
+                            redeemCodesCollection.doc(id).delete();
+                        }
+                    }
+                });
+
+
+                // --- TASK & GAME MANAGEMENT (Unchanged logic) ---
                 const tasksCollection = db.collection('tasks');
                 const taskForm = document.getElementById('task-form');
                 const taskList = document.getElementById('task-list');
-
-                const loadTasks = () => {
-                    tasksCollection.orderBy("order").onSnapshot(snapshot => {
-                        taskList.innerHTML = "";
-                        snapshot.forEach(doc => {
-                            const task = doc.data();
-                            const li = document.createElement("li");
-                            li.innerHTML = `<span><strong>${task.title}</strong> (Order: ${task.order})</span><div><button class="edit-btn" data-id="${doc.id}">Edit</button><button class="delete-btn" data-id="${doc.id}">Delete</button></div>`;
-                            taskList.appendChild(li);
-                        });
-                    });
-                };
-
-                taskForm.addEventListener("submit", e => {
-                    e.preventDefault();
-                    const id = document.getElementById("task-id").value;
-                    const taskData = {
-                        title: document.getElementById("task-title").value,
-                        reward: document.getElementById("task-reward").value,
-                        imageUrl: document.getElementById("task-image-url").value,
-                        details: document.getElementById("task-details").value,
-                        actionUrl: document.getElementById("task-action-url").value,
-                        order: Number(document.getElementById("task-order").value)
-                    };
-
-                    const promise = id ? tasksCollection.doc(id).update(taskData) : tasksCollection.add(taskData);
-                    promise.then(() => {
-                        alert(id ? "Task updated!" : "Task added!");
-                        taskForm.reset();
-                        document.getElementById("task-id").value = "";
-                    }).catch(err => alert("Error saving task: " + err.message));
-                });
-
-                taskList.addEventListener("click", e => {
-                    const target = e.target;
-                    const id = target.getAttribute("data-id");
-                    if (target.classList.contains("delete-btn") && confirm("Are you sure?")) {
-                        tasksCollection.doc(id).delete();
-                    }
-                    if (target.classList.contains("edit-btn")) {
-                        tasksCollection.doc(id).get().then(doc => {
-                            const task = doc.data();
-                            document.getElementById("task-id").value = doc.id;
-                            document.getElementById("task-title").value = task.title;
-                            document.getElementById("task-reward").value = task.reward;
-                            document.getElementById("task-image-url").value = task.imageUrl;
-                            document.getElementById("task-details").value = task.details;
-                            document.getElementById("task-action-url").value = task.actionUrl;
-                            document.getElementById("task-order").value = task.order;
-                            window.scrollTo(0, 0);
-                        });
-                    }
-                });
-
-                // --- GAME MANAGEMENT (MODIFIED) ---
                 const gamesCollection = db.collection('games');
                 const gameForm = document.getElementById('game-form');
                 const gameList = document.getElementById('game-list');
-
-                const loadGames = () => {
-                    gamesCollection.orderBy('order').onSnapshot(snapshot => {
-                        gameList.innerHTML = '';
-                        snapshot.forEach(doc => {
-                            const game = doc.data();
-                            const li = document.createElement('li');
-                            // MODIFIED: Use the correct 'edit-btn' and 'delete-btn' classes
-                            li.innerHTML = `<span><strong>${game.title}</strong> (Order: ${game.order})</span><div><button class="edit-btn" data-id="${doc.id}">Edit</button><button class="delete-btn" data-id="${doc.id}">Delete</button></div>`;
-                            gameList.appendChild(li);
-                        });
-                    });
-                };
-
-                gameForm.addEventListener('submit', (e) => {
-                    e.preventDefault();
-                    const id = document.getElementById('game-id').value;
-                    const gameData = {
-                        title: document.getElementById('game-title').value,
-                        imageUrl: document.getElementById('game-image-url').value,
-                        gameUrl: document.getElementById('game-url').value,
-                        order: Number(document.getElementById('game-order').value)
-                    };
-
-                    const promise = id ? gamesCollection.doc(id).update(gameData) : gamesCollection.add(gameData);
-                    promise.then(() => {
-                        alert(id ? "Game updated!" : "Game added!");
-                        gameForm.reset();
-                        document.getElementById('game-id').value = '';
-                    }).catch(err => alert("Error saving game: " + err.message));
-                });
-
-                // MODIFIED: This event listener now targets the game list but looks for the corrected button classes
-                gameList.addEventListener("click", e => {
-                    const target = e.target;
-                    const id = target.getAttribute("data-id");
-                    // MODIFIED: Look for 'delete-btn' class
-                    if (target.classList.contains("delete-btn") && confirm("Are you sure?")) {
-                        gamesCollection.doc(id).delete();
-                    }
-                    // MODIFIED: Look for 'edit-btn' class
-                    if (target.classList.contains("edit-btn")) {
-                        gamesCollection.doc(id).get().then(doc => {
-                            const game = doc.data();
-                            document.getElementById('game-id').value = doc.id;
-                            document.getElementById('game-title').value = game.title;
-                            document.getElementById('game-image-url').value = game.imageUrl;
-                            document.getElementById('game-url').value = game.gameUrl;
-                            document.getElementById('game-order').value = game.order;
-                            gameForm.scrollIntoView({ behavior: 'smooth' });
-                        });
-                    }
-                });
+                const loadTasks = () => { tasksCollection.orderBy("order").onSnapshot(s => { taskList.innerHTML = ""; s.forEach(d => { const t = d.data(), li = document.createElement("li"); li.innerHTML = `<span><strong>${t.title}</strong> (Order: ${t.order})</span><div><button class="edit-btn" data-id="${d.id}">Edit</button><button class="delete-btn" data-id="${d.id}">Delete</button></div>`; taskList.appendChild(li); }); }); };
+                const loadGames = () => { gamesCollection.orderBy('order').onSnapshot(s => { gameList.innerHTML = ''; s.forEach(d => { const g = d.data(), li = document.createElement('li'); li.innerHTML = `<span><strong>${g.title}</strong> (Order: ${g.order})</span><div><button class="edit-btn" data-id="${d.id}">Edit</button><button class="delete-btn" data-id="${d.id}">Delete</button></div>`; gameList.appendChild(li); }); }); };
+                taskForm.addEventListener("submit", e => { e.preventDefault(); const id = document.getElementById("task-id").value; const d = { title: document.getElementById("task-title").value, reward: document.getElementById("task-reward").value, imageUrl: document.getElementById("task-image-url").value, details: document.getElementById("task-details").value, actionUrl: document.getElementById("task-action-url").value, order: Number(document.getElementById("task-order").value) }; (id ? tasksCollection.doc(id).update(d) : tasksCollection.add(d)).then(() => { alert(id ? "Task updated!" : "Task added!"); taskForm.reset(); document.getElementById("task-id").value = ""; }); });
+                taskList.addEventListener("click", e => { const t = e.target, id = t.getAttribute("data-id"); if (t.classList.contains("delete-btn") && confirm("Are you sure?")) tasksCollection.doc(id).delete(); if (t.classList.contains("edit-btn")) tasksCollection.doc(id).get().then(d => { const t = d.data(); document.getElementById("task-id").value = d.id; document.getElementById("task-title").value = t.title; document.getElementById("task-reward").value = t.reward; document.getElementById("task-image-url").value = t.imageUrl; document.getElementById("task-details").value = t.details; document.getElementById("task-action-url").value = t.actionUrl; document.getElementById("task-order").value = t.order; window.scrollTo(0, 0); }); });
+                gameForm.addEventListener('submit', (e) => { e.preventDefault(); const id = document.getElementById('game-id').value; const d = { title: document.getElementById('game-title').value, imageUrl: document.getElementById('game-image-url').value, gameUrl: document.getElementById('game-url').value, order: Number(document.getElementById('game-order').value) }; (id ? gamesCollection.doc(id).update(d) : gamesCollection.add(d)).then(() => { alert(id ? "Game updated!" : "Game added!"); gameForm.reset(); document.getElementById('game-id').value = ''; }); });
+                gameList.addEventListener("click", e => { const t = e.target, id = t.getAttribute("data-id"); if (t.classList.contains("delete-btn") && confirm("Are you sure?")) gamesCollection.doc(id).delete(); if (t.classList.contains("edit-btn")) gamesCollection.doc(id).get().then(d => { const g = d.data(); document.getElementById('game-id').value = d.id; document.getElementById('game-title').value = g.title; document.getElementById('game-image-url').value = g.imageUrl; document.getElementById('game-url').value = g.gameUrl; document.getElementById('game-order').value = g.order; gameForm.scrollIntoView({ behavior: 'smooth' }); }); });
                 
                 // Initial data load
                 loadTasks();
                 loadGames();
+                loadCodes();
             }
         });
     </script>

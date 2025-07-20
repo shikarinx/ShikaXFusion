@@ -520,3 +520,203 @@ This sets up a very detailed and functional profile page. The last remaining pag
     padding: 8px 20px;
     border-radius: 12px;
 }
+/* --- Global Styles, Fonts & Background --- */
+@import url('https://fonts.googleapis.com/css2?family=Allura&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+:root {
+    --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    --accent-gradient: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+    --bg-darker: #020617;
+    --neon-blue: #00d4ff;
+    --neon-purple: #b537f7;
+    --neon-pink: #ff006e;
+    --neon-green: #39ff14;
+    --card-bg: rgba(20, 29, 58, 0.6);
+    --card-border: rgba(255, 255, 255, 0.15);
+    --text-primary: #ffffff;
+    --text-secondary: rgba(255, 255, 255, 0.7);
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+    font-family: 'Inter', sans-serif;
+    background: var(--bg-darker);
+    min-height: 100vh;
+    color: var(--text-primary);
+    position: relative;
+    overflow-y: auto; 
+}
+
+#particles-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; opacity: 0.6; }
+.grid-background { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-image: linear-gradient(rgba(59, 130, 246, 0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(59, 130, 246, 0.1) 1px, transparent 1px); background-size: 50px 50px; animation: gridMove 20s linear infinite; z-index: 1; }
+@keyframes gridMove { from { transform: translate(0, 0); } to { transform: translate(50px, 50px); } }
+.floating-orb { position: absolute; border-radius: 50%; filter: blur(100px); animation: float 12s ease-in-out infinite; z-index: 1; }
+.orb-1 { width: 400px; height: 400px; background: var(--neon-blue); top: 10%; left: 10%; animation-delay: 0s; }
+.orb-2 { width: 300px; height: 300px; background: var(--neon-purple); top: 60%; right: 15%; animation-delay: -4s; }
+@keyframes float { 50% { transform: translateY(-40px) scale(1.1); } }
+
+/* --- Main App Structure --- */
+.app-container { width: 100%; max-width: 430px; height: 100vh; margin: auto; background: rgba(0,0,0,0.2); border-left: 1px solid var(--card-border); border-right: 1px solid var(--card-border); display: flex; flex-direction: column; position: relative; z-index: 10; overflow: hidden; }
+.main-content { flex-grow: 1; overflow-y: auto; padding: 20px 0 120px 0; }
+.main-content::-webkit-scrollbar { display: none; }
+
+/* --- Reusable Bottom Navigation --- */
+.bottom-nav { 
+    position: fixed;
+    bottom: 20px;
+    width: calc(100% - 40px);
+    max-width: 390px;
+    left: 50%;
+    transform: translateX(-50%);
+    flex-shrink: 0; 
+    padding: 10px; 
+    background: rgba(15, 23, 42, 0.5); 
+    backdrop-filter: blur(15px); 
+    border: 1px solid var(--card-border);
+    border-radius: 50px; 
+    display: flex; 
+    justify-content: space-around; 
+    align-items: center; 
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3); 
+    z-index: 100;
+}
+.nav-item { display: flex; flex-direction: column; align-items: center; gap: 4px; color: var(--text-secondary); text-decoration: none; cursor: pointer; transition: color 0.2s ease; background: none; border: none; padding: 5px 10px; font-family: 'Inter', sans-serif; }
+.nav-item.active { color: var(--neon-pink); }
+.nav-item:hover { color: var(--text-primary); }
+.nav-item svg { width: 24px; height: 24px; }
+.nav-item span { font-size: 0.75rem; font-weight: 600; }
+.nav-item .icon-fill { fill: var(--text-secondary); transition: fill 0.2s; }
+.nav-item.active .icon-fill { fill: var(--neon-pink); }
+.nav-item:hover .icon-fill { fill: var(--text-primary); }
+
+/* --- Dashboard Specific Styles --- */
+.dashboard-header { padding: 20px; display: flex; justify-content: space-between; align-items: center; flex-shrink: 0; }
+.header-left { font-family: 'Inter', sans-serif; font-weight: 600; font-size: 1.2rem; }
+.header-right { display: flex; align-items: center; gap: 15px; }
+.brand-name { font-family: 'Allura', cursive; font-size: 2.5rem; background: linear-gradient(135deg, var(--neon-blue), var(--neon-pink)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; text-shadow: 0 0 15px rgba(0, 212, 255, 0.5); }
+.user-avatar { width: 44px; height: 44px; background: linear-gradient(135deg, #f97794, #623aa2); border-radius: 14px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 1.2rem; }
+
+/* --- Horizontal Scrolling Cards & Section Headers --- */
+.horizontal-scroll-container { display: flex; gap: 20px; overflow-x: auto; padding: 0 20px 20px 20px; scroll-snap-type: x mandatory; scrollbar-width: none; }
+.horizontal-scroll-container::-webkit-scrollbar { display: none; }
+.game-card { 
+    flex: 0 0 280px; 
+    height: 350px; 
+    border-radius: 24px; 
+    overflow: hidden; 
+    position: relative; 
+    background: var(--card-bg); 
+    border: 1px solid var(--card-border); 
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2); 
+    cursor: pointer; 
+    transition: transform 0.3s ease, box-shadow 0.3s ease; 
+    scroll-snap-align: start; 
+    display: flex; 
+    align-items: center; 
+    justify-content: flex-end;
+    padding-right: 25px;
+}
+.game-card:hover { transform: translateY(-5px); box-shadow: 0 15px 40px rgba(0,0,0,0.4); }
+.section-header { padding: 0 20px; margin-bottom: 15px; margin-top: 10px; }
+.section-header h2 { font-family: 'Allura', cursive; font-size: 3rem; font-weight: normal; color: var(--text-primary); text-shadow: 0 0 10px rgba(255,255,255,0.2); }
+
+/* --- Play Button Styles --- */
+.play-button { width: 70px; height: 70px; background: rgba(0, 212, 255, 0.2); border: 2px solid var(--neon-blue); border-radius: 50%; display: flex; align-items: center; justify-content: center; transition: all 0.3s ease; backdrop-filter: blur(5px); }
+.play-button svg { width: 32px; height: 32px; fill: var(--neon-blue); transition: fill 0.3s ease; margin-left: 5px; }
+.game-card:hover .play-button { background: var(--neon-blue); box-shadow: 0 0 20px rgba(0, 212, 255, 0.5); }
+.game-card:hover .play-button svg { fill: var(--bg-darker); }
+
+/* --- Task/Offers List Styles --- */
+.task-list-container { background: var(--card-bg); margin: 0 20px; border-radius: 24px; padding: 15px; border: 1px solid var(--card-border); display: flex; flex-direction: column; gap: 10px; }
+.task-item { display: flex; align-items: center; gap: 15px; padding: 10px; background: rgba(0,0,0,0.2); border-radius: 16px; }
+.task-icon { width: 40px; height: 40px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; background: var(--primary-gradient); border-radius: 12px; }
+.task-icon svg { width: 22px; height: 22px; fill: var(--text-primary); }
+.task-details { flex-grow: 1; display: flex; flex-direction: column; }
+.task-title { font-weight: 600; font-size: 1rem; color: var(--text-primary); }
+.task-reward { font-size: 0.85rem; color: var(--text-secondary); }
+.task-action { font-weight: 600; font-size: 0.9rem; padding: 8px 18px; background: var(--accent-gradient); border-radius: 10px; cursor: pointer; transition: transform 0.2s ease; text-decoration: none; color: var(--text-primary); }
+.task-action:hover { transform: scale(1.05); }
+
+/* --- Game Grid Styles --- */
+.game-grid-container { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; padding: 0 20px; }
+.game-grid-card { height: 180px; border-radius: 18px; position: relative; overflow: hidden; cursor: pointer; background-size: cover; background-position: center; border: 1px solid var(--card-border); transition: transform 0.3s ease; }
+.game-grid-card:hover { transform: scale(1.05); }
+.card-overlay { position: absolute; bottom: 0; left: 0; right: 0; padding: 10px; background: linear-gradient(0deg, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0) 100%); display: flex; justify-content: space-between; align-items: center; }
+.game-title { font-size: 0.9rem; font-weight: 600; color: var(--text-primary); }
+.play-now-btn { font-size: 0.8rem; font-weight: 500; background: var(--neon-pink); color: var(--text-primary); padding: 6px 12px; border-radius: 8px; transition: background-color 0.2s; }
+.play-now-btn:hover { background: #ff3d8b; }
+
+/* --- Profile Page Specific Styles --- */
+.profile-header-card { background: var(--card-bg); margin: 20px 20px 0 20px; border-radius: 24px; border: 1px solid var(--card-border); padding: 25px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
+.profile-avatar { width: 100px; height: 100px; margin: 0 auto 15px auto; border-radius: 50%; border: 3px solid var(--neon-pink); cursor: pointer; overflow: hidden; transition: transform 0.3s ease; }
+.profile-avatar:hover { transform: scale(1.1); box-shadow: 0 0 20px var(--neon-pink); }
+.profile-avatar img { width: 100%; height: 100%; object-fit: cover; }
+.profile-name { font-family: 'Allura', cursive; font-size: 3rem; font-weight: normal; color: var(--text-primary); margin-bottom: 5px; }
+.profile-balance { font-size: 1.8rem; font-weight: 700; color: var(--neon-green); text-shadow: 0 0 10px rgba(57, 255, 20, 0.4); margin-bottom: 20px; }
+.profile-actions { display: flex; justify-content: center; gap: 15px; }
+.profile-action-btn { border: none; padding: 12px 25px; border-radius: 12px; font-size: 1rem; font-weight: 600; color: var(--text-primary); cursor: pointer; transition: all 0.2s ease; }
+.profile-action-btn.deposit { background: linear-gradient(135deg, #28a745, #218838); }
+.profile-action-btn.withdraw { background: linear-gradient(135deg, #007bff, #0056b3); }
+.profile-action-btn:hover { transform: translateY(-2px); }
+.profile-options-list { margin: 20px; display: flex; flex-direction: column; gap: 10px; }
+.accordion-item { background: var(--card-bg); border-radius: 18px; border: 1px solid var(--card-border); overflow: hidden; }
+.accordion-header { background: transparent; border: none; padding: 18px 20px; width: 100%; text-align: left; color: var(--text-primary); font-size: 1.1rem; font-weight: 600; cursor: pointer; display: flex; justify-content: space-between; align-items: center; }
+.accordion-arrow { width: 24px; height: 24px; fill: var(--text-secondary); transition: transform 0.3s ease; }
+.accordion-header.active .accordion-arrow { transform: rotate(180deg); }
+.accordion-panel { max-height: 0; overflow: hidden; transition: max-height 0.3s ease-out; padding: 0 20px; }
+.accordion-panel .info-list p { padding: 8px 0; border-bottom: 1px solid rgba(255,255,255,0.05); }
+.accordion-panel .info-list p:last-child { border-bottom: none; }
+.transaction-list { list-style: none; padding-bottom: 15px; }
+.transaction-list li { padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.05); }
+.redeem-container { display: flex; gap: 10px; padding: 10px 0 20px 0; }
+.redeem-input { flex-grow: 1; background: rgba(0,0,0,0.4); border: 1px solid var(--card-border); color: var(--text-primary); padding: 12px; border-radius: 10px; font-size: 1rem; }
+.redeem-button { border: none; background: var(--accent-gradient); color: white; padding: 0 20px; border-radius: 10px; font-weight: 600; cursor: pointer; }
+.logout-btn { display: block; width: calc(100% - 40px); margin: 10px auto 20px auto; padding: 15px; border: none; border-radius: 18px; background: linear-gradient(135deg, #dc3545, #c82333); color: white; font-size: 1.1rem; font-weight: 600; cursor: pointer; }
+
+/* --- Avatar Modal Styles --- */
+.modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(2, 6, 23, 0.8); backdrop-filter: blur(10px); display: none; align-items: center; justify-content: center; z-index: 10000; }
+.modal-content { background: var(--card-bg); padding: 25px; border-radius: 24px; border: 1px solid var(--card-border); width: 90%; max-width: 380px; text-align: center; }
+.modal-content h3 { font-family: 'Allura', cursive; font-size: 2.5rem; margin-bottom: 20px; }
+.avatar-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(60px, 1fr)); gap: 15px; }
+.avatar-choice { width: 100%; aspect-ratio: 1 / 1; border-radius: 50%; object-fit: cover; cursor: pointer; border: 2px solid transparent; transition: all 0.2s ease; }
+.avatar-choice:hover { border-color: var(--neon-pink); transform: scale(1.1); }
+.modal-close-button { margin-top: 25px; padding: 12px 30px; border: none; border-radius: 12px; background: var(--accent-gradient); color: white; font-size: 1rem; font-weight: 600; cursor: pointer; }
+
+/* --- Editable Profile --- */
+.info-form { display: flex; flex-direction: column; gap: 15px; padding: 10px 0 20px 0; }
+.info-form label { font-size: 0.9rem; color: var(--text-secondary); font-weight: 500; }
+.info-input { background: rgba(0,0,0,0.4); border: 1px solid var(--card-border); color: var(--text-primary); padding: 12px; border-radius: 10px; font-size: 1rem; width: 100%; }
+.info-input:read-only { background: rgba(0,0,0,0.2); cursor: not-allowed; color: var(--text-secondary); }
+.save-changes-btn { border: none; background: var(--accent-gradient); color: white; padding: 12px; border-radius: 10px; font-weight: 600; cursor: pointer; margin-top: 10px; transition: transform 0.2s ease; }
+.save-changes-btn:hover { transform: translateY(-2px); }
+
+/* --- Interstitial Ad Styles --- */
+.interstitial-ad-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(2, 6, 23, 0.9); backdrop-filter: blur(10px); display: none; align-items: center; justify-content: center; flex-direction: column; z-index: 10000; padding: 20px; }
+.interstitial-ad-content { width: 100%; max-width: 380px; height: auto; position: relative; }
+.interstitial-ad-content iframe { width: 100%; max-width: 320px; height: 270px; border: 2px solid var(--card-border); border-radius: 18px; margin: 0 auto; display: block; }
+#ad-close-btn { position: absolute; top: -15px; right: -5px; width: 36px; height: 36px; background: var(--accent-gradient); border: none; border-radius: 50%; color: white; font-size: 1.5rem; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center; line-height: 1; box-shadow: 0 4px 15px rgba(0,0,0,0.4); }
+#ad-close-btn:disabled { background: grey; cursor: not-allowed; opacity: 0.8; }
+#ad-countdown { margin-top: 20px; font-size: 1.2rem; font-weight: 600; color: var(--text-secondary); background: var(--card-bg); padding: 8px 20px; border-radius: 12px; }
+
+/* --- ADD THIS NEW CODE AT THE BOTTOM --- */
+
+/* --- Withdraw Modal Styles --- */
+#withdraw-modal .modal-content { text-align: left; }
+.withdraw-form { display: flex; flex-direction: column; gap: 15px; }
+.withdraw-form label { font-size: 0.9rem; color: var(--text-secondary); font-weight: 500; }
+.withdraw-input { background: rgba(0,0,0,0.4); border: 1px solid var(--card-border); color: var(--text-primary); padding: 12px; border-radius: 10px; font-size: 1rem; width: 100%; }
+.withdraw-submit-btn { border: none; background: linear-gradient(135deg, #007bff, #0056b3); color: white; padding: 12px; border-radius: 10px; font-weight: 600; cursor: pointer; margin-top: 10px; transition: transform 0.2s ease; }
+.withdraw-submit-btn:hover { transform: translateY(-2px); }
+.withdraw-note { font-size: 0.8rem; color: var(--text-secondary); margin-top: 15px; text-align: center; }
+
+/* --- Help & Support Link --- */
+.support-link {
+    display: block;
+    padding: 15px 0;
+    color: var(--neon-blue);
+    text-decoration: none;
+    font-weight: 500;
+    text-align: center;
+}
