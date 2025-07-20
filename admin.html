@@ -5,7 +5,7 @@
     <title>ShikaXFusion Admin Panel</title>
     <link rel="stylesheet" href="main.css">
     <style>
-        /* --- REDESIGNED ADMIN PANEL STYLES --- */
+        /* --- REDESIGNED ADMIN PANEL STYLES (from previous version) --- */
         .container {
             position: relative;
             z-index: 10;
@@ -95,6 +95,7 @@
     <div class="grid-background"></div>
     <div class="orb-container"><div class="floating-orb orb-1"></div><div class="floating-orb orb-2"></div></div>
 
+    <!-- MODIFIED: The container is now hidden by default until login is confirmed -->
     <div class="container" id="admin-container" style="display:none;">
         <h1>Admin Dashboard</h1>
         
@@ -112,7 +113,6 @@
         <h2>Current Tasks</h2>
         <ul id="task-list" class="item-list"></ul>
 
-        <!-- ADDED: Separator and Game Management Section -->
         <hr>
         <h2>Game Management</h2>
         <form id="game-form">
@@ -127,99 +127,159 @@
         <ul id="game-list" class="item-list"></ul>
     </div>
 
+    <!-- MODIFIED: Firebase Auth script added -->
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
     <script>
+        // --- MODIFIED: COMPLETE SCRIPT REWRITE FOR FIREBASE AUTH ---
         document.addEventListener('DOMContentLoaded', () => {
-            const correctPassword = "ShikaXFusion";
-            let password = prompt("Enter Admin Password:", "");
-            if (password !== correctPassword) {
-                alert("Incorrect Password!");
-                return;
-            }
-            document.getElementById('admin-container').style.display = 'block';
-
-            // Particle System code
+            const adminContainer = document.getElementById('admin-container');
+            
+            // Particle System code (unchanged)
             class ParticleSystem { constructor(canvas) { this.canvas = canvas; this.ctx = canvas.getContext('2d'); this.particles = []; this.resize(); this.init(); this.animate(); window.addEventListener('resize', () => this.resize()); } resize() { this.canvas.width = window.innerWidth; this.canvas.height = window.innerHeight; } init() { this.particles = []; const particleCount = 100; for (let i = 0; i < particleCount; i++) { this.particles.push({ x: Math.random() * this.canvas.width, y: Math.random() * this.canvas.height, vx: (Math.random() - 0.5) * 0.5, vy: (Math.random() - 0.5) * 0.5, size: Math.random() * 2 + 1, color: `hsl(${220 + Math.random() * 60}, 70%, 60%)` }); } } animate() { this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height); this.particles.forEach(p => { p.x += p.vx; p.y += p.vy; if (p.x < 0 || p.x > this.canvas.width) p.vx *= -1; if (p.y < 0 || p.y > this.canvas.height) p.vy *= -1; this.ctx.fillStyle = p.color; this.ctx.beginPath(); this.ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2); this.ctx.fill(); }); requestAnimationFrame(() => this.animate()); } }
             new ParticleSystem(document.getElementById('particles-canvas'));
-            
+
             const firebaseConfig = { apiKey: "AIzaSyCzFHkD5bAIjZkP1W7jj4P-FoBldmeTCpk", authDomain: "shikaxfusion.firebaseapp.com", projectId: "shikaxfusion", storageBucket: "shikaxfusion.appspot.com", messagingSenderId: "353890157797", appId: "1:353890157797:web:54607ce7378b97fc4d000c" };
             firebase.initializeApp(firebaseConfig);
+            const auth = firebase.auth();
             const db = firebase.firestore();
 
-            // --- TASK MANAGEMENT ---
-            const tasksCollection = db.collection('tasks');
-            const taskForm = document.getElementById('task-form');
-            const taskList = document.getElementById('task-list');
-            const loadTasks=()=>{tasksCollection.orderBy("order").onSnapshot(snapshot=>{taskList.innerHTML="",snapshot.forEach(doc=>{const task=doc.data(),li=document.createElement("li");li.innerHTML=`<span><strong>${task.title}</strong> (Order: ${task.order})</span><div><button class="edit-btn" data-type="task" data-id="${doc.id}">Edit</button><button class="delete-btn" data-type="task" data-id="${doc.id}">Delete</button></div>`,taskList.appendChild(li)})})};taskForm.addEventListener("submit",e=>{e.preventDefault();const id=document.getElementById("task-id").value,taskData={title:document.getElementById("task-title").value,reward:document.getElementById("task-reward").value,imageUrl:document.getElementById("task-image-url").value,details:document.getElementById("task-details").value,actionUrl:document.getElementById("task-action-url").value,order:Number(document.getElementById("task-order").value)};id?tasksCollection.doc(id).update(taskData).then(()=>{alert("Task updated!"),taskForm.reset(),document.getElementById("task-id").value=""}):tasksCollection.add(taskData).then(()=>{alert("Task added!"),taskForm.reset()})});taskList.addEventListener("click",e=>{const target=e.target,id=target.getAttribute("data-id");if(target.classList.contains("delete-btn")&&confirm("Are you sure?"))tasksCollection.doc(id).delete();if(target.classList.contains("edit-btn"))tasksCollection.doc(id).get().then(doc=>{const task=doc.data();document.getElementById("task-id").value=doc.id,document.getElementById("task-title").value=task.title,document.getElementById("task-reward").value=task.reward,document.getElementById("task-image-url").value=task.imageUrl,document.getElementById("task-details").value=task.details,document.getElementById("task-action-url").value=task.actionUrl,document.getElementById("task-order").value=task.order,window.scrollTo(0,0)})});
-
-            // --- GAME MANAGEMENT ---
-            const gamesCollection = db.collection('games');
-            const gameForm = document.getElementById('game-form');
-            const gameList = document.getElementById('game-list');
-
-            const loadGames = () => {
-                gamesCollection.orderBy('order').onSnapshot(snapshot => {
-                    gameList.innerHTML = '';
-                    snapshot.forEach(doc => {
-                        const game = doc.data();
-                        const li = document.createElement('li');
-                        li.innerHTML = `
-                            <span><strong>${game.title}</strong> (Order: ${game.order})</span>
-                            <div>
-                                <button class="edit-btn" onclick="editGame('${doc.id}')">Edit</button>
-                                <button class="delete-btn" onclick="deleteGame('${doc.id}')">Delete</button>
-                            </div>
-                        `;
-                        gameList.appendChild(li);
-                    });
-                });
-            };
-
-            gameForm.addEventListener('submit', (e) => {
-                e.preventDefault();
-                const id = document.getElementById('game-id').value;
-                const gameData = {
-                    title: document.getElementById('game-title').value,
-                    imageUrl: document.getElementById('game-image-url').value,
-                    gameUrl: document.getElementById('game-url').value,
-                    order: Number(document.getElementById('game-order').value)
-                };
-
-                if (id) {
-                    gamesCollection.doc(id).update(gameData).then(() => {
-                        alert('Game updated!');
-                        gameForm.reset();
-                        document.getElementById('game-id').value = '';
-                    });
+            // --- AUTHENTICATION CHECK ---
+            auth.onAuthStateChanged(user => {
+                if (user) {
+                    // If user is logged in, show the admin panel
+                    console.log("Admin authenticated:", user.email);
+                    adminContainer.style.display = 'block';
+                    initializeAdminPanel();
                 } else {
-                    gamesCollection.add(gameData).then(() => {
-                        alert('Game added!');
-                        gameForm.reset();
-                    });
+                    // If no user is logged in, redirect to the main auth page
+                    console.log("No user logged in. Redirecting to /auth");
+                    window.location.href = '/auth';
                 }
             });
-            
-            window.editGame = (id) => {
-                gamesCollection.doc(id).get().then(doc => {
-                    const game = doc.data();
-                    document.getElementById('game-id').value = doc.id;
-                    document.getElementById('game-title').value = game.title;
-                    document.getElementById('game-image-url').value = game.imageUrl;
-                    document.getElementById('game-url').value = game.gameUrl;
-                    document.getElementById('game-order').value = game.order;
-                    gameForm.scrollIntoView({ behavior: 'smooth' });
+
+            function initializeAdminPanel() {
+                // --- TASK MANAGEMENT ---
+                const tasksCollection = db.collection('tasks');
+                const taskForm = document.getElementById('task-form');
+                const taskList = document.getElementById('task-list');
+
+                const loadTasks = () => {
+                    tasksCollection.orderBy("order").onSnapshot(snapshot => {
+                        taskList.innerHTML = "";
+                        snapshot.forEach(doc => {
+                            const task = doc.data();
+                            const li = document.createElement("li");
+                            li.innerHTML = `<span><strong>${task.title}</strong> (Order: ${task.order})</span><div><button class="edit-btn" data-id="${doc.id}">Edit</button><button class="delete-btn" data-id="${doc.id}">Delete</button></div>`;
+                            taskList.appendChild(li);
+                        });
+                    });
+                };
+
+                taskForm.addEventListener("submit", e => {
+                    e.preventDefault();
+                    const id = document.getElementById("task-id").value;
+                    const taskData = {
+                        title: document.getElementById("task-title").value,
+                        reward: document.getElementById("task-reward").value,
+                        imageUrl: document.getElementById("task-image-url").value,
+                        details: document.getElementById("task-details").value,
+                        actionUrl: document.getElementById("task-action-url").value,
+                        order: Number(document.getElementById("task-order").value)
+                    };
+
+                    const promise = id ? tasksCollection.doc(id).update(taskData) : tasksCollection.add(taskData);
+                    promise.then(() => {
+                        alert(id ? "Task updated!" : "Task added!");
+                        taskForm.reset();
+                        document.getElementById("task-id").value = "";
+                    }).catch(err => {
+                        alert("Error saving task: " + err.message);
+                    });
                 });
-            };
-            
-            window.deleteGame = (id) => {
-                 if (confirm('Are you sure you want to delete this game?')) {
-                    gamesCollection.doc(id).delete();
-                }
-            };
-            
-            loadTasks();
-            loadGames();
+
+                taskList.addEventListener("click", e => {
+                    const target = e.target;
+                    const id = target.getAttribute("data-id");
+                    if (target.classList.contains("delete-btn") && confirm("Are you sure?")) {
+                        tasksCollection.doc(id).delete();
+                    }
+                    if (target.classList.contains("edit-btn")) {
+                        tasksCollection.doc(id).get().then(doc => {
+                            const task = doc.data();
+                            document.getElementById("task-id").value = doc.id;
+                            document.getElementById("task-title").value = task.title;
+                            document.getElementById("task-reward").value = task.reward;
+                            document.getElementById("task-image-url").value = task.imageUrl;
+                            document.getElementById("task-details").value = task.details;
+                            document.getElementById("task-action-url").value = task.actionUrl;
+                            document.getElementById("task-order").value = task.order;
+                            window.scrollTo(0, 0);
+                        });
+                    }
+                });
+
+                // --- GAME MANAGEMENT ---
+                const gamesCollection = db.collection('games');
+                const gameForm = document.getElementById('game-form');
+                const gameList = document.getElementById('game-list');
+
+                const loadGames = () => {
+                    gamesCollection.orderBy('order').onSnapshot(snapshot => {
+                        gameList.innerHTML = '';
+                        snapshot.forEach(doc => {
+                            const game = doc.data();
+                            const li = document.createElement('li');
+                            li.innerHTML = `<span><strong>${game.title}</strong> (Order: ${game.order})</span><div><button class="edit-btn-game" data-id="${doc.id}">Edit</button><button class="delete-btn-game" data-id="${doc.id}">Delete</button></div>`;
+                            gameList.appendChild(li);
+                        });
+                    });
+                };
+
+                gameForm.addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    const id = document.getElementById('game-id').value;
+                    const gameData = {
+                        title: document.getElementById('game-title').value,
+                        imageUrl: document.getElementById('game-image-url').value,
+                        gameUrl: document.getElementById('game-url').value,
+                        order: Number(document.getElementById('game-order').value)
+                    };
+
+                    const promise = id ? gamesCollection.doc(id).update(gameData) : gamesCollection.add(gameData);
+                    promise.then(() => {
+                        alert(id ? "Game updated!" : "Game added!");
+                        gameForm.reset();
+                        document.getElementById('game-id').value = '';
+                    }).catch(err => {
+                        alert("Error saving game: " + err.message);
+                    });
+                });
+
+                gameList.addEventListener("click", e => {
+                    const target = e.target;
+                    const id = target.getAttribute("data-id");
+                    if (target.classList.contains("delete-btn-game") && confirm("Are you sure?")) {
+                        gamesCollection.doc(id).delete();
+                    }
+                    if (target.classList.contains("edit-btn-game")) {
+                        gamesCollection.doc(id).get().then(doc => {
+                            const game = doc.data();
+                            document.getElementById('game-id').value = doc.id;
+                            document.getElementById('game-title').value = game.title;
+                            document.getElementById('game-image-url').value = game.imageUrl;
+                            document.getElementById('game-url').value = game.gameUrl;
+                            document.getElementById('game-order').value = game.order;
+                            gameForm.scrollIntoView({ behavior: 'smooth' });
+                        });
+                    }
+                });
+                
+                // Initial data load
+                loadTasks();
+                loadGames();
+            }
         });
     </script>
 </body>
