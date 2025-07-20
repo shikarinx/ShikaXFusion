@@ -5,6 +5,37 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard | ShikaXFusion</title>
     <link rel="stylesheet" href="main.css">
+    <!-- MODIFIED: Added styles for the dynamic content -->
+    <style>
+        /* Gold frame for the user avatar */
+        .user-avatar { 
+            border: 3px solid #FFD700;
+            box-shadow: 0 0 15px rgba(255, 215, 0, 0.6);
+            padding: 2px;
+            background: linear-gradient(135deg, #f97794, #623aa2);
+            overflow: hidden;
+        }
+        .user-avatar img { 
+            width: 100%; 
+            height: 100%; 
+            object-fit: cover; 
+            border-radius: 10px;
+        }
+
+        /* Ensure game cards are clickable links */
+        .game-card {
+            display: block; /* Make the whole card a clickable area */
+            text-decoration: none;
+            background-size: cover;
+            background-position: center;
+        }
+        .task-action:disabled {
+            background: grey;
+            cursor: not-allowed;
+            opacity: 0.7;
+            transform: none;
+        }
+    </style>
 </head>
 <body>
     <canvas id="particles-canvas"></canvas>
@@ -12,58 +43,196 @@
     <div class="orb-container"><div class="floating-orb orb-1"></div><div class="floating-orb orb-2"></div></div>
 
     <div class="app-container">
-        <!-- Content is unchanged... -->
+        <!-- MODIFIED: Header is now fully dynamic -->
         <header class="dashboard-header">
-            <div class="header-left">🇮🇳 ₹0.00</div>
+            <div class="header-left" id="user-balance-header">🇮🇳 ₹0.00</div>
             <div class="header-right">
                 <div class="brand-name">ShikaXFusion</div>
-                <div class="user-avatar" id="user-avatar-initial">...</div>
+                <div class="user-avatar"><img id="header-avatar-img" src="" alt="DP"></div>
             </div>
         </header>
+
         <main class="main-content">
             <div class="section-header"><h2>Trending Games</h2></div>
-            <div class="horizontal-scroll-container">
-                <div class="game-card"><div class="play-button"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"></path></svg></div></div>
-                <div class="game-card"><div class="play-button"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"></path></svg></div></div>
-                <div class="game-card"><div class="play-button"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"></path></svg></div></div>
+            <!-- MODIFIED: This container will be filled with games from Firestore -->
+            <div class="horizontal-scroll-container" id="trending-games-container">
+                <p style="color: var(--text-secondary); padding-left: 20px;">Loading games...</p>
             </div>
-            <div class="section-header"><h2>Offers</h2></div>
+
+            <!-- MODIFIED: This section now shows the Bonus Rewards -->
+            <div class="section-header"><h2>Bonus Rewards</h2></div>
             <div class="task-list-container">
-                <div class="task-item"><div class="task-icon"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"></path></svg></div><div class="task-details"><span class="task-title">Daily Check-in</span><span class="task-reward">Claim your daily bonus!</span></div><div class="task-action">Claim</div></div>
-                <div class="task-item"><div class="task-icon"><svg viewBox="0 0 24 24"><path d="M19.5 5.5c-1.38 0-2.5 1.12-2.5 2.5s1.12 2.5 2.5 2.5 2.5-1.12 2.5-2.5-1.12-2.5-2.5-2.5zM15 12c-1.38 0-2.5 1.12-2.5 2.5s1.12 2.5 2.5 2.5 2.5-1.12 2.5-2.5-1.12-2.5-2.5-2.5zM4.5 5.5c-1.38 0-2.5 1.12-2.5 2.5s1.12 2.5 2.5 2.5 2.5-1.12 2.5-2.5-1.12-2.5-2.5-2.5z"></path></svg></div><div class="task-details"><span class="task-title">Play a Game</span><span class="task-reward">Earn 50 coins</span></div><div class="task-action">Go</div></div>
-                <div class="task-item"><div class="task-icon"><svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-2 12H6v-2h12v2zm0-3H6V9h12v2zm0-3H6V6h12v2z"></path></svg></div><div class="task-details"><span class="task-title">Complete Survey</span><span class="task-reward">Earn 200 coins</span></div><div class="task-action">Start</div></div>
+                <div class="task-item">
+                    <div class="task-icon"><svg viewBox="0 0 24 24"><path fill="white" d="M20 6h-2V4h2v2zm-4 0h-2V4h2v2zM8 6H6V4h2v2zm13 14H3V8h18v12zM5 10h14v8H5v-8z"/></svg></div>
+                    <div class="task-details">
+                        <span class="task-title">Weekly Claim</span>
+                        <span class="task-reward">Claim your weekly ₹1 bonus!</span>
+                    </div>
+                    <button class="task-action" id="weekly-claim-btn" disabled>Claim</button>
+                </div>
+                <div class="task-item">
+                    <div class="task-icon"><svg viewBox="0 0 24 24"><path fill="white" d="M19 4h-1V2h-2v2H8V2H6v2H5c-1.11 0-1.99.9-1.99 2L3 20a2 2 0 002 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 16H5V8h14v12z"/></svg></div>
+                    <div class="task-details">
+                        <span class="task-title">Monthly Claim</span>
+                        <span class="task-reward">Claim your monthly ₹2 bonus!</span>
+                    </div>
+                    <button class="task-action" id="monthly-claim-btn" disabled>Claim</button>
+                </div>
             </div>
         </main>
-        <!-- MODIFIED: Navigation links updated to Clean URLs -->
+        
+        <!-- MODIFIED: Navigation links updated to use clean URLs consistently -->
         <nav class="bottom-nav">
             <a href="/dashboard" class="nav-item active"><svg viewBox="0 0 24 24"><path class="icon-fill" d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg><span>Home</span></a>
             <a href="/tasks" class="nav-item"><svg viewBox="0 0 24 24"><path class="icon-fill" d="M20.5 4.5H4.6C3.7 4 3 4.7 3 5.6v12.8C3 19.3 3.7 20 4.6 20h12.8c.9 0 1.6-.7 1.6-1.6V5.6c0-.9-.7-1.6-1.6-1.6zM18 18H6V6h12v12zM9 15h6v-2H9v2zm0-3h6v-2H9v2zm0-3h6V7H9v2z"/></svg><span>Tasks</span></a>
             <a href="/rewards" class="nav-item"><svg viewBox="0 0 24 24"><path class="icon-fill" d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg><span>Rewards</span></a>
-            <a href="/games" class="nav-item"><svg viewBox="0 0 24 24"><path class="icon-fill" d="M21.58 16.09l-1.1-1.1c-.29-.29-.69-.47-1.12-.52a5.95 5.95 0 00-2.86-2.86c-.05-.43-.23-.83-.52-1.12l-1.1-1.1a1.6 1.6 0 00-2.24 0l-1.1 1.1c-.29.29-.47-.69-.52 1.12a5.95 5.95 0 00-2.86 2.86c-.05.43-.23-.83-.52-1.12l-1.1 1.1a1.6 1.6 0 000 2.24l1.1 1.1c.29.29.69.47 1.12.52a5.95 5.95 0 002.86 2.86c.43.05.83.23 1.12.52l1.1 1.1a1.6 1.6 0 002.24 0l1.1-1.1c.29-.29.47-.69-.52-1.12a5.95 5.95 0 002.86-2.86c.05-.43.23-.83-.52-1.12l1.1-1.1a1.6 1.6 0 000-2.24zM12 15a3 3 0 110-6 3 3 0 010 6z"/></svg><span>Games</span></a>
+            <a href="/games" class="nav-item"><svg viewBox="0 0 24 24"><path class="icon-fill" d="M21.58 16.09l-1.1-1.1c-.29-.29-.69-.47-1.12-.52a5.95 5.95 0 00-2.86-2.86c-.05-.43-.23-.83-.52-1.12l-1.1-1.1a1.6 1.6 0 00-2.24 0l-1.1 1.1c-.29-.29-.47-.69-.52 1.12a5.95 5.95 0 00-2.86 2.86c-.05-.43-.23-.83-.52-1.12l-1.1 1.1a1.6 1.6 0 000 2.24l1.1 1.1c.29-.29-.69-.47 1.12-.52a5.95 5.95 0 002.86 2.86c.43-.05.83.23 1.12-.52l1.1 1.1a1.6 1.6 0 002.24 0l1.1-1.1c-.29-.29-.47-.69-.52-1.12a5.95 5.95 0 002.86-2.86c-.05-.43-.23-.83-.52-1.12l1.1-1.1a1.6 1.6 0 000-2.24zM12 15a3 3 0 110-6 3 3 0 010 6z"/></svg><span>Games</span></a>
             <a href="/profile" class="nav-item"><svg viewBox="0 0 24 24"><path class="icon-fill" d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg><span>Profile</span></a>
         </nav>
     </div>
-    <!-- Scripts are unchanged -->
+
+    <!-- MODIFIED: Script is completely rewritten for dynamic functionality -->
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
     <script>
-        let firebaseAuthReady = false;
         document.addEventListener('DOMContentLoaded', () => {
+            // Particle system (unchanged)
             class ParticleSystem { constructor(canvas) { this.canvas = canvas; this.ctx = canvas.getContext('2d'); this.particles = []; this.resize(); this.init(); this.animate(); window.addEventListener('resize', () => this.resize()); } resize() { this.canvas.width = window.innerWidth; this.canvas.height = window.innerHeight; } init() { this.particles = []; const particleCount = 100; for (let i = 0; i < particleCount; i++) { this.particles.push({ x: Math.random() * this.canvas.width, y: Math.random() * this.canvas.height, vx: (Math.random() - 0.5) * 0.5, vy: (Math.random() - 0.5) * 0.5, size: Math.random() * 2 + 1, color: `hsl(${220 + Math.random() * 60}, 70%, 60%)` }); } } animate() { this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height); this.particles.forEach(p => { p.x += p.vx; p.y += p.vy; if (p.x < 0 || p.x > this.canvas.width) p.vx *= -1; if (p.y < 0 || p.y > this.canvas.height) p.vy *= -1; this.ctx.fillStyle = p.color; this.ctx.beginPath(); this.ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2); this.ctx.fill(); }); requestAnimationFrame(() => this.animate()); } }
             new ParticleSystem(document.getElementById('particles-canvas'));
+            
             const firebaseConfig = { apiKey: "AIzaSyCzFHkD5bAIjZkP1W7jj4P-FoBldmeTCpk", authDomain: "shikaxfusion.firebaseapp.com", projectId: "shikaxfusion", storageBucket: "shikaxfusion.appspot.com", messagingSenderId: "353890157797", appId: "1:353890157797:web:54607ce7378b97fc4d000c" };
             firebase.initializeApp(firebaseConfig);
             const auth = firebase.auth();
-            const avatarInitial = document.getElementById('user-avatar-initial');
+            const db = firebase.firestore();
+
+            // Element references
+            const headerAvatarImg = document.getElementById('header-avatar-img');
+            const userBalanceHeader = document.getElementById('user-balance-header');
+            const trendingGamesContainer = document.getElementById('trending-games-container');
+            const weeklyClaimBtn = document.getElementById('weekly-claim-btn');
+            const monthlyClaimBtn = document.getElementById('monthly-claim-btn');
+
             auth.onAuthStateChanged(user => {
-                firebaseAuthReady = true;
                 if (user) {
-                    const displayName = user.displayName || user.email;
-                    if (displayName) { avatarInitial.textContent = displayName.charAt(0).toUpperCase(); } else { avatarInitial.textContent = 'U'; }
-                } else { window.location.replace('/auth'); } // Also update redirect
+                    const userRef = db.collection('users').doc(user.uid);
+                    userRef.onSnapshot(doc => {
+                        if (doc.exists) {
+                            const data = doc.data();
+                            userBalanceHeader.textContent = `🇮🇳 ₹${(data.balance || 0).toFixed(2)}`;
+                            headerAvatarImg.src = data.avatarUrl || '/profile_dp1.png';
+                            checkWeeklyClaimStatus(data);
+                            checkMonthlyClaimStatus(data);
+                        }
+                    });
+                    loadTrendingGames();
+                } else {
+                    window.location.replace('/auth');
+                }
             });
+
+            function loadTrendingGames() {
+                db.collection('games').orderBy('order', 'desc').limit(5).get()
+                    .then(snapshot => {
+                        trendingGamesContainer.innerHTML = '';
+                        if (snapshot.empty) {
+                            trendingGamesContainer.innerHTML = '<p style="color: var(--text-secondary); padding-left: 20px;">No games available right now.</p>';
+                            return;
+                        }
+                        snapshot.forEach(doc => {
+                            const game = doc.data();
+                            const gameCard = document.createElement('a');
+                            gameCard.href = game.gameUrl;
+                            gameCard.classList.add('game-card');
+                            gameCard.style.backgroundImage = `url('${game.imageUrl}')`;
+                            
+                            gameCard.innerHTML = `<div class="play-button"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"></path></svg></div>`;
+                            trendingGamesContainer.appendChild(gameCard);
+                        });
+                    })
+                    .catch(err => {
+                        console.error("Error loading games:", err);
+                        trendingGamesContainer.innerHTML = '<p style="color: var(--text-secondary); padding-left: 20px;">Could not load games.</p>';
+                    });
+            }
+
+            // --- CLAIM LOGIC (copied from tasks.html) ---
+
+            function checkWeeklyClaimStatus(userData) {
+                const today = new Date();
+                const mostRecentMonday = new Date(today);
+                const dayOfWeek = today.getDay();
+                const daysToSubtract = dayOfWeek === 0 ? 6 : dayOfWeek - 1;
+                mostRecentMonday.setDate(today.getDate() - daysToSubtract);
+                mostRecentMonday.setHours(0, 0, 0, 0);
+                let canClaim = !userData.lastWeeklyClaim || userData.lastWeeklyClaim.toDate() < mostRecentMonday;
+                weeklyClaimBtn.disabled = !canClaim;
+                weeklyClaimBtn.textContent = canClaim ? 'Claim' : 'Claimed';
+            }
+
+            function checkMonthlyClaimStatus(userData) {
+                const today = new Date();
+                const firstDayOfMonth = new Date(today.getFullYear(), today.getMonth(), 1);
+                let canClaim = !userData.lastMonthlyClaim || userData.lastMonthlyClaim.toDate() < firstDayOfMonth;
+                monthlyClaimBtn.disabled = !canClaim;
+                monthlyClaimBtn.textContent = canClaim ? 'Claim' : 'Claimed';
+            }
+            
+            weeklyClaimBtn.addEventListener('click', () => handleClaim('weekly', 1));
+            monthlyClaimBtn.addEventListener('click', () => handleClaim('monthly', 2));
+
+            function handleClaim(claimType, amount) {
+                const user = auth.currentUser;
+                if (!user) return;
+                
+                const button = (claimType === 'weekly') ? weeklyClaimBtn : monthlyClaimBtn;
+                button.disabled = true;
+                button.textContent = 'Claiming...';
+
+                const userRef = db.collection('users').doc(user.uid);
+                
+                db.runTransaction(transaction => {
+                    return transaction.get(userRef).then(doc => {
+                        if (!doc.exists) throw "Document does not exist!";
+                        
+                        const data = doc.data();
+                        let canClaim = false;
+                        
+                        if (claimType === 'weekly') {
+                            const today = new Date();
+                            const mostRecentMonday = new Date(today);
+                            mostRecentMonday.setDate(today.getDate() - (today.getDay() === 0 ? 6 : today.getDay() - 1));
+                            mostRecentMonday.setHours(0, 0, 0, 0);
+                            canClaim = !data.lastWeeklyClaim || data.lastWeeklyClaim.toDate() < mostRecentMonday;
+                        } else if (claimType === 'monthly') {
+                            const today = new Date();
+                            const firstDayOfMonth = new Date(today.getFullYear(), today.getMonth(), 1);
+                            canClaim = !data.lastMonthlyClaim || data.lastMonthlyClaim.toDate() < firstDayOfMonth;
+                        }
+
+                        if (!canClaim) throw `Already claimed this ${claimType}.`;
+                        
+                        const newBalance = (data.balance || 0) + amount;
+                        const newHistoryEntry = { amount, date: new Date(), description: `${claimType.charAt(0).toUpperCase() + claimType.slice(1)} Claim Bonus`, type: "credit" };
+                        
+                        const updateData = { balance: newBalance, history: firebase.firestore.FieldValue.arrayUnion(newHistoryEntry) };
+                        updateData[claimType === 'weekly' ? 'lastWeeklyClaim' : 'lastMonthlyClaim'] = new Date();
+
+                        transaction.update(userRef, updateData);
+                    });
+                }).then(() => {
+                    alert(`You have successfully claimed your ${claimType} ₹${amount} bonus!`);
+                    button.textContent = 'Claimed';
+                }).catch(error => {
+                    console.error("Claim failed: ", error);
+                    alert(`Could not process claim. You may have already claimed this ${claimType}.`);
+                    db.collection('users').doc(user.uid).get().then(doc => {
+                        if (claimType === 'weekly') checkWeeklyClaimStatus(doc.data());
+                        else checkMonthlyClaimStatus(doc.data());
+                    });
+                });
+            }
         });
-        setTimeout(() => { if (!firebaseAuthReady) { window.location.replace('/auth'); } }, 3000);
     </script>
 </body>
 </html>
