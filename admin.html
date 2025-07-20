@@ -22,6 +22,9 @@
         .redeem-code-gen-form { display: flex; gap: 15px; align-items: center; }
         .redeem-code-gen-form input { flex-grow: 1; }
         .redeem-code-gen-form button { width: auto; flex-shrink: 0; }
+        /* New Password Form Styles */
+        #password-form { text-align: center; }
+        #password-input { margin-top: 20px; }
     </style>
 </head>
 <body>
@@ -29,6 +32,16 @@
     <div class="grid-background"></div>
     <div class="orb-container"><div class="floating-orb orb-1"></div><div class="floating-orb orb-2"></div></div>
 
+    <!-- NEW: Password Entry Container -->
+    <div class="container" id="password-container">
+        <h1>Admin Access</h1>
+        <form id="password-form">
+            <input type="password" id="password-input" placeholder="Enter Admin Password" required>
+            <button type="submit" class="submit-btn">Login</button>
+        </form>
+    </div>
+
+    <!-- Admin Panel (hidden by default) -->
     <div class="container" id="admin-panel" style="display:none;">
         <h1>Admin Dashboard</h1>
         
@@ -78,23 +91,44 @@
             const auth = firebase.auth();
             const db = firebase.firestore();
 
-            // Password Protection
-            const correctPassword = "Aashish12@";
-            const enteredPassword = prompt("Enter Admin Password:");
+            // DOM Elements
+            const passwordContainer = document.getElementById('password-container');
+            const passwordForm = document.getElementById('password-form');
+            const passwordInput = document.getElementById('password-input');
+            const adminPanel = document.getElementById('admin-panel');
 
-            if (enteredPassword === correctPassword) {
-                auth.onAuthStateChanged(user => {
+            // --- PASSWORD PROTECTION ---
+            const correctPassword = "Aashish12@";
+            
+            passwordForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                if (passwordInput.value === correctPassword) {
+                    // If password is correct, hide the form and check Firebase login
+                    passwordContainer.style.display = 'none';
+                    checkFirebaseAuth();
+                } else {
+                    alert("Incorrect Password!");
+                    passwordInput.value = '';
+                }
+            });
+
+            function checkFirebaseAuth() {
+                 auth.onAuthStateChanged(user => {
                     if (user) {
-                        document.getElementById('admin-panel').style.display = 'block';
+                        // If user is logged into the main app, show the admin panel
+                        adminPanel.style.display = 'block';
                         initializeAdminPanel();
                     } else {
-                        alert("Please log in to the main ShikaXFusion app before accessing the admin panel.");
-                        document.body.innerHTML = '<h1>Access Denied: Please log in to the main app first.</h1>';
+                        // If not, show an error
+                        document.body.innerHTML = `
+                            <div class="container">
+                                <h1>Access Denied</h1>
+                                <p style="text-align:center; font-size: 1.2rem;">You must be logged in to the main ShikaXFusion application to use the admin panel.</p>
+                                <a href="/auth" style="display:block; text-align:center; color: var(--neon-blue); margin-top:20px;">Go to Login Page</a>
+                            </div>
+                        `;
                     }
                 });
-            } else {
-                alert("Incorrect Password!");
-                document.body.innerHTML = '<h1>Access Denied</h1>';
             }
             
             // This function contains all the logic for the admin panel itself
