@@ -8,12 +8,14 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Allura&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
-    <!-- The game script is loaded here to be ready -->
-    <script src="script.js"></script>
+    <!-- The game script is loaded here -->
+    <script src="script.js" defer></script>
 </head>
 <body>
+    <!-- MODIFIED: Themed loading overlay -->
     <div id="loading-overlay">
-        <p>Loading Game...</p>
+        <div class="loader-bar"></div>
+        <div id="loading-text">Loading Game</div>
     </div>
 
     <div class="game-container" style="display:none;">
@@ -31,6 +33,7 @@
 
         <main class="game-screen" id="game-screen">
             <canvas id="particle-canvas"></canvas>
+            <!-- NOTE: Make sure 'my-rocket.png' is in the root folder of your project -->
             <img src="../my-rocket.png" id="rocket" alt="Rocket">
             <img src="https://assets.codepen.io/1506195/explosion.gif" id="explosion" alt="Explosion">
             <div class="game-state-message" id="game-state-message"></div>
@@ -60,46 +63,53 @@
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
     
-    <!-- This is the corrected "bridge" script -->
+    <!-- MODIFIED: Corrected and more robust "bridge" script -->
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             const loadingOverlay = document.getElementById('loading-overlay');
             const gameContainer = document.querySelector('.game-container');
 
-            try {
-                const firebaseConfig = {
-                    apiKey: "AIzaSyCzFHkD5bAIjZkP1W7jj4P-FoBldmeTCpk",
-                    authDomain: "shikaxfusion.firebaseapp.com",
-                    projectId: "shikaxfusion",
-                    storageBucket: "shikaxfusion.appspot.com",
-                    messagingSenderId: "353890157797",
-                    appId: "1:353890157797:web:54607ce7378b97fc4d000c"
-                };
+            const firebaseConfig = {
+                apiKey: "AIzaSyCzFHkD5bAIjZkP1W7jj4P-FoBldmeTCpk",
+                authDomain: "shikaxfusion.firebaseapp.com",
+                projectId: "shikaxfusion",
+                storageBucket: "shikaxfusion.appspot.com",
+                messagingSenderId: "353890157797",
+                appId: "1:353890157797:web:54607ce7378b97fc4d000c"
+            };
 
-                // Initialize Firebase on this page
-                if (!firebase.apps.length) {
-                    firebase.initializeApp(firebaseConfig);
-                }
-                
-                const auth = firebase.auth();
-                const db = firebase.firestore();
-
-                auth.onAuthStateChanged(user => {
-                    if (user) {
-                        // User is logged in, now we can safely start the game
-                        window.initCrashGame(user, db); 
-                        loadingOverlay.style.display = 'none';
-                        gameContainer.style.display = 'flex';
-                    } else {
-                        // User is not logged in, send them back to the login page
-                        window.location.href = '/auth';
-                    }
-                });
-
-            } catch (error) {
-                console.error("Firebase initialization error:", error);
-                loadingOverlay.innerHTML = "<p>Error loading game. Please try again.</p>";
+            if (!firebase.apps.length) {
+                firebase.initializeApp(firebaseConfig);
             }
+            
+            const auth = firebase.auth();
+            const db = firebase.firestore();
+
+            auth.onAuthStateChanged(user => {
+                if (user) {
+                    // User is logged in, now try to start the game
+                    // Use a try-catch block to handle errors inside the game logic
+                    try {
+                        // Check if the game function is available before calling it
+                        if (typeof window.initCrashGame === 'function') {
+                            window.initCrashGame(user, db); 
+                            loadingOverlay.style.display = 'none';
+                            gameContainer.style.display = 'flex';
+                        } else {
+                            // If the function doesn't exist, the game script failed to load
+                            throw new Error("Game script failed to load.");
+                        }
+                    } catch (error) {
+                        console.error("Error starting game:", error);
+                        alert("A critical error occurred while starting the game: " + error.message);
+                        // Optional: redirect back to the games page on error
+                        // window.location.href = '/games';
+                    }
+                } else {
+                    // User is not logged in, send them back
+                    window.location.href = '/auth';
+                }
+            });
         });
     </script>
 </body>

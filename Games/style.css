@@ -25,7 +25,56 @@ body {
     align-items: center;
     min-height: 100vh;
     padding: 1rem;
+    overflow: hidden; /* Prevent scrollbars when loading */
 }
+
+/* --- NEW: Loading Overlay Styles --- */
+#loading-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: var(--bg-darker);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    z-index: 10000;
+}
+.loader-bar {
+    width: 200px;
+    height: 6px;
+    background-color: rgba(255, 255, 255, 0.2);
+    border-radius: 3px;
+    overflow: hidden;
+    position: relative;
+}
+.loader-bar::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 40%;
+    background: var(--neon-green);
+    border-radius: 3px;
+    animation: loading-progress 2s linear infinite;
+}
+@keyframes loading-progress {
+    0% { transform: translateX(-100%); }
+    50% { transform: translateX(250%); }
+    100% { transform: translateX(250%); }
+}
+#loading-text {
+    font-family: var(--font-heading);
+    font-size: 2.5rem;
+    color: var(--neon-green);
+    margin-top: 20px;
+    text-shadow: 0 0 10px rgba(57, 255, 20, 0.5);
+}
+/* --- End Loading Styles --- */
+
 
 .game-container {
     width: 100%;
@@ -44,6 +93,18 @@ body {
     align-items: center;
     padding-bottom: 0.75rem;
 }
+
+/* NEW: Back button style */
+.back-button {
+    font-size: 2rem;
+    color: var(--text-secondary);
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+.back-button:hover {
+    color: var(--text-primary);
+}
+
 
 .logo { font-family: var(--font-heading); font-size: 3rem; background: var(--primary-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
 .balance { font-size: 1.5rem; }
