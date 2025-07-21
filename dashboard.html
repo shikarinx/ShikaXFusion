@@ -73,7 +73,6 @@
             transform: scale(1.05);
         }
 
-        /* --- NEW: Share Modal Styles --- */
         .share-modal-overlay {
             position: fixed;
             top: 0;
@@ -82,10 +81,10 @@
             height: 100%;
             background: rgba(2, 6, 23, 0.9);
             backdrop-filter: blur(10px);
-            display: none; /* Hidden by default */
+            display: none;
             align-items: center;
             justify-content: center;
-            z-index: 10001; /* Higher than other modals */
+            z-index: 10001;
         }
         .share-modal-content {
             background: var(--card-bg);
@@ -171,7 +170,7 @@
         </div>
     </div>
 
-    <!-- NEW: Share Modal -->
+    <!-- Your original Share Modal -->
     <div id="share-modal" class="share-modal-overlay">
         <div class="share-modal-content">
             <button id="share-modal-close-btn" class="share-modal-close-btn">×</button>
@@ -249,8 +248,8 @@
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
     <script>
-        // Your original, full JavaScript code
         document.addEventListener('DOMContentLoaded', () => {
+            // Your original, full JavaScript code
             class ParticleSystem { constructor(canvas) { this.canvas = canvas; this.ctx = canvas.getContext('2d'); this.particles = []; this.resize(); this.init(); this.animate(); window.addEventListener('resize', () => this.resize()); } resize() { this.canvas.width = window.innerWidth; this.canvas.height = window.innerHeight; } init() { this.particles = []; const particleCount = 100; for (let i = 0; i < particleCount; i++) { this.particles.push({ x: Math.random() * this.canvas.width, y: Math.random() * this.canvas.height, vx: (Math.random() - 0.5) * 0.5, vy: (Math.random() - 0.5) * 0.5, size: Math.random() * 2 + 1, color: `hsl(${220 + Math.random() * 60}, 70%, 60%)` }); } } animate() { this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height); this.particles.forEach(p => { p.x += p.vx; p.y += p.vy; if (p.x < 0 || p.x > this.canvas.width) p.vx *= -1; if (p.y < 0 || p.y > this.canvas.height) p.vy *= -1; this.ctx.fillStyle = p.color; this.ctx.beginPath(); this.ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2); this.ctx.fill(); }); requestAnimationFrame(() => this.animate()); } }
             new ParticleSystem(document.getElementById('particles-canvas'));
             const firebaseConfig = { apiKey: "AIzaSyCzFHkD5bAIjZkP1W7jj4P-FoBldmeTCpk", authDomain: "shikaxfusion.firebaseapp.com", projectId: "shikaxfusion", storageBucket: "shikaxfusion.appspot.com", messagingSenderId: "353890157797", appId: "1:353890157797:web:54607ce7378b97fc4d000c" };
@@ -424,13 +423,10 @@
 
             if (shareBtn) {
                 shareBtn.addEventListener('click', () => {
-                    // Populate modal fields
                     shareLinkInput.value = shareUrl;
                     document.getElementById('share-whatsapp').href = `https://api.whatsapp.com/send?text=${encodeURIComponent(shareText + ' ' + shareUrl)}`;
                     document.getElementById('share-telegram').href = `https://t.me/share/url?url=${encodeURIComponent(shareUrl)}&text=${encodeURIComponent(shareText)}`;
                     document.getElementById('share-facebook').href = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}`;
-                    
-                    // Show the modal
                     shareModal.style.display = 'flex';
                 });
             }
@@ -441,7 +437,6 @@
                 });
             }
             
-            // Close modal if user clicks outside of the content
             if (shareModal) {
                  shareModal.addEventListener('click', (e) => {
                     if (e.target === shareModal) {
@@ -450,18 +445,31 @@
                 });
             }
 
+            // MODIFIED: This is the new, more reliable copy logic
             if (copyLinkBtn) {
                 copyLinkBtn.addEventListener('click', () => {
-                    navigator.clipboard.writeText(shareLinkInput.value).then(() => {
-                        copyLinkBtn.textContent = 'Copied!';
-                        setTimeout(() => {
-                            copyLinkBtn.textContent = 'Copy';
-                        }, 2000);
-                    }).catch(err => {
-                        alert('Could not copy link.');
-                    });
+                    const inputField = shareLinkInput;
+                    inputField.readOnly = false; // Temporarily make it not-readonly
+                    inputField.select();
+                    inputField.setSelectionRange(0, 99999); // For mobile devices
+
+                    try {
+                        const successful = document.execCommand('copy');
+                        if (successful) {
+                             copyLinkBtn.textContent = 'Copied!';
+                            setTimeout(() => {
+                                copyLinkBtn.textContent = 'Copy';
+                            }, 2000);
+                        } else {
+                             alert('Could not copy link. Please copy it manually.');
+                        }
+                    } catch (err) {
+                        alert('Could not copy link. Please copy it manually.');
+                    }
+                    inputField.readOnly = true; // Set it back to readonly
                 });
             }
+
         });
     </script>
 </body>
