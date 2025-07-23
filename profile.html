@@ -20,15 +20,13 @@
         </div>
     </div>
 
-    <!-- MODIFIED: Withdraw Details Modal -->
+    <!-- Withdraw Details Modal -->
     <div id="withdraw-modal" class="modal-overlay">
         <div class="modal-content">
             <h3>Withdraw Funds</h3>
             <form id="withdraw-form" class="withdraw-form">
-                <!-- NEW: Amount input field -->
                 <label for="withdraw-amount">Amount (Min: ₹1, Max: ₹5)</label>
                 <input type="number" id="withdraw-amount" class="withdraw-input" min="1" max="5" step="0.01" placeholder="e.g., 4.50" required>
-                
                 <label for="withdraw-name">Full Name</label>
                 <input type="text" id="withdraw-name" class="withdraw-input" required>
                 <label for="withdraw-upi">UPI ID</label>
@@ -38,7 +36,6 @@
                 <button type="submit" id="withdraw-submit-btn" class="withdraw-submit-btn">Submit Request</button>
             </form>
             <button id="close-withdraw-modal-btn" class="modal-close-button" style="background: grey; margin-top: 0;">Cancel</button>
-            <!-- MODIFIED: Help text updated -->
             <p class="withdraw-note">You can withdraw up to 3 times per day. Funds will be sent within 24-48 hours.</p>
         </div>
     </div>
@@ -102,11 +99,14 @@
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            // Your original, full JavaScript code
             class ParticleSystem{constructor(t){this.canvas=t,this.ctx=t.getContext("2d"),this.particles=[],this.resize(),this.init(),this.animate(),window.addEventListener("resize",()=>this.resize())}resize(){this.canvas.width=window.innerWidth,this.canvas.height=window.innerHeight}init(){this.particles=[];for(let t=0;t<100;t++)this.particles.push({x:Math.random()*this.canvas.width,y:Math.random()*this.canvas.height,vx:.5*(Math.random()-.5),vy:.5*(Math.random()-.5),size:2*Math.random()+1,color:`hsl(${220+60*Math.random()}, 70%, 60%)`})}animate(){this.ctx.clearRect(0,0,this.canvas.width,this.canvas.height),this.particles.forEach(t=>{t.x+=t.vx,t.y+=t.vy,(t.x<0||t.x>this.canvas.width)&&(t.vx*=-1),(t.y<0||t.y>this.canvas.height)&&(t.vy*=-1),this.ctx.fillStyle=t.color,this.ctx.beginPath(),this.ctx.arc(t.x,t.y,t.size,0,2*Math.PI),this.ctx.fill()}),requestAnimationFrame(()=>this.animate())}}
             new ParticleSystem(document.getElementById('particles-canvas'));
+
             const firebaseConfig = { apiKey: "AIzaSyCzFHkD5bAIjZkP1W7jj4P-FoBldmeTCpk", authDomain: "shikaxfusion.firebaseapp.com", projectId: "shikaxfusion", storageBucket: "shikaxfusion.appspot.com", messagingSenderId: "353890157797", appId: "1:353890157797:web:54607ce7378b97fc4d000c" };
+            
+            // --- THIS LINE WAS MISSING ---
             firebase.initializeApp(firebaseConfig);
+
             const auth = firebase.auth();
             const db = firebase.firestore();
             const userDisplayName = document.getElementById('user-display-name'), userBalance = document.getElementById('user-balance'), nameInput = document.getElementById('info-name-input'), emailInput = document.getElementById('info-email-input'), numberInput = document.getElementById('info-number-input'), saveInfoBtn = document.getElementById('save-info-btn'), historyList = document.getElementById('transaction-history'), logoutButton = document.getElementById('logout-button'), mainAvatarContainer = document.getElementById('main-profile-avatar'), currentAvatarImg = document.getElementById('current-avatar-img');
@@ -143,7 +143,6 @@
             const redeemCodeInput = document.getElementById('redeem-code-input'); const redeemCodeBtn = document.getElementById('redeem-code-btn');
             redeemCodeBtn.addEventListener('click', async () => { const code = redeemCodeInput.value.trim().toUpperCase(); const user = auth.currentUser; if (!code || !user) return; redeemCodeBtn.disabled = true; redeemCodeBtn.textContent = 'Verifying...'; const codeRef = db.collection('redeemCodes').doc(code); const userRef = db.collection('users').doc(user.uid); try { await db.runTransaction(async (transaction) => { const codeDoc = await transaction.get(codeRef); const userDoc = await transaction.get(userRef); if (!codeDoc.exists) throw new Error("Invalid redeem code."); if (!userDoc.exists) throw new Error("User not found."); const codeData = codeDoc.data(); const userData = userDoc.data(); if (codeData.uses >= codeData.maxUses) throw new Error("This code has reached its maximum uses."); if (codeData.claimedBy && codeData.claimedBy.includes(user.uid)) throw new Error("You have already used this code."); const newBalance = (userData.balance || 0) + codeData.amount; const newHistoryEntry = { amount: codeData.amount, date: new Date(), description: `Redeemed Code: ${code}`, type: 'credit' }; transaction.update(codeRef, { uses: firebase.firestore.FieldValue.increment(1), claimedBy: firebase.firestore.FieldValue.arrayUnion(user.uid) }); transaction.update(userRef, { balance: newBalance, history: firebase.firestore.FieldValue.arrayUnion(newHistoryEntry) }); }); const finalCodeData = (await codeRef.get()).data(); alert(`Success! ₹${finalCodeData.amount} has been added to your balance.`); redeemCodeInput.value = ''; } catch (error) { alert("Error: " + error.message); } finally { redeemCodeBtn.disabled = false; redeemCodeBtn.textContent = 'Claim'; } });
             
-            // --- MODIFIED: WITHDRAW LOGIC ---
             const withdrawModal = document.getElementById('withdraw-modal');
             const withdrawBtn = document.getElementById('withdraw-btn');
             const closeWithdrawBtn = document.getElementById('close-withdraw-modal-btn');
@@ -219,7 +218,6 @@
                             }
                             newDailyCount++;
                         } else {
-                            // If it's a new day, reset the count to 1
                             newDailyCount = 1;
                         }
 
@@ -245,18 +243,7 @@
                     return;
                 }
                 
-                const message = `
---- New Withdrawal Request ---
-User Name: ${user.displayName}
-Email: ${user.email}
-UID: ${user.uid}
--------------------------------
-Payment Name: ${name}
-UPI ID: ${upi}
-Phone Number: ${number}
-Amount: ₹${withdrawAmount.toFixed(2)}
-                `;
-
+                const message = `\n--- New Withdrawal Request ---\nUser Name: ${user.displayName}\nEmail: ${user.email}\nUID: ${user.uid}\n-------------------------------\nPayment Name: ${name}\nUPI ID: ${upi}\nPhone Number: ${number}\nAmount: ₹${withdrawAmount.toFixed(2)}\n                `;
                 const url = `https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`;
                 try {
                     const response = await fetch(url, {
