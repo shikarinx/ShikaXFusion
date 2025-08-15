@@ -1,17 +1,8 @@
-// This is the correct way to initialize Firebase for our project.
-// It uses the "compat" version that matches the scripts in index.html.
+// --- IMPORTANT ---
+// This file now gets its firebaseConfig from config.js
+// It contains NO secret keys. It is safe to upload to GitHub.
 
-const firebaseConfig = {
-  apiKey: "AIzaSyCzFHkD5bAIjZkP1W7jj4P-FoBldmeTCpk",
-  authDomain: "shikaxfusion.firebaseapp.com",
-  projectId: "shikaxfusion",
-  storageBucket: "shikaxfusion.firebasestorage.app", // Corrected this for you
-  messagingSenderId: "353890157797",
-  appId: "1:353890157797:web:54607ce7378b97fc4d000c",
-  measurementId: "G-6QYYNVG9NB"
-};
-
-// Initialize Firebase using the compat libraries
+// Initialize Firebase using the config from our other file
 firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
 const db = firebase.firestore();
@@ -71,7 +62,6 @@ loginButton.addEventListener('click', () => {
             const user = userCredential.user;
             if (user.emailVerified) {
                 // User is verified!
-                // For now, we'll just show an alert. Later this will redirect to the home screen.
                 alert("Login Successful! Welcome!");
                 // window.location.href = 'home.html'; 
             } else {
