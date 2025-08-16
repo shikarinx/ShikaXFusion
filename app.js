@@ -1,7 +1,6 @@
-// FINAL, GUARANTEED WORKING APP.JS
+// FINAL VERSION - NO EMAIL VERIFICATION
 
-// IMPORTANT: Your secret keys are here. This makes the app work,
-// but you MUST secure your Firebase project. See instructions.
+// IMPORTANT: Your secret keys are here.
 const firebaseConfig = {
   apiKey: "AIzaSyCzFHkD5bAIjZkP1W7jj4P-FoBldmeTCpk",
   authDomain: "shikaxfusion.firebaseapp.com",
@@ -23,7 +22,7 @@ const loginContainer = document.getElementById('login-container');
 const showLoginLink = document.getElementById('show-login');
 const showSignupLink = document.getElementById('show-signup');
 
-// NEW SMOOTH TRANSITION BETWEEN FORMS
+// Smooth transition between forms
 showLoginLink.addEventListener('click', () => {
     signupContainer.style.display = 'none';
     loginContainer.style.display = 'block';
@@ -34,7 +33,7 @@ showSignupLink.addEventListener('click', () => {
     signupContainer.style.display = 'block';
 });
 
-// Sign Up Logic
+// Sign Up Logic --- MODIFIED ---
 const signupButton = document.getElementById('signup-button');
 const signupEmail = document.getElementById('signup-email');
 const signupPassword = document.getElementById('signup-password');
@@ -44,15 +43,19 @@ signupButton.addEventListener('click', () => {
     const email = signupEmail.value;
     const password = signupPassword.value;
     if (!email || !password) { signupError.textContent = "Please enter both email and password."; return; }
+    
     auth.createUserWithEmailAndPassword(email, password)
         .then(userCredential => {
-            userCredential.user.sendEmailVerification()
-                .then(() => alert("Account created! Please check your inbox to verify your email."));
+            // CHANGE: No more verification email. Log them in directly.
+            document.body.innerHTML = `<div class="container" style="animation: fadeIn 0.6s ease-out forwards;"><h1 class="header-font">Welcome!</h1><p style="font-size: 1.2em;">Your account has been created.</p></div>`;
         })
-        .catch(error => { signupError.textContent = error.message; });
+        .catch(error => { 
+            // This handles the "email already in use" error you saw
+            signupError.textContent = error.message; 
+        });
 });
 
-// Login Logic
+// Login Logic --- MODIFIED ---
 const loginButton = document.getElementById('login-button');
 const loginEmail = document.getElementById('login-email');
 const loginPassword = document.getElementById('login-password');
@@ -62,14 +65,13 @@ loginButton.addEventListener('click', () => {
     const email = loginEmail.value;
     const password = loginPassword.value;
     if (!email || !password) { loginError.textContent = "Please enter both email and password."; return; }
+
     auth.signInWithEmailAndPassword(email, password)
         .then(userCredential => {
-            if (userCredential.user.emailVerified) {
-                // If login is successful, we will replace the page content
-                document.body.innerHTML = `<div class="container" style="animation: fadeIn 0.6s ease-out forwards;"><h1 class="header-font">Welcome Back!</h1><p style="font-size: 1.2em;">You are now logged in.</p></div>`;
-            } else {
-                loginError.textContent = "Please verify your email before logging in.";
-            }
+            // CHANGE: The verification check is REMOVED. It will always log in.
+            document.body.innerHTML = `<div class="container" style="animation: fadeIn 0.6s ease-out forwards;"><h1 class="header-font">Welcome Back!</h1><p style="font-size: 1.2em;">You are now logged in.</p></div>`;
         })
-        .catch(error => { loginError.textContent = error.message; });
+        .catch(error => { 
+            loginError.textContent = error.message; 
+        });
 });
