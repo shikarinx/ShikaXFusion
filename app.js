@@ -1,137 +1,151 @@
-document.addEventListener('DOMContentLoaded', () => {
-    // --- DEMO DATA (We will replace this with Firebase data later) ---
-    const userData = {
-        name: "Ram Mandal",
-        email: "shikarin.x@gmail.com",
-        balance: 3,
-        avatarUrl: "https://i.ibb.co/6P8K817/shikarin-logo-black.png" // Replace with a real URL to your logo
-    };
+// FINAL WORKING APP.JS (with image fix)
+const firebaseConfig = {
+  apiKey: "AIzaSyCzFHkD5bAIjZkP1W7jj4P-FoBldmeTCpk",
+  authDomain: "shikaxfusion.firebaseapp.com",
+  projectId: "shikaxfusion",
+  storageBucket: "shikaxfusion.firebasestorage.app",
+  messagingSenderId: "353890157797",
+  appId: "1:353890157797:web:54607ce7378b97fc4d000c",
+  measurementId: "G-6QYYNVG9NB"
+};
+firebase.initializeApp(firebaseConfig);
+const auth = firebase.auth();
+const db = firebase.firestore();
 
+// --- We will listen for the user's login status ---
+auth.onAuthStateChanged(user => {
+    if (user) {
+        // If the user is logged in, show the main app
+        showMainApp(user);
+    } else {
+        // If the user is logged out, show the login page
+        showLoginPage();
+    }
+});
+
+function showLoginPage() {
+    document.body.className = 'login-background';
+    document.body.innerHTML = `
+        <div class="login-container">
+            <div class="logo-header"><h1 class="header-font">ShikaXFusion</h1></div>
+            <div id="signup-container" class="form-container">
+                <h2>Create Your Account</h2>
+                <input type="email" id="signup-email" placeholder="Enter your email" class="input-field">
+                <input type="password" id="signup-password" placeholder="Create a password" class="input-field">
+                <button id="signup-button" class="action-button">Sign Up</button>
+                <p id="signup-error" class="error-message"></p>
+                <p class="switch-form-text">Already have an account? <a href="#" id="show-login">Log In</a></p>
+            </div>
+            <div id="login-container" class="form-container" style="display: none;">
+                <h2>Welcome Back!</h2>
+                <input type="email" id="login-email" placeholder="Enter your email" class="input-field">
+                <input type="password" id="login-password" placeholder="Enter your password" class="input-field">
+                <button id="login-button" class="action-button">Log In</button>
+                <p id="login-error" class="error-message"></p>
+                <p class="switch-form-text">Don't have an account? <a href="#" id="show-signup">Sign Up</a></p>
+            </div>
+        </div>
+    `;
+    attachLoginListeners();
+}
+
+function showMainApp(user) {
+    document.body.className = 'app-background';
+    document.body.innerHTML = `
+        <div id="app-container">
+            <div id="home-page" class="page">
+                <header class="app-header">
+                    <div class="user-info">
+                        <img id="user-avatar-header" src="icon-512x512.png" alt="Avatar">
+                        <div class="user-text">
+                            <span>Hello, Welcome!</span>
+                            <span id="user-name-header"></span>
+                        </div>
+                    </div>
+                    <div id="balance-display" class="balance-chip">₹ 0</div>
+                </header>
+                <main class="page-content">
+                    <div class="play-earn-card">
+                        <h2>PLAY AND EARN</h2>
+                        <p>Discover Games & Apps</p>
+                        <i class="fas fa-arrow-right"></i>
+                    </div>
+                    <div class="offers-header">
+                        <h3>All Offers</h3>
+                        <a href="#">History ></a>
+                    </div>
+                    <div id="offers-list" class="offers-list-container"></div>
+                </main>
+            </div>
+            <nav class="bottom-nav">
+                <button class="nav-button active"><i class="fas fa-home"></i><span>Home</span></button>
+                <button class="nav-button"><i class="fas fa-share-alt"></i><span>Share</span></button>
+                <button class="nav-button"><i class="fas fa-wallet"></i><span>Withdraw</span></button>
+                <button class="nav-button"><i class="fas fa-user"></i><span>Profile</span></button>
+            </nav>
+        </div>
+    `;
+    renderMainAppData(user);
+}
+
+function renderMainAppData(user) {
+    const userNameHeader = document.getElementById('user-name-header');
+    const offersListContainer = document.getElementById('offers-list');
+    
+    // Use the user's email as their name for now
+    userNameHeader.textContent = user.email.split('@')[0];
+    
+    // DEMO TASKS with FIXED image links
     const tasksData = [
-        { id: 1, iconUrl: "https://i.ibb.co/YjV0Q5d/icici.png", title: "ICICI MF", description: "ICICI Prudential AMC is a leading asset...", reward: 8, type: 'direct' },
-        { id: 2, iconUrl: "https://i.ibb.co/Qk4c94Y/storytv.png", title: "Story TV", description: "Welcome to Story TV - India's...", reward: 6, type: 'count' },
-        { id: 3, iconUrl: "https://i.ibb.co/Y2B7VjM/unstop.png", title: "Unstop", description: "Unstop is a platform that connects students...", reward: 4, type: 'direct' },
-        { id: 4, iconUrl: "https://i.ibb.co/zP7wY2w/megaramp.png", title: "Mega Ramp", description: "Challenge your friends in a crazy car stunt...", reward: 6.8, type: 'count' },
-        { id: 5, iconUrl: "https://i.ibb.co/3k90VdG/busrush.png", title: "Bus Rush", description: "Bus Rush - Park & Match Quest is a fresh...", reward: 11.4, type: 'direct' }
+        { title: "ICICI MF", description: "ICICI Prudential AMC...", reward: 8 },
+        { title: "Story TV", description: "Welcome to Story TV...", reward: 6 },
+        { title: "Unstop", description: "A platform that connects...", reward: 4 },
+        { title: "Mega Ramp", description: "Challenge your friends...", reward: 6.8 },
+        { title: "Bus Rush", description: "Bus Rush - Park & Match...", reward: 11.4 }
     ];
 
-    // --- ELEMENT REFERENCES ---
-    const pages = document.querySelectorAll('.page');
-    const navButtons = document.querySelectorAll('.nav-button');
-    const backButtons = document.querySelectorAll('.back-button');
+    offersListContainer.innerHTML = '';
+    tasksData.forEach(task => {
+        const offerCard = `
+            <div class="offer-card">
+                <img src="icon-512x512.png" alt="${task.title}">
+                <div class="offer-info">
+                    <h4>${task.title}</h4>
+                    <p>${task.description}</p>
+                </div>
+                <div class="offer-reward">₹${task.reward}</div>
+            </div>`;
+        offersListContainer.innerHTML += offerCard;
+    });
+}
 
-    // Page specific elements
-    const balanceDisplay = document.getElementById('balance-display');
-    const userNameHeader = document.getElementById('user-name-header');
-    const userAvatarHeader = document.getElementById('user-avatar-header');
-    const offersListContainer = document.getElementById('offers-list');
-    const withdrawBalance = document.getElementById('withdraw-balance');
-    const profileAvatar = document.getElementById('profile-avatar');
-    const profileName = document.getElementById('profile-name');
-    const profileEmail = document.getElementById('profile-email');
-    const logoutButton = document.getElementById('logout-button');
+function attachLoginListeners() {
+    const showLoginLink = document.getElementById('show-login');
+    const showSignupLink = document.getElementById('show-signup');
+    showLoginLink.addEventListener('click', () => {
+        document.getElementById('signup-container').style.display = 'none';
+        document.getElementById('login-container').style.display = 'block';
+    });
+    showSignupLink.addEventListener('click', () => {
+        document.getElementById('login-container').style.display = 'none';
+        document.getElementById('signup-container').style.display = 'block';
+    });
 
-    // Modal elements
-    const withdrawModal = document.getElementById('withdraw-modal');
-    const showWithdrawModalButton = document.getElementById('show-withdraw-modal-button');
-    const closeModalButton = document.getElementById('close-modal-button');
-
-    // --- FUNCTIONS ---
-
-    // Function to show a specific page and hide others
-    function showPage(pageId) {
-        pages.forEach(page => {
-            page.classList.add('hidden');
-        });
-        document.getElementById(pageId).classList.remove('hidden');
-    }
-    
-    // Function to update the active state of nav buttons
-    function updateNav(activeButtonId) {
-         navButtons.forEach(button => {
-            button.classList.remove('active');
-        });
-        document.getElementById(activeButtonId).classList.add('active');
-    }
-
-    // Function to render the home page with data
-    function renderHomePage() {
-        balanceDisplay.textContent = `₹${userData.balance}`;
-        userNameHeader.textContent = `Hello, Welcome!`;
-        userAvatarHeader.src = userData.avatarUrl;
-        
-        offersListContainer.innerHTML = ''; // Clear existing offers
-        tasksData.forEach(task => {
-            const offerCard = `
-                <div class="offer-card">
-                    <img src="${task.iconUrl}" alt="${task.title}">
-                    <div class="offer-info">
-                        <h4>${task.title}</h4>
-                        <p>${task.description}</p>
-                    </div>
-                    <div class="offer-reward">
-                        ₹${task.reward}
-                    </div>
-                </div>`;
-            offersListContainer.innerHTML += offerCard;
-        });
-    }
-
-    // Function to render the withdraw page
-    function renderWithdrawPage() {
-        withdrawBalance.textContent = `₹${userData.balance}`;
-    }
-
-    // Function to render the profile page
-    function renderProfilePage() {
-        profileAvatar.src = userData.avatarUrl;
-        profileName.textContent = userData.name;
-        profileEmail.textContent = userData.email;
-    }
-
-    // --- EVENT LISTENERS ---
-
-    // Navigation bar functionality
-    navButtons.forEach(button => {
-        button.addEventListener('click', () => {
-            const pageId = button.id.replace('nav-', '') + '-page';
-            showPage(pageId);
-            updateNav(button.id);
-
-            // Render page content when switching
-            if (pageId === 'home-page') renderHomePage();
-            if (pageId === 'withdraw-page') renderWithdrawPage();
-            if (pageId === 'profile-page') renderProfilePage();
+    const signupButton = document.getElementById('signup-button');
+    signupButton.addEventListener('click', () => {
+        const email = document.getElementById('signup-email').value;
+        const password = document.getElementById('signup-password').value;
+        auth.createUserWithEmailAndPassword(email, password).catch(err => {
+            document.getElementById('signup-error').textContent = err.message;
         });
     });
 
-    // Back button functionality (goes back to home)
-    backButtons.forEach(button => {
-        button.addEventListener('click', () => {
-            showPage('home-page');
-            updateNav('nav-home');
+    const loginButton = document.getElementById('login-button');
+    loginButton.addEventListener('click', () => {
+        const email = document.getElementById('login-email').value;
+        const password = document.getElementById('login-password').value;
+        auth.signInWithEmailAndPassword(email, password).catch(err => {
+            document.getElementById('login-error').textContent = err.message;
         });
     });
-
-    // Logout functionality
-    logoutButton.addEventListener('click', () => {
-        // For now, we just reload to go back to the login screen
-        window.location.reload();
-    });
-
-    // Modal functionality
-    showWithdrawModalButton.addEventListener('click', () => {
-        withdrawModal.classList.remove('hidden');
-    });
-    closeModalButton.addEventListener('click', () => {
-        withdrawModal.classList.add('hidden');
-    });
-    withdrawModal.addEventListener('click', (event) => {
-        if (event.target === withdrawModal) {
-            withdrawModal.classList.add('hidden');
-        }
-    });
-
-    // --- INITIAL APP LOAD ---
-    renderHomePage();
-});
+}
