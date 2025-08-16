@@ -2,14 +2,16 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <title>ShikaXFusion</title>
-    <!-- Link to your CSS file -->
+    
+    <!-- This links to our "app instructions" file -->
+    <link rel="manifest" href="manifest.json">
+    
     <link rel="stylesheet" href="style.css">
-    <!-- Link to Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Amita&family=Monoton&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Amita:wght@400;700&family=Monoton&display=swap" rel="stylesheet">
 </head>
 <body>
 
@@ -19,25 +21,24 @@
         </div>
 
         <!-- Sign Up Form -->
-        <div id="signup-container">
+        <div id="signup-container" class="form-container">
             <h2>Create Your Account</h2>
             <input type="email" id="signup-email" placeholder="Enter your email" class="input-field">
             <input type="password" id="signup-password" placeholder="Create a password" class="input-field">
             <button id="signup-button" class="action-button">Sign Up</button>
             <p id="signup-error" class="error-message"></p>
-            <p>Already have an account? <a href="#" id="show-login">Log In</a></p>
+            <p class="switch-form-text">Already have an account? <a href="#" id="show-login">Log In</a></p>
         </div>
 
         <!-- Login Form (Hidden by default) -->
-        <div id="login-container" style="display: none;">
+        <div id="login-container" class="form-container" style="display: none;">
             <h2>Welcome Back!</h2>
             <input type="email" id="login-email" placeholder="Enter your email" class="input-field">
             <input type="password" id="login-password" placeholder="Enter your password" class="input-field">
             <button id="login-button" class="action-button">Log In</button>
             <p id="login-error" class="error-message"></p>
-            <p>Don't have an account? <a href="#" id="show-signup">Sign Up</a></p>
+            <p class="switch-form-text">Don't have an account? <a href="#" id="show-signup">Sign Up</a></p>
         </div>
-
     </div>
 
     <!-- Firebase SDK Scripts -->
@@ -45,8 +46,17 @@
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
     
-    <!-- Link to your JavaScript file -->
-    <script src="app.js"></script>
+    <!-- Main App Logic -->
+    <script type="module" src="app.js"></script>
+    
+    <!-- Service Worker for PWA features -->
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/sw.js');
+            });
+        }
+    </script>
 
 </body>
 </html>

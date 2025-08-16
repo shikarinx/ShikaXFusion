@@ -1,0 +1,16 @@
+{
+  "name": "ShikaXFusion",
+  "short_name": "ShikaXFusion",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#3a0ca3",
+  "theme_color": "#6a11cb",
+  "description": "The ShikaXFusion App.",
+  "icons": [
+    {
+      "src": "icon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
