@@ -1,79 +1,279 @@
 /* --- Google Font Imports --- */
 @import url('https://fonts.googleapis.com/css2?family=Amita:wght@400;700&family=Monoton&display=swap');
 
-/* --- Keyframe Animations --- */
-@keyframes animated-gradient {
-    0% { background-position: 0% 50%; }
-    50% { background-position: 100% 50%; }
-    100% { background-position: 0% 50%; }
+/* --- Basic Setup --- */
+:root {
+    --primary-purple: #6a0dad;
+    --light-purple: #e0cffc;
+    --background-gray: #f4f6f8;
+    --text-dark: #333;
+    --text-light: #777;
 }
 
-@keyframes fadeIn {
-    from { opacity: 0; transform: scale(0.98); }
-    to { opacity: 1; transform: scale(1); }
-}
-
-/* --- Body and Background Styling --- */
 html, body {
-    height: 100%;
     margin: 0;
-    font-family: 'Amita', cursive;
-    color: white;
-    overflow: hidden;
+    font-family: 'Amita', cursive; /* Using Amita as the base font */
+    background-color: var(--background-gray);
+    color: var(--text-dark);
 }
 
-body {
-    /* NEW VIBRANT, MULTI-COLOR GRADIENT */
-    background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
-    background-size: 400% 400%;
-    animation: animated-gradient 18s ease infinite;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 20px;
+* {
     box-sizing: border-box;
 }
 
-/* --- Main Container Styling --- */
-.container {
-    width: 100%;
-    max-width: 400px;
-    text-align: center;
+/* --- Page and Content Layout --- */
+.page {
+    padding-bottom: 80px; /* Space for the bottom nav bar */
+}
+.page-content {
+    padding: 15px;
+}
+.hidden {
+    display: none !important;
 }
 
-.form-container {
-    background: rgba(0, 0, 0, 0.2);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
+/* --- App Header (Home Page) --- */
+.app-header {
+    background: white;
+    padding: 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #eee;
+}
+.user-info {
+    display: flex;
+    align-items: center;
+}
+.user-info img {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    margin-right: 10px;
+}
+.user-text {
+    display: flex;
+    flex-direction: column;
+}
+.user-text span:first-child {
+    font-size: 0.9em;
+    color: var(--text-light);
+}
+.user-text span:last-child {
+    font-weight: bold;
+}
+.balance-chip {
+    background-color: var(--light-purple);
+    color: var(--primary-purple);
+    padding: 8px 15px;
     border-radius: 20px;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    padding: 40px 30px;
-    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
-    /* NEW SMOOTH TRANSITION */
-    animation: fadeIn 0.6s ease-out forwards;
+    font-weight: bold;
+    font-size: 1.1em;
 }
 
-/* --- Logo and Text Styling --- */
-.header-font {
-    font-family: 'Monoton', cursive;
-    font-size: 2.5em;
-    color: #ffffff;
-    text-shadow: 0 0 20px rgba(255, 255, 255, 0.7);
-    margin-bottom: 5px;
+/* --- General Page Header (for Withdraw/Profile) --- */
+.page-header-with-back {
+    background: var(--primary-purple);
+    color: white;
+    display: flex;
+    align-items: center;
+    padding: 15px;
+}
+.back-button {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 1.2em;
+    margin-right: 15px;
+    cursor: pointer;
+}
+.page-header-with-back h2 {
+    margin: 0;
+    font-size: 1.2em;
 }
 
-h2 { font-weight: 700; font-size: 1.6em; margin-top: 0; margin-bottom: 30px; }
-.switch-form-text { margin-top: 25px; }
-a { color: #f0f0f0; font-weight: bold; text-decoration: none; transition: color 0.3s ease; }
-a:hover { color: #ffffff; }
+/* --- Home Page Specifics --- */
+.play-earn-card {
+    background: var(--primary-purple);
+    color: white;
+    padding: 20px;
+    border-radius: 15px;
+    margin-bottom: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.play-earn-card h2 { margin: 0; font-family: 'Monoton', cursive; }
+.play-earn-card p { margin: 5px 0 0; font-size: 0.9em; }
+.offers-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+}
+.offers-header h3 { margin: 0; }
+.offers-header a { text-decoration: none; color: var(--text-light); }
+.offers-list-container .offer-card:last-child { margin-bottom: 0; }
+.offer-card {
+    background: white;
+    padding: 15px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+.offer-card img { width: 50px; height: 50px; border-radius: 10px; margin-right: 15px; }
+.offer-info { flex-grow: 1; }
+.offer-info h4 { margin: 0 0 5px; }
+.offer-info p { margin: 0; font-size: 0.8em; color: var(--text-light); }
+.offer-reward {
+    background: var(--light-purple);
+    color: var(--primary-purple);
+    padding: 8px 12px;
+    border-radius: 8px;
+    font-weight: bold;
+}
 
-/* --- Form Element Styling --- */
-.input-field { width: 100%; padding: 15px; margin-bottom: 15px; border: 1px solid rgba(255, 255, 255, 0.3); border-radius: 12px; background-color: rgba(255, 255, 255, 0.1); color: white; font-family: 'Amita', cursive; font-size: 1em; box-sizing: border-box; transition: all 0.3s ease; }
-.input-field::placeholder { color: rgba(255, 255, 255, 0.6); font-family: 'Amita', cursive; }
-.input-field:focus { outline: none; border-color: rgba(255, 255, 255, 0.8); box-shadow: 0 0 15px rgba(255, 255, 255, 0.2); }
+/* --- Withdraw Page Specifics --- */
+.withdraw-balance-card {
+    background: var(--primary-purple);
+    color: white;
+    padding: 20px;
+    border-radius: 15px;
+    text-align: center;
+    position: relative;
+}
+.withdraw-balance-card p { margin: 0; opacity: 0.8; }
+.withdraw-balance-card h1 { margin: 5px 0; font-size: 3em; }
+.history-button {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    background: rgba(255,255,255,0.2);
+    border: none;
+    color: white;
+    padding: 8px 15px;
+    border-radius: 20px;
+    cursor: pointer;
+}
+.min-withdraw-notice {
+    background: white;
+    padding: 15px;
+    border-radius: 12px;
+    margin-top: 15px;
+    display: flex;
+    align-items: center;
+    color: var(--text-light);
+}
+.min-withdraw-notice i { margin-right: 10px; color: var(--primary-purple); }
+.withdraw-guidelines { margin-top: 20px; }
+.warning-text { color: #d9534f; }
+.action-button-fixed {
+    position: fixed;
+    bottom: 80px; /* Above the nav bar */
+    left: 15px;
+    right: 15px;
+    padding: 15px;
+    font-size: 1.1em;
+    font-weight: bold;
+    color: white;
+    background: var(--primary-purple);
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+}
 
-.action-button { width: 100%; padding: 15px; background-color: #ffffff; color: #e73c7e; border: none; border-radius: 12px; font-family: 'Amita', cursive; font-size: 1.2em; font-weight: 700; cursor: pointer; margin-top: 10px; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2); transition: all 0.2s ease; }
-.action-button:hover { transform: translateY(-3px); box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3); }
-.action-button:active { transform: translateY(-1px) scale(0.98); box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); }
+/* --- Profile Page Specifics --- */
+.profile-content { padding: 0; }
+.profile-header {
+    text-align: center;
+    padding: 30px 15px;
+}
+.profile-header img { width: 90px; height: 90px; border-radius: 50%; border: 3px solid white; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+.profile-header h2 { margin: 10px 0 5px; }
+.profile-header p { margin: 0; color: var(--text-light); }
+.profile-options { background: white; border-top-left-radius: 20px; border-top-right-radius: 20px; padding: 15px; }
+.profile-option {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 18px 15px;
+    text-decoration: none;
+    color: var(--text-dark);
+    border-bottom: 1px solid #f0f0f0;
+}
+.profile-option:last-child { border-bottom: none; }
+.profile-option div { display: flex; align-items: center; }
+.profile-option i:first-child { width: 30px; margin-right: 10px; color: var(--primary-purple); }
+.logout { color: #d9534f; }
 
-.error-message { color: #ffcdd2; min-height: 20px; font-weight: bold; }
+/* --- Bottom Navigation Bar --- */
+.bottom-nav {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: white;
+    display: flex;
+    justify-content: space-around;
+    padding: 10px 0;
+    box-shadow: 0 -2px 10px rgba(0,0,0,0.08);
+}
+.nav-button {
+    background: none;
+    border: none;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    color: var(--text-light);
+    cursor: pointer;
+    font-size: 0.8em;
+}
+.nav-button i { font-size: 1.5em; margin-bottom: 5px; }
+.nav-button.active { color: var(--primary-purple); }
+
+/* --- Withdrawal Modal (Pop-up) --- */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.5);
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+    z-index: 1000;
+}
+.modal-content {
+    background: white;
+    width: 100%;
+    padding: 20px;
+    border-top-left-radius: 20px;
+    border-top-right-radius: 20px;
+    animation: slideUp 0.3s ease-out;
+}
+@keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
+.modal-content h3 { margin-top: 0; }
+.modal-content .input-field { background-color: var(--background-gray); border: 1px solid #ddd; color: var(--text-dark); }
+.action-button-modal {
+    width: 100%;
+    padding: 15px;
+    background: var(--primary-purple);
+    color: white;
+    border: none;
+    border-radius: 12px;
+    font-size: 1.1em;
+    cursor: pointer;
+}
+.close-button {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    background: none;
+    border: none;
+    font-size: 2em;
+    color: var(--text-light);
+    cursor: pointer;
+}

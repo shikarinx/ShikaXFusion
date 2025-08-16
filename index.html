@@ -4,59 +4,127 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <title>ShikaXFusion</title>
-    
-    <!-- This links to our "app instructions" file -->
     <link rel="manifest" href="manifest.json">
-    
     <link rel="stylesheet" href="style.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Amita:wght@400;700&family=Monoton&display=swap" rel="stylesheet">
+    <!-- Icon Library (we will use this for the nav bar) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 <body>
 
-    <div class="container">
-        <div class="logo-header">
-            <h1 class="header-font">ShikaXFusion</h1>
+    <!-- Main App Container -->
+    <div id="app-container">
+        <!-- PAGE 1: HOME -->
+        <div id="home-page" class="page">
+            <header class="app-header">
+                <div class="user-info">
+                    <img id="user-avatar-header" src="icon-512x512.png" alt="Avatar">
+                    <div class="user-text">
+                        <span id="user-name-header">Hello, Welcome!</span>
+                        <span>Ram Mandal</span>
+                    </div>
+                </div>
+                <div id="balance-display" class="balance-chip">
+                    ₹ 0
+                </div>
+            </header>
+            <main class="page-content">
+                <div class="play-earn-card">
+                    <h2>Play And Earn</h2>
+                    <p>Discover Games & Apps. Earn Real Money.</p>
+                    <i class="fas fa-arrow-right"></i>
+                </div>
+                <div class="offers-header">
+                    <h3>All Offers</h3>
+                    <a href="#">History <i class="fas fa-chevron-right"></i></a>
+                </div>
+                <div id="offers-list" class="offers-list-container">
+                    <!-- Task offers will be added here by JavaScript -->
+                </div>
+            </main>
         </div>
 
-        <!-- Sign Up Form -->
-        <div id="signup-container" class="form-container">
-            <h2>Create Your Account</h2>
-            <input type="email" id="signup-email" placeholder="Enter your email" class="input-field">
-            <input type="password" id="signup-password" placeholder="Create a password" class="input-field">
-            <button id="signup-button" class="action-button">Sign Up</button>
-            <p id="signup-error" class="error-message"></p>
-            <p class="switch-form-text">Already have an account? <a href="#" id="show-login">Log In</a></p>
+        <!-- PAGE 2: WITHDRAW -->
+        <div id="withdraw-page" class="page hidden">
+            <header class="page-header-with-back">
+                <button class="back-button"><i class="fas fa-arrow-left"></i></button>
+                <h2>Withdraw</h2>
+            </header>
+            <main class="page-content">
+                <div class="withdraw-balance-card">
+                    <p>Wallet Balance</p>
+                    <h1 id="withdraw-balance">₹ 0</h1>
+                    <button class="history-button">History</button>
+                </div>
+                <div class="min-withdraw-notice">
+                    <i class="fas fa-exclamation-circle"></i>
+                    <span>Minimum Withdrawal: ₹10</span>
+                </div>
+                <div class="withdraw-guidelines">
+                    <h3>Withdrawal Guidelines</h3>
+                    <p>Please double-check your UPI ID before proceeding.</p>
+                    <p>Withdrawals are usually processed instantly, but in some cases, it may take up to <strong>24 hours</strong>.</p>
+                    <p class="warning-text"><strong>Warning:</strong> If any illegal activity or fraudulent behavior is detected:</p>
+                    <ul>
+                        <li>Your account may be suspended.</li>
+                        <li>Pending withdrawals will be forfeited.</li>
+                    </ul>
+                </div>
+                <button id="show-withdraw-modal-button" class="action-button-fixed">Withdraw</button>
+            </main>
         </div>
 
-        <!-- Login Form (Hidden by default) -->
-        <div id="login-container" class="form-container" style="display: none;">
-            <h2>Welcome Back!</h2>
-            <input type="email" id="login-email" placeholder="Enter your email" class="input-field">
-            <input type="password" id="login-password" placeholder="Enter your password" class="input-field">
-            <button id="login-button" class="action-button">Log In</button>
-            <p id="login-error" class="error-message"></p>
-            <p class="switch-form-text">Don't have an account? <a href="#" id="show-signup">Sign Up</a></p>
+        <!-- PAGE 3: PROFILE -->
+        <div id="profile-page" class="page hidden">
+             <header class="page-header-with-back">
+                <button class="back-button"><i class="fas fa-arrow-left"></i></button>
+                <h2>Profile</h2>
+            </header>
+            <main class="page-content profile-content">
+                <div class="profile-header">
+                    <img id="profile-avatar" src="icon-512x512.png" alt="Profile Picture">
+                    <h2 id="profile-name">Ram Mandal</h2>
+                    <p id="profile-email">shikarin.x@gmail.com</p>
+                </div>
+                <div class="profile-options">
+                    <a href="#" class="profile-option"><div><i class="fas fa-share-alt"></i> Refer History</div> <i class="fas fa-chevron-right"></i></a>
+                    <a href="#" class="profile-option"><div><i class="fas fa-history"></i> Transaction History</div> <i class="fas fa-chevron-right"></i></a>
+                    <a href="#" class="profile-option"><div><i class="fas fa-wallet"></i> Withdraw History</div> <i class="fas fa-chevron-right"></i></a>
+                    <a href="#" class="profile-option"><div><i class="fas fa-shield-alt"></i> Privacy Policy</div> <i class="fas fa-chevron-right"></i></a>
+                    <a href="#" class="profile-option"><div><i class="fas fa-file-contract"></i> Terms and Condition</div> <i class="fas fa-chevron-right"></i></a>
+                    <a href="#" class="profile-option"><div><i class="fas fa-comment-dots"></i> Contact Us</div> <i class="fas fa-chevron-right"></i></a>
+                    <a href="#" id="logout-button" class="profile-option logout"><div><i class="fas fa-sign-out-alt"></i> Logout</div> <i class="fas fa-chevron-right"></i></a>
+                </div>
+            </main>
         </div>
+
+        <!-- BOTTOM NAVIGATION BAR -->
+        <nav class="bottom-nav">
+            <button id="nav-home" class="nav-button active"><i class="fas fa-home"></i><span>Home</span></button>
+            <button id="nav-share" class="nav-button"><i class="fas fa-share-alt"></i><span>Share</span></button>
+            <button id="nav-withdraw" class="nav-button"><i class="fas fa-wallet"></i><span>Withdraw</span></button>
+            <button id="nav-profile" class="nav-button"><i class="fas fa-user"></i><span>Profile</span></button>
+        </nav>
     </div>
 
-    <!-- Firebase SDK Scripts -->
+    <!-- WITHDRAWAL MODAL (POP-UP) -->
+    <div id="withdraw-modal" class="modal-overlay hidden">
+        <div class="modal-content">
+            <button id="close-modal-button" class="close-button">&times;</button>
+            <h3>Withdraw Earnings</h3>
+            <p>Transfer your rewards to your UPI account securely.</p>
+            <input type="text" placeholder="UPI ID" class="input-field">
+            <input type="number" placeholder="Amount" class="input-field">
+            <button class="action-button-modal">Withdraw Now</button>
+        </div>
+    </div>
+    
+    <!-- Firebase Scripts (Keep these at the end) -->
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
-    
-    <!-- Main App Logic -->
-    <script type="module" src="app.js"></script>
-    
-    <!-- Service Worker for PWA features -->
-    <script>
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('/sw.js');
-            });
-        }
-    </script>
-
+    <script src="app.js"></script>
 </body>
 </html>

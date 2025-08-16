@@ -1,77 +1,137 @@
-// FINAL VERSION - NO EMAIL VERIFICATION
+document.addEventListener('DOMContentLoaded', () => {
+    // --- DEMO DATA (We will replace this with Firebase data later) ---
+    const userData = {
+        name: "Ram Mandal",
+        email: "shikarin.x@gmail.com",
+        balance: 3,
+        avatarUrl: "https://i.ibb.co/6P8K817/shikarin-logo-black.png" // Replace with a real URL to your logo
+    };
 
-// IMPORTANT: Your secret keys are here.
-const firebaseConfig = {
-  apiKey: "AIzaSyCzFHkD5bAIjZkP1W7jj4P-FoBldmeTCpk",
-  authDomain: "shikaxfusion.firebaseapp.com",
-  projectId: "shikaxfusion",
-  storageBucket: "shikaxfusion.firebasestorage.app",
-  messagingSenderId: "353890157797",
-  appId: "1:353890157797:web:54607ce7378b97fc4d000c",
-  measurementId: "G-6QYYNVG9NB"
-};
+    const tasksData = [
+        { id: 1, iconUrl: "https://i.ibb.co/YjV0Q5d/icici.png", title: "ICICI MF", description: "ICICI Prudential AMC is a leading asset...", reward: 8, type: 'direct' },
+        { id: 2, iconUrl: "https://i.ibb.co/Qk4c94Y/storytv.png", title: "Story TV", description: "Welcome to Story TV - India's...", reward: 6, type: 'count' },
+        { id: 3, iconUrl: "https://i.ibb.co/Y2B7VjM/unstop.png", title: "Unstop", description: "Unstop is a platform that connects students...", reward: 4, type: 'direct' },
+        { id: 4, iconUrl: "https://i.ibb.co/zP7wY2w/megaramp.png", title: "Mega Ramp", description: "Challenge your friends in a crazy car stunt...", reward: 6.8, type: 'count' },
+        { id: 5, iconUrl: "https://i.ibb.co/3k90VdG/busrush.png", title: "Bus Rush", description: "Bus Rush - Park & Match Quest is a fresh...", reward: 11.4, type: 'direct' }
+    ];
 
-// --- This part of the code makes the app function ---
-firebase.initializeApp(firebaseConfig);
-const auth = firebase.auth();
-const db = firebase.firestore();
+    // --- ELEMENT REFERENCES ---
+    const pages = document.querySelectorAll('.page');
+    const navButtons = document.querySelectorAll('.nav-button');
+    const backButtons = document.querySelectorAll('.back-button');
 
-// Get elements from the HTML
-const signupContainer = document.getElementById('signup-container');
-const loginContainer = document.getElementById('login-container');
-const showLoginLink = document.getElementById('show-login');
-const showSignupLink = document.getElementById('show-signup');
+    // Page specific elements
+    const balanceDisplay = document.getElementById('balance-display');
+    const userNameHeader = document.getElementById('user-name-header');
+    const userAvatarHeader = document.getElementById('user-avatar-header');
+    const offersListContainer = document.getElementById('offers-list');
+    const withdrawBalance = document.getElementById('withdraw-balance');
+    const profileAvatar = document.getElementById('profile-avatar');
+    const profileName = document.getElementById('profile-name');
+    const profileEmail = document.getElementById('profile-email');
+    const logoutButton = document.getElementById('logout-button');
 
-// Smooth transition between forms
-showLoginLink.addEventListener('click', () => {
-    signupContainer.style.display = 'none';
-    loginContainer.style.display = 'block';
-});
+    // Modal elements
+    const withdrawModal = document.getElementById('withdraw-modal');
+    const showWithdrawModalButton = document.getElementById('show-withdraw-modal-button');
+    const closeModalButton = document.getElementById('close-modal-button');
 
-showSignupLink.addEventListener('click', () => {
-    loginContainer.style.display = 'none';
-    signupContainer.style.display = 'block';
-});
+    // --- FUNCTIONS ---
 
-// Sign Up Logic --- MODIFIED ---
-const signupButton = document.getElementById('signup-button');
-const signupEmail = document.getElementById('signup-email');
-const signupPassword = document.getElementById('signup-password');
-const signupError = document.getElementById('signup-error');
-
-signupButton.addEventListener('click', () => {
-    const email = signupEmail.value;
-    const password = signupPassword.value;
-    if (!email || !password) { signupError.textContent = "Please enter both email and password."; return; }
+    // Function to show a specific page and hide others
+    function showPage(pageId) {
+        pages.forEach(page => {
+            page.classList.add('hidden');
+        });
+        document.getElementById(pageId).classList.remove('hidden');
+    }
     
-    auth.createUserWithEmailAndPassword(email, password)
-        .then(userCredential => {
-            // CHANGE: No more verification email. Log them in directly.
-            document.body.innerHTML = `<div class="container" style="animation: fadeIn 0.6s ease-out forwards;"><h1 class="header-font">Welcome!</h1><p style="font-size: 1.2em;">Your account has been created.</p></div>`;
-        })
-        .catch(error => { 
-            // This handles the "email already in use" error you saw
-            signupError.textContent = error.message; 
+    // Function to update the active state of nav buttons
+    function updateNav(activeButtonId) {
+         navButtons.forEach(button => {
+            button.classList.remove('active');
         });
-});
+        document.getElementById(activeButtonId).classList.add('active');
+    }
 
-// Login Logic --- MODIFIED ---
-const loginButton = document.getElementById('login-button');
-const loginEmail = document.getElementById('login-email');
-const loginPassword = document.getElementById('login-password');
-const loginError = document.getElementById('login-error');
-
-loginButton.addEventListener('click', () => {
-    const email = loginEmail.value;
-    const password = loginPassword.value;
-    if (!email || !password) { loginError.textContent = "Please enter both email and password."; return; }
-
-    auth.signInWithEmailAndPassword(email, password)
-        .then(userCredential => {
-            // CHANGE: The verification check is REMOVED. It will always log in.
-            document.body.innerHTML = `<div class="container" style="animation: fadeIn 0.6s ease-out forwards;"><h1 class="header-font">Welcome Back!</h1><p style="font-size: 1.2em;">You are now logged in.</p></div>`;
-        })
-        .catch(error => { 
-            loginError.textContent = error.message; 
+    // Function to render the home page with data
+    function renderHomePage() {
+        balanceDisplay.textContent = `₹${userData.balance}`;
+        userNameHeader.textContent = `Hello, Welcome!`;
+        userAvatarHeader.src = userData.avatarUrl;
+        
+        offersListContainer.innerHTML = ''; // Clear existing offers
+        tasksData.forEach(task => {
+            const offerCard = `
+                <div class="offer-card">
+                    <img src="${task.iconUrl}" alt="${task.title}">
+                    <div class="offer-info">
+                        <h4>${task.title}</h4>
+                        <p>${task.description}</p>
+                    </div>
+                    <div class="offer-reward">
+                        ₹${task.reward}
+                    </div>
+                </div>`;
+            offersListContainer.innerHTML += offerCard;
         });
+    }
+
+    // Function to render the withdraw page
+    function renderWithdrawPage() {
+        withdrawBalance.textContent = `₹${userData.balance}`;
+    }
+
+    // Function to render the profile page
+    function renderProfilePage() {
+        profileAvatar.src = userData.avatarUrl;
+        profileName.textContent = userData.name;
+        profileEmail.textContent = userData.email;
+    }
+
+    // --- EVENT LISTENERS ---
+
+    // Navigation bar functionality
+    navButtons.forEach(button => {
+        button.addEventListener('click', () => {
+            const pageId = button.id.replace('nav-', '') + '-page';
+            showPage(pageId);
+            updateNav(button.id);
+
+            // Render page content when switching
+            if (pageId === 'home-page') renderHomePage();
+            if (pageId === 'withdraw-page') renderWithdrawPage();
+            if (pageId === 'profile-page') renderProfilePage();
+        });
+    });
+
+    // Back button functionality (goes back to home)
+    backButtons.forEach(button => {
+        button.addEventListener('click', () => {
+            showPage('home-page');
+            updateNav('nav-home');
+        });
+    });
+
+    // Logout functionality
+    logoutButton.addEventListener('click', () => {
+        // For now, we just reload to go back to the login screen
+        window.location.reload();
+    });
+
+    // Modal functionality
+    showWithdrawModalButton.addEventListener('click', () => {
+        withdrawModal.classList.remove('hidden');
+    });
+    closeModalButton.addEventListener('click', () => {
+        withdrawModal.classList.add('hidden');
+    });
+    withdrawModal.addEventListener('click', (event) => {
+        if (event.target === withdrawModal) {
+            withdrawModal.classList.add('hidden');
+        }
+    });
+
+    // --- INITIAL APP LOAD ---
+    renderHomePage();
 });
