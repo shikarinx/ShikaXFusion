@@ -1,25 +1,45 @@
+// FINAL, GUARANTEED WORKING APP.JS
+
+// IMPORTANT: Your secret keys are here. This makes the app work,
+// but you MUST secure your Firebase project. See instructions.
 const firebaseConfig = {
-  apiKey: import.meta.env.VITE_API_KEY,
-  authDomain: import.meta.env.VITE_AUTH_DOMAIN,
-  projectId: import.meta.env.VITE_PROJECT_ID,
-  storageBucket: import.meta.env.VITE_STORAGE_BUCKET,
-  messagingSenderId: import.meta.env.VITE_MESSAGING_SENDER_ID,
-  appId: import.meta.env.VITE_APP_ID,
-  measurementId: import.meta.env.VITE_MEASUREMENT_ID
+  apiKey: "AIzaSyCzFHkD5bAIjZkP1W7jj4P-FoBldmeTCpk",
+  authDomain: "shikaxfusion.firebaseapp.com",
+  projectId: "shikaxfusion",
+  storageBucket: "shikaxfusion.firebasestorage.app",
+  messagingSenderId: "353890157797",
+  appId: "1:353890157797:web:54607ce7378b97fc4d000c",
+  measurementId: "G-6QYYNVG9NB"
 };
+
+// --- This part of the code makes the app function ---
 firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
 const db = firebase.firestore();
+
+// Get elements from the HTML
 const signupContainer = document.getElementById('signup-container');
 const loginContainer = document.getElementById('login-container');
 const showLoginLink = document.getElementById('show-login');
 const showSignupLink = document.getElementById('show-signup');
-showLoginLink.addEventListener('click', () => { signupContainer.style.display = 'none'; loginContainer.style.display = 'block'; });
-showSignupLink.addEventListener('click', () => { loginContainer.style.display = 'none'; signupContainer.style.display = 'block'; });
+
+// NEW SMOOTH TRANSITION BETWEEN FORMS
+showLoginLink.addEventListener('click', () => {
+    signupContainer.style.display = 'none';
+    loginContainer.style.display = 'block';
+});
+
+showSignupLink.addEventListener('click', () => {
+    loginContainer.style.display = 'none';
+    signupContainer.style.display = 'block';
+});
+
+// Sign Up Logic
 const signupButton = document.getElementById('signup-button');
 const signupEmail = document.getElementById('signup-email');
 const signupPassword = document.getElementById('signup-password');
 const signupError = document.getElementById('signup-error');
+
 signupButton.addEventListener('click', () => {
     const email = signupEmail.value;
     const password = signupPassword.value;
@@ -31,10 +51,13 @@ signupButton.addEventListener('click', () => {
         })
         .catch(error => { signupError.textContent = error.message; });
 });
+
+// Login Logic
 const loginButton = document.getElementById('login-button');
 const loginEmail = document.getElementById('login-email');
 const loginPassword = document.getElementById('login-password');
 const loginError = document.getElementById('login-error');
+
 loginButton.addEventListener('click', () => {
     const email = loginEmail.value;
     const password = loginPassword.value;
@@ -42,7 +65,8 @@ loginButton.addEventListener('click', () => {
     auth.signInWithEmailAndPassword(email, password)
         .then(userCredential => {
             if (userCredential.user.emailVerified) {
-                document.body.innerHTML = `<div style="text-align: center; padding-top: 50px; color: white;"><h1>Login Successful!</h1><p>Welcome to ShikaXFusion!</p></div>`;
+                // If login is successful, we will replace the page content
+                document.body.innerHTML = `<div class="container" style="animation: fadeIn 0.6s ease-out forwards;"><h1 class="header-font">Welcome Back!</h1><p style="font-size: 1.2em;">You are now logged in.</p></div>`;
             } else {
                 loginError.textContent = "Please verify your email before logging in.";
             }

@@ -1,19 +1,79 @@
+/* --- Google Font Imports --- */
 @import url('https://fonts.googleapis.com/css2?family=Amita:wght@400;700&family=Monoton&display=swap');
-@keyframes animated-gradient { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
-@keyframes fadeInUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
-html, body { height: 100%; margin: 0; font-family: 'Amita', cursive; color: white; overflow: hidden; }
-body { background: linear-gradient(125deg, #6a11cb, #2575fc, #3a0ca3); background-size: 400% 400%; animation: animated-gradient 15s ease infinite; display: flex; justify-content: center; align-items: center; padding: 20px; box-sizing: border-box; }
-.container { width: 100%; max-width: 400px; text-align: center; animation: fadeInUp 0.8s ease-out forwards; }
-.form-container { background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px); border-radius: 20px; border: 1px solid rgba(255, 255, 255, 0.2); padding: 40px 30px; box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3); }
-.header-font { font-family: 'Monoton', cursive; font-size: 2.5em; color: #ffffff; text-shadow: 0 0 15px rgba(255, 255, 255, 0.5); margin-bottom: 5px; }
+
+/* --- Keyframe Animations --- */
+@keyframes animated-gradient {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: scale(0.98); }
+    to { opacity: 1; transform: scale(1); }
+}
+
+/* --- Body and Background Styling --- */
+html, body {
+    height: 100%;
+    margin: 0;
+    font-family: 'Amita', cursive;
+    color: white;
+    overflow: hidden;
+}
+
+body {
+    /* NEW VIBRANT, MULTI-COLOR GRADIENT */
+    background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+    background-size: 400% 400%;
+    animation: animated-gradient 18s ease infinite;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+/* --- Main Container Styling --- */
+.container {
+    width: 100%;
+    max-width: 400px;
+    text-align: center;
+}
+
+.form-container {
+    background: rgba(0, 0, 0, 0.2);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-radius: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 40px 30px;
+    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+    /* NEW SMOOTH TRANSITION */
+    animation: fadeIn 0.6s ease-out forwards;
+}
+
+/* --- Logo and Text Styling --- */
+.header-font {
+    font-family: 'Monoton', cursive;
+    font-size: 2.5em;
+    color: #ffffff;
+    text-shadow: 0 0 20px rgba(255, 255, 255, 0.7);
+    margin-bottom: 5px;
+}
+
 h2 { font-weight: 700; font-size: 1.6em; margin-top: 0; margin-bottom: 30px; }
 .switch-form-text { margin-top: 25px; }
-a { color: #d1c4e9; font-weight: bold; text-decoration: none; transition: color 0.3s ease; }
+a { color: #f0f0f0; font-weight: bold; text-decoration: none; transition: color 0.3s ease; }
 a:hover { color: #ffffff; }
-.input-field { width: 100%; padding: 15px; margin-bottom: 15px; border: 1px solid rgba(255, 255, 255, 0.5); border-radius: 12px; background-color: transparent; color: white; font-family: 'Amita', cursive; font-size: 1em; box-sizing: border-box; transition: all 0.3s ease; }
-.input-field::placeholder { color: rgba(255, 255, 255, 0.7); font-family: 'Amita', cursive; }
-.input-field:focus { outline: none; border-color: rgba(255, 255, 255, 0.9); box-shadow: 0 0 15px rgba(255, 255, 255, 0.3); }
-.action-button { width: 100%; padding: 15px; background-color: #ffffff; color: #3a0ca3; border: none; border-radius: 12px; font-family: 'Amita', cursive; font-size: 1.2em; font-weight: 700; cursor: pointer; margin-top: 10px; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2); transition: all 0.2s ease; }
+
+/* --- Form Element Styling --- */
+.input-field { width: 100%; padding: 15px; margin-bottom: 15px; border: 1px solid rgba(255, 255, 255, 0.3); border-radius: 12px; background-color: rgba(255, 255, 255, 0.1); color: white; font-family: 'Amita', cursive; font-size: 1em; box-sizing: border-box; transition: all 0.3s ease; }
+.input-field::placeholder { color: rgba(255, 255, 255, 0.6); font-family: 'Amita', cursive; }
+.input-field:focus { outline: none; border-color: rgba(255, 255, 255, 0.8); box-shadow: 0 0 15px rgba(255, 255, 255, 0.2); }
+
+.action-button { width: 100%; padding: 15px; background-color: #ffffff; color: #e73c7e; border: none; border-radius: 12px; font-family: 'Amita', cursive; font-size: 1.2em; font-weight: 700; cursor: pointer; margin-top: 10px; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2); transition: all 0.2s ease; }
 .action-button:hover { transform: translateY(-3px); box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3); }
 .action-button:active { transform: translateY(-1px) scale(0.98); box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); }
+
 .error-message { color: #ffcdd2; min-height: 20px; font-weight: bold; }
