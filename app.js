@@ -1,4 +1,4 @@
-// FINAL WORKING APP.JS (with image fix)
+// FINAL WORKING APP.JS (with Task button)
 const firebaseConfig = {
   apiKey: "AIzaSyCzFHkD5bAIjZkP1W7jj4P-FoBldmeTCpk",
   authDomain: "shikaxfusion.firebaseapp.com",
@@ -79,7 +79,8 @@ function showMainApp(user) {
             </div>
             <nav class="bottom-nav">
                 <button class="nav-button active"><i class="fas fa-home"></i><span>Home</span></button>
-                <button class="nav-button"><i class="fas fa-share-alt"></i><span>Share</span></button>
+                <!-- CHANGE: "Share" is now "Task" with a new icon -->
+                <button class="nav-button"><i class="fas fa-list-check"></i><span>Task</span></button>
                 <button class="nav-button"><i class="fas fa-wallet"></i><span>Withdraw</span></button>
                 <button class="nav-button"><i class="fas fa-user"></i><span>Profile</span></button>
             </nav>
@@ -92,10 +93,8 @@ function renderMainAppData(user) {
     const userNameHeader = document.getElementById('user-name-header');
     const offersListContainer = document.getElementById('offers-list');
     
-    // Use the user's email as their name for now
     userNameHeader.textContent = user.email.split('@')[0];
     
-    // DEMO TASKS with FIXED image links
     const tasksData = [
         { title: "ICICI MF", description: "ICICI Prudential AMC...", reward: 8 },
         { title: "Story TV", description: "Welcome to Story TV...", reward: 6 },
