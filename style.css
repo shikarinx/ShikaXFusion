@@ -10,77 +10,94 @@ html, body {
     margin: 0;
     font-family: 'Amita', cursive;
     height: 100%;
-    overflow: hidden; /* Prevent the whole page from scrolling */
 }
 * { box-sizing: border-box; }
 .hidden { display: none !important; }
 
-/* --- UNIFIED APP & LOGIN BACKGROUND --- */
-body {
+/* --- LOGIN/SIGNUP PAGE STYLES --- */
+body.login-background {
     background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
     background-size: 400% 400%;
     animation: animated-gradient 18s ease infinite;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
     color: white;
 }
-
-/* --- Login/Signup Styles (No Changes) --- */
-.login-container { width: 100%; max-width: 400px; text-align: center; padding: 20px; }
-.form-container { background: rgba(0, 0, 0, 0.2); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border-radius: 20px; border: 1px solid rgba(255, 255, 255, 0.1); padding: 40px 30px; box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37); animation: fadeIn 0.6s ease-out forwards; }
-.header-font { font-family: 'Monoton', cursive; font-size: 2.5em; color: #ffffff; text-shadow: 0 0 20px rgba(255, 255, 255, 0.7); margin-bottom: 5px; }
-.login-container h2 { font-weight: 700; font-size: 1.6em; margin-top: 0; margin-bottom: 30px; }
-.login-container a { color: #f0f0f0; }
-.input-field { width: 100%; padding: 15px; margin-bottom: 15px; border-radius: 12px; font-family: 'Amita', cursive; font-size: 1em; transition: all 0.3s ease; border: 1px solid rgba(255, 255, 255, 0.3); background-color: rgba(255, 255, 255, 0.1); color: white; }
-.input-field::placeholder { color: rgba(255, 255, 255, 0.6); }
-.input-field:focus { border-color: rgba(255, 255, 255, 0.8); box-shadow: 0 0 15px rgba(255, 255, 255, 0.2); }
-.action-button { width: 100%; padding: 15px; border: none; border-radius: 12px; font-family: 'Amita', cursive; font-size: 1.2em; font-weight: 700; cursor: pointer; margin-top: 10px; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2); transition: all 0.2s ease; background-color: #ffffff; color: #e73c7e; }
-.error-message { min-height: 20px; font-weight: bold; color: #ffcdd2; }
-
-/* --- MAIN APP LAYOUT (THE BIG CHANGE) --- */
-#app-container {
-    display: flex;
-    flex-direction: column;
-    height: 100vh; /* Make the app container fill the whole screen */
-    animation: fadeIn 0.5s ease-out;
+.login-container {
+    width: 100%;
+    max-width: 400px;
+    text-align: center;
 }
-.app-header-fixed {
-    /* This is our new non-scrolling header area */
-    flex-shrink: 0; /* Prevents the header from shrinking */
+.form-container {
+    background: rgba(0, 0, 0, 0.2);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-radius: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 40px 30px;
+    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+    animation: fadeIn 0.6s ease-out forwards;
 }
-.app-content-scrollable {
-    /* This is our new scrolling content area */
-    flex-grow: 1; /* Makes this area take up all available space */
-    overflow-y: auto; /* IMPORTANT: This makes ONLY this area scrollable */
+.header-font {
+    font-family: 'Monoton', cursive;
+    font-size: 2.5em;
+    color: #ffffff;
+    text-shadow: 0 0 20px rgba(255, 255, 255, 0.7);
+    margin-bottom: 5px;
+}
+.form-container h2 { font-weight: 700; font-size: 1.6em; margin-top: 0; margin-bottom: 30px; }
+.form-container a { color: #f0f0f0; }
+.form-container .input-field {
+    width: 100%;
     padding: 15px;
+    margin-bottom: 15px;
+    border-radius: 12px;
+    font-family: 'Amita', cursive;
+    font-size: 1em;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    background-color: rgba(255, 255, 255, 0.1);
+    color: white;
 }
-
-/* --- MAIN APP STYLES (Redesigned for new layout) --- */
-.app-header {
-    background: rgba(255, 255, 255, 0.1);
-    backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+.form-container .input-field::placeholder { color: rgba(255, 255, 255, 0.6); }
+.form-container .input-field:focus { outline: none; border-color: rgba(255, 255, 255, 0.8); box-shadow: 0 0 15px rgba(255, 255, 255, 0.2); }
+.form-container .action-button {
+    width: 100%;
     padding: 15px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+    border: none;
+    border-radius: 12px;
+    font-family: 'Amita', cursive;
+    font-size: 1.2em;
+    font-weight: 700;
+    cursor: pointer;
+    margin-top: 10px;
+    background-color: #ffffff;
+    color: #e73c7e;
+    transition: all 0.2s ease;
 }
+.form-container .action-button:hover { transform: translateY(-3px); }
+.form-container .error-message { min-height: 20px; font-weight: bold; color: #ffcdd2; }
+
+/* --- MAIN APP STYLES --- */
+body.app-background { background-color: #f4f6f8; color: #333; }
+#app-container { display: flex; flex-direction: column; height: 100vh; animation: fadeIn 0.5s ease-out; }
+.app-header-fixed { flex-shrink: 0; }
+.app-content-scrollable { flex-grow: 1; overflow-y: auto; padding: 15px; }
+.app-header { background: white; padding: 15px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #eee; }
 .user-info img { width: 40px; height: 40px; border-radius: 50%; margin-right: 10px; }
 .user-text { display: flex; flex-direction: column; }
-.user-text span:first-child { font-size: 0.9em; color: rgba(255, 255, 255, 0.8); }
+.user-text span:first-child { font-size: 0.9em; color: #777; }
 .user-text span:last-child { font-weight: bold; }
-.balance-chip { background: rgba(255, 255, 255, 0.9); color: #333; padding: 8px 15px; border-radius: 20px; font-weight: bold; font-size: 1.1em; }
-.play-earn-card { background: rgba(0, 0, 0, 0.2); padding: 20px; margin: 15px; border-radius: 15px; display: flex; justify-content: space-between; align-items: center; }
+.balance-chip { background-color: #e0cffc; color: #6a0dad; padding: 8px 15px; border-radius: 20px; font-weight: bold; font-size: 1.1em; }
+.play-earn-card { background: #6a0dad; color: white; padding: 20px; margin: 15px; border-radius: 15px; display: flex; justify-content: space-between; align-items: center; }
 .play-earn-card h2 { margin: 0; font-family: 'Monoton', cursive; }
 .play-earn-card p { margin: 5px 0 0; font-size: 0.9em; }
 .offers-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; padding: 0 5px; }
-.offers-header h3 { margin: 0; }
-.offers-header a { text-decoration: none; color: rgba(255, 255, 255, 0.8); cursor: pointer; }
-.offer-card { background: rgba(255, 255, 255, 0.15); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.2); padding: 15px; border-radius: 12px; display: flex; align-items: center; margin-bottom: 10px; cursor: pointer; }
-.offer-card img { width: 50px; height: 50px; border-radius: 10px; margin-right: 15px; }
-.offer-info { flex-grow: 1; }
-.offer-info h4 { margin: 0 0 5px; font-family: 'Amita', cursive; font-weight: bold; font-size: 1.1em;}
-.offer-info p { margin: 0; font-size: 0.8em; color: rgba(255, 255, 255, 0.7); }
-.offer-reward { background: rgba(255, 255, 255, 0.2); padding: 8px 12px; border-radius: 8px; font-weight: bold; }
-.bottom-nav { background: rgba(0, 0, 0, 0.2); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border-top: 1px solid rgba(255, 255, 255, 0.1); display: flex; justify-content: space-around; padding: 10px 0; flex-shrink: 0; }
-.nav-button { background: none; border: none; display: flex; flex-direction: column; align-items: center; color: rgba(255, 255, 255, 0.6); cursor: pointer; font-size: 0.8em; }
+.offers-header a { text-decoration: none; color: #777; cursor: pointer; }
+.offer-card { background: white; padding: 15px; border-radius: 12px; display: flex; align-items: center; margin-bottom: 10px; cursor: pointer; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
+.offer-reward { background-color: #e0cffc; color: #6a0dad; padding: 8px 12px; border-radius: 8px; font-weight: bold; }
+.bottom-nav { background: white; display: flex; justify-content: space-around; padding: 10px 0; flex-shrink: 0; box-shadow: 0 -2px 10px rgba(0,0,0,0.08); }
+.nav-button { background: none; border: none; display: flex; flex-direction: column; align-items: center; color: #777; cursor: pointer; font-size: 0.8em; }
 .nav-button i { font-size: 1.5em; margin-bottom: 5px; }
-.nav-button.active { color: white; }
+.nav-button.active { color: #6a0dad; }
