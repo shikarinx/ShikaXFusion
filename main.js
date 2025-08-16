@@ -1,4 +1,4 @@
-// main.js - CONTROLS THE HOME.HTML PAGE
+// main.js - FINAL CORRECTED VERSION
 const firebaseConfig = {
   apiKey: "AIzaSyCzFHkD5bAIjZkP1W7jj4P-FoBldmeTCpk",
   authDomain: "shikaxfusion.firebaseapp.com",
@@ -13,7 +13,6 @@ const auth = firebase.auth();
 const db = firebase.firestore();
 
 // --- SECURITY GUARD ---
-// Check if user is logged in. If not, send them back to the login page.
 auth.onAuthStateChanged(user => {
     if (user) {
         renderMainApp(user);
