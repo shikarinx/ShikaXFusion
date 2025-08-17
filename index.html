@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -14,8 +15,6 @@
 
     <div class="login-container">
         <div class="logo-header"><h1 class="header-font">ShikaXFusion</h1></div>
-        
-        <!-- Sign Up Form -->
         <div id="signup-container" class="form-container">
             <h2>Create Your Account</h2>
             <input type="email" id="signup-email" placeholder="Enter your email" class="input-field">
@@ -24,8 +23,6 @@
             <p id="signup-error" class="error-message"></p>
             <p>Already have an account? <a href="#" id="show-login">Log In</a></p>
         </div>
-
-        <!-- Login Form (Hidden by default) -->
         <div id="login-container" class="form-container" style="display: none;">
             <h2>Welcome Back!</h2>
             <input type="email" id="login-email" placeholder="Enter your email" class="input-field">
@@ -40,9 +37,13 @@
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
-    
-    <!-- CORRECTED: Link to the login script as a standard script, not a module -->
     <script src="login.js"></script>
 
+    <!-- This is the corrected registration script -->
+    <script>
+      if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('/sw.js');
+      }
+    </script>
 </body>
-</html>
+</html>```
