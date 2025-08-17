@@ -1,4 +1,4 @@
-// A simple service worker for caching assets
+// sw.js - A more complete Service Worker
 
 const CACHE_NAME = 'shikaxfusion-cache-v1';
 const urlsToCache = [
@@ -9,7 +9,8 @@ const urlsToCache = [
   '/home.css',
   '/login.js',
   '/main.js',
-  '/icon-512x512.png'
+  '/icon-512x512.png',
+  'https://fonts.googleapis.com/css2?family=Amita:wght@400;700&family=Monoton&display=swap'
 ];
 
 self.addEventListener('install', event => {
