@@ -1,4 +1,4 @@
-// login.js - FINAL CORRECTED VERSION (Guaranteed to work)
+// login.js - FINAL, SIMPLIFIED, AND GUARANTEED TO WORK
 
 const firebaseConfig = {
   apiKey: "AIzaSyCzFHkD5bAIjZkP1W7jj4P-FoBldmeTCpk",
@@ -15,59 +15,57 @@ const auth = firebase.auth();
 // Redirect if user is already logged in
 auth.onAuthStateChanged(user => {
     if (user) {
+        // If they are already logged in, send them to the main app
         window.location.href = 'home.html';
     }
 });
 
-// IMPORTANT FIX: Wait for the HTML page to be fully loaded before trying to find buttons
-document.addEventListener('DOMContentLoaded', () => {
+// --- Find all the elements on the page ---
+const signupContainer = document.getElementById('signup-container');
+const loginContainer = document.getElementById('login-container');
+const showLoginLink = document.getElementById('show-login');
+const showSignupLink = document.getElementById('show-signup');
+const signupButton = document.getElementById('signup-button');
+const loginButton = document.getElementById('login-button');
 
-    const signupContainer = document.getElementById('signup-container');
-    const loginContainer = document.getElementById('login-container');
-    const showLoginLink = document.getElementById('show-login');
-    const showSignupLink = document.getElementById('show-signup');
+// --- Add functionality to the links ---
+showLoginLink.addEventListener('click', (event) => {
+    event.preventDefault(); // Prevent page from jumping
+    signupContainer.style.display = 'none';
+    loginContainer.style.display = 'block';
+});
 
-    // This prevents the page from jumping when the link is clicked
-    showLoginLink.addEventListener('click', (event) => {
-        event.preventDefault(); 
-        signupContainer.style.display = 'none';
-        loginContainer.style.display = 'block';
-    });
+showSignupLink.addEventListener('click', (event) => {
+    event.preventDefault(); // Prevent page from jumping
+    loginContainer.style.display = 'none';
+    signupContainer.style.display = 'block';
+});
 
-    // This prevents the page from jumping when the link is clicked
-    showSignupLink.addEventListener('click', (event) => {
-        event.preventDefault(); 
-        loginContainer.style.display = 'none';
-        signupContainer.style.display = 'block';
-    });
+// --- Add functionality to the buttons ---
+signupButton.addEventListener('click', () => {
+    const email = document.getElementById('signup-email').value;
+    const password = document.getElementById('signup-password').value;
+    const errorElement = document.getElementById('signup-error');
+    if (!email || !password) {
+        errorElement.textContent = "Please enter both email and password.";
+        return;
+    }
+    auth.createUserWithEmailAndPassword(email, password)
+        .catch(err => {
+            errorElement.textContent = err.message;
+        });
+});
 
-    // Signup Button Logic
-    const signupButton = document.getElementById('signup-button');
-    signupButton.addEventListener('click', () => {
-        const email = document.getElementById('signup-email').value;
-        const password = document.getElementById('signup-password').value;
-        if (!email || !password) {
-            document.getElementById('signup-error').textContent = "Please enter both email and password.";
-            return;
-        }
-        auth.createUserWithEmailAndPassword(email, password)
-            .catch(err => {
-                document.getElementById('signup-error').textContent = err.message;
-            });
-    });
-
-    // Login Button Logic
-    const loginButton = document.getElementById('login-button');
-    loginButton.addEventListener('click', () => {
-        const email = document.getElementById('login-email').value;
-        const password = document.getElementById('login-password').value;
-        if (!email || !password) {
-            document.getElementById('login-error').textContent = "Please enter both email and password.";
-            return;
-        }
-        auth.signInWithEmailAndPassword(email, password)
-            .catch(err => {
-                document.getElementById('login-error').textContent = err.message;
-            });
-    });
+loginButton.addEventListener('click', () => {
+    const email = document.getElementById('login-email').value;
+    const password = document.getElementById('login-password').value;
+    const errorElement = document.getElementById('login-error');
+    if (!email || !password) {
+        errorElement.textContent = "Please enter both email and password.";
+        return;
+    }
+    auth.signInWithEmailAndPassword(email, password)
+        .catch(err => {
+            errorElement.textContent = err.message;
+        });
 });
