@@ -1,4 +1,4 @@
-// main.js - FINAL CORRECTED VERSION
+// main.js - FINAL CORRECTED VERSION for LAYOUT
 const firebaseConfig = {
   apiKey: "AIzaSyCzFHkD5bAIjZkP1W7jj4P-FoBldmeTCpk",
   authDomain: "shikaxfusion.firebaseapp.com",
@@ -23,6 +23,7 @@ auth.onAuthStateChanged(user => {
 
 function renderMainApp(user) {
     const appContainer = document.getElementById('app-container');
+    // This HTML structure matches the new CSS layout
     appContainer.innerHTML = `
         <header class="app-header-fixed">
             <div class="app-header">
@@ -41,6 +42,7 @@ function renderMainApp(user) {
                 <i class="fas fa-arrow-right"></i>
             </div>
         </header>
+        
         <main class="app-content-scrollable">
             <div class="offers-header">
                 <h3>All Offers</h3>
@@ -48,6 +50,7 @@ function renderMainApp(user) {
             </div>
             <div id="offers-list"></div>
         </main>
+        
         <nav class="bottom-nav">
             <button class="nav-button active"><i class="fas fa-home"></i><span>Home</span></button>
             <button class="nav-button"><i class="fas fa-list-check"></i><span>Task</span></button>

@@ -1,0 +1,89 @@
+/* home.css - STYLES FOR THE MAIN APP PAGE ONLY */
+
+@import url('https://fonts.googleapis.com/css2?family=Amita:wght@400;700&family=Monoton&display.swap');
+
+@keyframes animated-gradient { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+html, body {
+    margin: 0;
+    font-family: 'Amita', cursive;
+    height: 100%;
+    overflow: hidden;
+}
+* { box-sizing: border-box; }
+
+body {
+    background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+    background-size: 400% 400%;
+    animation: animated-gradient 18s ease infinite;
+    color: white;
+}
+
+#app-container {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    animation: fadeIn 0.5s ease-out;
+}
+.app-header-fixed { flex-shrink: 0; }
+.app-content-scrollable { flex-grow: 1; overflow-y: auto; padding: 15px; }
+
+.app-header {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+    padding: 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.user-info img { width: 40px; height: 40px; border-radius: 50%; margin-right: 10px; }
+.user-text { display: flex; flex-direction: column; }
+.user-text span:first-child { font-size: 0.9em; color: rgba(255, 255, 255, 0.8); }
+.user-text span:last-child { font-weight: bold; }
+.balance-chip { background: rgba(255, 255, 255, 0.9); color: #333; padding: 8px 15px; border-radius: 20px; font-weight: bold; font-size: 1.1em; }
+
+.play-earn-card {
+    background: rgba(0, 0, 0, 0.2);
+    padding: 20px;
+    margin: 15px;
+    border-radius: 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.play-earn-card h2 { margin: 0; font-family: 'Monoton', cursive; }
+.play-earn-card p { margin: 5px 0 0; font-size: 0.9em; }
+
+.offers-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; padding: 0 5px; }
+.offers-header a { text-decoration: none; color: rgba(255, 255, 255, 0.8); cursor: pointer; }
+
+.offer-card {
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    padding: 15px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+    cursor: pointer;
+}
+.offer-card img { width: 50px; height: 50px; border-radius: 10px; margin-right: 15px; }
+.offer-info h4 { margin: 0 0 5px; font-family: 'Amita', cursive; font-weight: bold; font-size: 1.1em;}
+.offer-info p { margin: 0; font-size: 0.8em; color: rgba(255, 255, 255, 0.7); }
+.offer-reward { background: rgba(255, 255, 255, 0.2); padding: 8px 12px; border-radius: 8px; font-weight: bold; }
+
+.bottom-nav {
+    background: rgba(0, 0, 0, 0.2);
+    backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    display: flex;
+    justify-content: space-around;
+    padding: 10px 0;
+    flex-shrink: 0;
+}
+.nav-button { background: none; border: none; display: flex; flex-direction: column; align-items: center; color: rgba(255, 255, 255, 0.6); cursor: pointer; font-size: 0.8em; }
+.nav-button i { font-size: 1.5em; margin-bottom: 5px; }
+.nav-button.active { color: white; }
